@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Datasets & Checkpoints (too large for Git)
+data/
+datasets/
+checkpoints/
+*.pth
+*.pt
+*.safetensors
+
+# Outputs & Logs
+outputs/
+logs/
+.ipynb_checkpoints/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

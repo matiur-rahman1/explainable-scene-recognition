@@ -1,4 +1,4 @@
-# Explainable Multi-Class Scene Recognition from Natural Images Using Deep Learning and Gradient-Based Visual Explanation
+# Explainable Deep Learning for Scene Classification and Pattern Recognition
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/matiur-rahman1/explainable-scene-recognition/blob/main/notebooks/explainable_scene_recognition_colab.ipynb)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)

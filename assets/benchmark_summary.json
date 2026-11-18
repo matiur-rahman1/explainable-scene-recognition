@@ -1,0 +1,113 @@
+{
+  "resnet50": {
+    "checkpoint": "checkpoints/best_resnet50.pth",
+    "test_accuracy": 0.9397,
+    "macro_f1": 0.9411,
+    "weighted_f1": 0.9394,
+    "stats": {
+      "total_params_m": 23.52,
+      "trainable_params_m": 23.52,
+      "latency_ms": 5.96
+    },
+    "xai_faithfulness": {
+      "gradcam": {
+        "insertion_auc": 0.8405,
+        "deletion_auc": 0.5538
+      },
+      "gradcam++": {
+        "insertion_auc": 0.8326,
+        "deletion_auc": 0.5664
+      },
+      "layercam": {
+        "insertion_auc": 0.8304,
+        "deletion_auc": 0.5764
+      }
+    },
+    "fgsm_accuracy": {
+      "0.0": 0.9417,
+      "0.01": 0.6979,
+      "0.03": 0.7562,
+      "0.05": 0.7896
+    },
+    "pgd_accuracy": {
+      "0.0": 0.9417,
+      "0.01": 0.2687,
+      "0.03": 0.1917,
+      "0.05": 0.1792
+    }
+  },
+  "efficientnet_b0": {
+    "checkpoint": "checkpoints/best_efficientnet_b0.pth",
+    "test_accuracy": 0.9387,
+    "macro_f1": 0.94,
+    "weighted_f1": 0.9385,
+    "stats": {
+      "total_params_m": 4.02,
+      "trainable_params_m": 4.02,
+      "latency_ms": 8.24
+    },
+    "xai_faithfulness": {
+      "gradcam": {
+        "insertion_auc": 0.7441,
+        "deletion_auc": 0.656
+      },
+      "gradcam++": {
+        "insertion_auc": 0.6751,
+        "deletion_auc": 0.7441
+      },
+      "layercam": {
+        "insertion_auc": 0.7266,
+        "deletion_auc": 0.6924
+      }
+    },
+    "fgsm_accuracy": {
+      "0.0": 0.9417,
+      "0.01": 0.2771,
+      "0.03": 0.7063,
+      "0.05": 0.5396
+    },
+    "pgd_accuracy": {
+      "0.0": 0.9417,
+      "0.01": 0.0,
+      "0.03": 0.0,
+      "0.05": 0.0
+    }
+  },
+  "swin_tiny": {
+    "checkpoint": "checkpoints/best_swin_tiny.pth",
+    "test_accuracy": 0.946,
+    "macro_f1": 0.9469,
+    "weighted_f1": 0.9457,
+    "stats": {
+      "total_params_m": 27.52,
+      "trainable_params_m": 27.52,
+      "latency_ms": 11.34
+    },
+    "xai_faithfulness": {
+      "gradcam": {
+        "insertion_auc": 0.6031,
+        "deletion_auc": 0.671
+      },
+      "gradcam++": {
+        "insertion_auc": 0.7666,
+        "deletion_auc": 0.4899
+      },
+      "layercam": {
+        "insertion_auc": 0.744,
+        "deletion_auc": 0.6203
+      }
+    },
+    "fgsm_accuracy": {
+      "0.0": 0.9187,
+      "0.01": 0.6625,
+      "0.03": 0.6125,
+      "0.05": 0.6021
+    },
+    "pgd_accuracy": {
+      "0.0": 0.9187,
+      "0.01": 0.0917,
+      "0.03": 0.0167,
+      "0.05": 0.0146
+    }
+  }
+}

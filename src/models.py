@@ -1,4 +1,4 @@
-"""Model factory and architectural utilities for CNN and Vision Transformer backbones."""
+"""Model factory and architectural utilities for CNN, ViT, and CLIP backbones."""
 
 import math
 import time
@@ -8,11 +8,15 @@ import timm
 import torch
 import torch.nn as nn
 
+from src.clip_model import CLIPSceneClassifier, clip_vit_reshape_transform
+
 MODEL_REGISTRY: Dict[str, str] = {
     "resnet50": "resnet50",
     "efficientnet_b0": "efficientnet_b0",
     "swin_tiny": "swin_tiny_patch4_window7_224",
     "convnext_tiny": "convnext_tiny",
+    "clip_zeroshot": "ViT-B-16",
+    "clip_linear": "ViT-B-16",
 }
 
 
@@ -37,13 +41,20 @@ def build_model(
     num_classes: int,
     pretrained: bool = True,
     drop_rate: float = 0.2,
+    class_names: Optional[List[str]] = None,
 ) -> nn.Module:
-    """Instantiate a classification backbone with a custom head via timm."""
+    """Instantiate a classification backbone (CNN, Swin, or CLIP ViT-B/16)."""
     key = model_name.lower()
     if key not in MODEL_REGISTRY:
         raise ValueError(
             f"Unknown model '{model_name}'. Available: {list(MODEL_REGISTRY.keys())}"
         )
+    if key in ("clip_zeroshot", "clip_linear"):
+        if not class_names:
+            class_names = [f"class_{i}" for i in range(num_classes)]
+        mode = "zeroshot" if key == "clip_zeroshot" else "linear"
+        return CLIPSceneClassifier(class_names=class_names, mode=mode)
+
     timm_name = MODEL_REGISTRY[key]
     return timm.create_model(
         timm_name,
@@ -66,6 +77,8 @@ def get_target_layers_and_reshape(
         return [model.stages[-1].blocks[-1]], None
     if key == "swin_tiny":
         return [model.layers[-1].blocks[-1].norm1], swin_reshape_transform
+    if key in ("clip_zeroshot", "clip_linear"):
+        return [model.visual.transformer.resblocks[-1].ln_1], clip_vit_reshape_transform
     raise ValueError(f"No CAM target layer mapping defined for '{model_name}'.")
 
 

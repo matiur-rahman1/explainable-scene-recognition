@@ -1,0 +1,42 @@
+\documentclass[11pt,a4paper]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\signature{MD Matiur Rahman\\
+School of Information Science and Technology\\
+Nantong University, Nantong 226019, China\\
+E-mail: \texttt{matiurrahman1353@gmail.com}\\
+GitHub: \url{https://github.com/matiur-rahman1/explainable-scene-recognition}}
+
+\address{MD Matiur Rahman\\
+School of Information Science and Technology\\
+Nantong University\\
+Nantong 226019, Jiangsu, China}
+
+\begin{document}
+
+\begin{letter}{Editor-in-Chief\\
+\textbf{IEEE Access}}
+
+\opening{Dear Editor-in-Chief,}
+
+Please find enclosed our manuscript entitled \textbf{``Accuracy, Faithfulness, and Robustness: An Explainable Benchmark of CNNs, Vision Transformers, and Vision-Language Models for Scene Recognition''} for consideration for publication as a Regular Research Article in \emph{IEEE Access}.
+
+While deep scene recognition models spanning Convolutional Neural Networks (CNNs), hierarchical Vision Transformers (Swin-Tiny), and contrastive Vision-Language Models (CLIP ViT-B/16) achieve strong classification accuracy, they are almost universally evaluated on clean accuracy, visual explainability, or adversarial robustness in isolation. In this paper, we present a unified, multi-seed empirical benchmark that jointly evaluates predictive performance, computational efficiency, quantitative explanation faithfulness (Insertion and Deletion AUC across Grad-CAM, Grad-CAM++, and LayerCAM), white-box adversarial robustness (FGSM, predicted-label FGSM, and $\text{PGD-}L_\infty$), and the effect of PGD adversarial training (PGD-AT) across Intel Natural Scenes and a deterministic 100-class SUN397 protocol.
+
+Our key findings include:
+\begin{enumerate}
+    \item Uncovering an \emph{accuracy--faithfulness--robustness trilemma}: whereas Swin-Tiny and CLIP ViT-B/16 achieve superior top-1 classification accuracy, ResNet-50 delivers significantly higher spatial attribution faithfulness under Grad-CAM and stronger native resilience under iterative PGD attacks.
+    \item Demonstrating quantitatively that second-order gradient weighting in Grad-CAM++ substantially outperforms standard Grad-CAM on shifted-window Swin Transformer representations (+0.1635 Insertion AUC improvement and $-0.1811$ Deletion AUC reduction).
+    \item Diagnosing and resolving single-step FGSM label leaking on label-smoothed scene classifiers, and showing how mixed-objective PGD adversarial training (PGD-AT) restores adversarial resilience while stabilizing spatial attribution maps.
+    \item Releasing a fully reproducible open-source PyTorch codebase and interactive Gradio diagnostic interface at \url{https://github.com/matiur-rahman1/explainable-scene-recognition}.
+\end{enumerate}
+
+We confirm that this manuscript is original, has not been published elsewhere, and is not currently under consideration by any other journal or conference. All experimental numbers reported in the manuscript are produced by verifiable, logged runs included in the repository.
+
+Thank you very much for your time and consideration.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}

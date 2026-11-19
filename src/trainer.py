@@ -1,4 +1,4 @@
-"""Training, checkpointing, and evaluation pipeline for scene classification models."""
+"""Training, checkpointing (with save/resume), and evaluation pipeline."""
 
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -74,15 +74,54 @@ def train_model(
     lr: float = 2e-4,
     weight_decay: float = 1e-4,
     checkpoint_dir: str = "./checkpoints",
+    tag: Optional[str] = None,
+    resume: bool = False,
 ) -> Tuple[nn.Module, Dict[str, List[float]], Path]:
-    """Fine-tune a model with AdamW, CosineAnnealingLR, and best-val checkpointing."""
+    """Fine-tune a model with AdamW, CosineAnnealingLR, and best-val checkpointing.
+
+    Automatically handles zero-shot models (0 trainable parameters) and supports
+    resuming from an existing checkpoint when resume=True.
+    """
     ckpt_dir = Path(checkpoint_dir)
     ckpt_dir.mkdir(parents=True, exist_ok=True)
-    best_path = ckpt_dir / f"best_{model_name}.pth"
+    ckpt_name = f"best_{model_name}_{tag}.pth" if tag else f"best_{model_name}.pth"
+    best_path = ckpt_dir / ckpt_name
 
     model = model.to(device)
+    trainable_params = [p for p in model.parameters() if p.requires_grad]
+
+    if not trainable_params or epochs <= 0:
+        # Zero-shot model: evaluate once on val_loader and save checkpoint
+        criterion = nn.CrossEntropyLoss()
+        val_loss, val_acc = _run_epoch(model, val_loader, criterion, device)
+        print(f"[{model_name}] Zero-Shot Val Loss: {val_loss:.4f}, Acc: {val_acc * 100:.2f}%")
+        history = {
+            "train_loss": [val_loss],
+            "train_acc": [val_acc],
+            "val_loss": [val_loss],
+            "val_acc": [val_acc],
+        }
+        torch.save(
+            {
+                "model_name": model_name,
+                "class_names": class_names,
+                "val_acc": val_acc,
+                "history": history,
+                "model_state_dict": model.state_dict(),
+            },
+            best_path,
+        )
+        return model, history, best_path
+
+    if resume and best_path.is_file():
+        ckpt = torch.load(best_path, map_location=device, weights_only=False)
+        if "model_state_dict" in ckpt and ckpt.get("completed_epochs", 0) >= epochs:
+            print(f"[{model_name}] Resuming completed checkpoint from {best_path}")
+            model.load_state_dict(ckpt["model_state_dict"])
+            return model, ckpt.get("history", {}), best_path
+
     criterion = nn.CrossEntropyLoss(label_smoothing=0.05)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    optimizer = torch.optim.AdamW(trainable_params, lr=lr, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
     scaler = torch.amp.GradScaler("cuda") if device.type == "cuda" else None
 
@@ -101,10 +140,10 @@ def train_model(
         val_loss, val_acc = _run_epoch(model, val_loader, criterion, device)
         scheduler.step()
 
-        history["train_loss"].append(tr_loss)
-        history["train_acc"].append(tr_acc)
-        history["val_loss"].append(val_loss)
-        history["val_acc"].append(val_acc)
+        history["train_loss"].append(round(tr_loss, 5))
+        history["train_acc"].append(round(tr_acc, 5))
+        history["val_loss"].append(round(val_loss, 5))
+        history["val_acc"].append(round(val_acc, 5))
 
         print(
             f"[{model_name}] Epoch {epoch:02d}/{epochs:02d} | "
@@ -119,6 +158,8 @@ def train_model(
                     "model_name": model_name,
                     "class_names": class_names,
                     "val_acc": best_val_acc,
+                    "completed_epochs": epoch,
+                    "history": history,
                     "model_state_dict": model.state_dict(),
                 },
                 best_path,
@@ -126,6 +167,10 @@ def train_model(
 
     checkpoint = torch.load(best_path, map_location=device, weights_only=False)
     model.load_state_dict(checkpoint["model_state_dict"])
+    # Mark full completion in saved checkpoint for future resume
+    checkpoint["completed_epochs"] = epochs
+    checkpoint["history"] = history
+    torch.save(checkpoint, best_path)
     return model, history, best_path
 
 
@@ -156,17 +201,30 @@ def evaluate_model(
     y_probs = np.concatenate(all_probs, axis=0)
 
     acc = float(accuracy_score(y_true, y_pred))
-    macro_f1 = float(f1_score(y_true, y_pred, average="macro"))
-    weighted_f1 = float(f1_score(y_true, y_pred, average="weighted"))
-    cm = confusion_matrix(y_true, y_pred)
+    macro_f1 = float(f1_score(y_true, y_pred, average="macro", zero_division=0))
+    weighted_f1 = float(f1_score(y_true, y_pred, average="weighted", zero_division=0))
+    cm = confusion_matrix(y_true, y_pred, labels=list(range(len(class_names))))
+
+    per_class_acc: Dict[str, float] = {}
+    for idx, cls_name in enumerate(class_names):
+        cls_total = int(cm[idx].sum())
+        cls_corr = int(cm[idx, idx])
+        per_class_acc[cls_name] = round(cls_corr / max(1, cls_total), 4)
+
     report = classification_report(
-        y_true, y_pred, target_names=class_names, digits=4, zero_division=0
+        y_true,
+        y_pred,
+        labels=list(range(len(class_names))),
+        target_names=class_names,
+        digits=4,
+        zero_division=0,
     )
 
     return {
         "accuracy": acc,
         "macro_f1": macro_f1,
         "weighted_f1": weighted_f1,
+        "per_class_accuracy": per_class_acc,
         "confusion_matrix": cm,
         "y_true": y_true,
         "y_pred": y_pred,

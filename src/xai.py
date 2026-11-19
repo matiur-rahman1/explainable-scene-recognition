@@ -11,6 +11,7 @@ from pytorch_grad_cam.utils.image import show_cam_on_image
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from torch.utils.data import DataLoader
 
+from src.dataset import build_stratified_eval_loader
 from src.models import get_target_layers_and_reshape
 
 CAM_METHODS = {
@@ -34,19 +35,7 @@ def generate_cam_explanation(
     method: str = "gradcam",
     target_class: Optional[int] = None,
 ) -> Tuple[np.ndarray, np.ndarray, int, float]:
-    """Generate a gradient-based CAM heatmap and overlay for a single image.
-
-    Args:
-        model: Trained PyTorch classification model.
-        model_name: Key in MODEL_REGISTRY (e.g. 'resnet50', 'swin_tiny').
-        input_tensor: Normalized tensor of shape (1, 3, H, W) on model's device.
-        rgb_image: Float32 RGB image in [0, 1] of shape (H, W, 3).
-        method: One of 'gradcam', 'gradcam++', 'layercam'.
-        target_class: Class index to explain; defaults to top predicted class.
-
-    Returns:
-        (grayscale_cam, overlay_rgb, target_idx, target_probability)
-    """
+    """Generate a gradient-based CAM heatmap and overlay for a single image."""
     method_key = method.lower()
     if method_key not in CAM_METHODS:
         raise ValueError(
@@ -65,10 +54,12 @@ def generate_cam_explanation(
     cam_cls = CAM_METHODS[method_key]
     targets = [ClassifierOutputTarget(target_class)]
 
+    # Ensure autograd tracks activations even for frozen models (e.g., Zero-Shot CLIP)
+    grad_input = input_tensor.detach().clone().requires_grad_(True)
     with cam_cls(
         model=model, target_layers=target_layers, reshape_transform=reshape_tf
     ) as cam:
-        grayscale_cam = cam(input_tensor=input_tensor, targets=targets)[0]
+        grayscale_cam = cam(input_tensor=grad_input, targets=targets)[0]
 
     overlay = show_cam_on_image(rgb_image, grayscale_cam, use_rgb=True)
     return grayscale_cam, overlay, target_class, target_prob
@@ -92,15 +83,11 @@ def compute_insertion_deletion_auc(
     _, c, h, w = input_tensor.shape
     total_pixels = h * w
 
-    # Smooth baseline via strong down-up bilinear blur
     blurred = F.avg_pool2d(input_tensor, kernel_size=21, stride=1, padding=10)
     flat_cam = grayscale_cam.reshape(-1)
-    sorted_idx = np.argsort(-flat_cam)  # descending importance
+    sorted_idx = np.argsort(-flat_cam)
 
     fractions = np.linspace(0.0, 1.0, steps + 1)
-    ins_scores = []
-    del_scores = []
-
     ins_batch = []
     del_batch = []
 
@@ -133,10 +120,11 @@ def evaluate_xai_faithfulness(
     loader: DataLoader,
     device: torch.device,
     methods: Iterable[str] = ("gradcam", "gradcam++", "layercam"),
-    max_samples: int = 40,
+    max_samples: int = 60,
     steps: int = 20,
+    seed: int = 42,
 ) -> Dict[str, Dict[str, float]]:
-    """Benchmark XAI methods quantitatively using mean Insertion and Deletion AUC."""
+    """Benchmark XAI methods quantitatively on a class-stratified subset of loader."""
     model.eval()
     model.to(device)
     methods_list = list(methods)
@@ -144,8 +132,12 @@ def evaluate_xai_faithfulness(
         m: {"insertion_auc": [], "deletion_auc": []} for m in methods_list
     }
 
+    strat_loader = build_stratified_eval_loader(
+        loader, max_samples=max_samples, batch_size=1, seed=seed
+    )
+
     processed = 0
-    for images, _ in loader:
+    for images, _ in strat_loader:
         for i in range(images.size(0)):
             if processed >= max_samples:
                 break
@@ -153,7 +145,6 @@ def evaluate_xai_faithfulness(
             with torch.no_grad():
                 pred_cls = int(model(x).argmax(dim=1).item())
 
-            # Dummy rgb not needed for AUC; pass zeros to reuse helper cleanly
             dummy_rgb = np.zeros((x.shape[2], x.shape[3], 3), dtype=np.float32)
             for m in methods_list:
                 gcam, _, _, _ = generate_cam_explanation(
@@ -174,5 +165,7 @@ def evaluate_xai_faithfulness(
         summary[m] = {
             "insertion_auc": round(float(np.mean(scores[m]["insertion_auc"])), 4),
             "deletion_auc": round(float(np.mean(scores[m]["deletion_auc"])), 4),
+            "insertion_std": round(float(np.std(scores[m]["insertion_auc"])), 4),
+            "deletion_std": round(float(np.std(scores[m]["deletion_auc"])), 4),
         }
     return summary

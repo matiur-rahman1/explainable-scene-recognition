@@ -1,0 +1,25 @@
+{
+  "dataset": "intel",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "num_classes": 6,
+  "class_names": [
+    "buildings",
+    "forest",
+    "glacier",
+    "mountain",
+    "sea",
+    "street"
+  ],
+  "num_train": 11932,
+  "num_val": 2102,
+  "num_test": 3000,
+  "epochs": 6,
+  "batch_size": 32,
+  "lr": 0.0002,
+  "xai_samples": 60,
+  "adv_samples": 600
+}

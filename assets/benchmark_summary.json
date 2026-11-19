@@ -1,113 +1,292 @@
 {
   "resnet50": {
-    "checkpoint": "checkpoints/best_resnet50.pth",
-    "test_accuracy": 0.9397,
-    "macro_f1": 0.9411,
-    "weighted_f1": 0.9394,
+    "seed": 0,
+    "checkpoint": "checkpoints/best_resnet50_intel_seed0.pth",
+    "test_accuracy": 0.942,
+    "macro_f1": 0.9432,
+    "weighted_f1": 0.9418,
+    "per_class_accuracy": {
+      "buildings": 0.9291,
+      "forest": 0.9958,
+      "glacier": 0.8788,
+      "mountain": 0.9124,
+      "sea": 0.9784,
+      "street": 0.9661
+    },
     "stats": {
       "total_params_m": 23.52,
       "trainable_params_m": 23.52,
-      "latency_ms": 5.96
+      "latency_ms": 6.29
     },
     "xai_faithfulness": {
       "gradcam": {
-        "insertion_auc": 0.8405,
-        "deletion_auc": 0.5538
+        "insertion_auc": 0.8436,
+        "deletion_auc": 0.6155,
+        "insertion_std": 0.1014,
+        "deletion_std": 0.2307
       },
       "gradcam++": {
-        "insertion_auc": 0.8326,
-        "deletion_auc": 0.5664
+        "insertion_auc": 0.8369,
+        "deletion_auc": 0.6304,
+        "insertion_std": 0.108,
+        "deletion_std": 0.2215
       },
       "layercam": {
-        "insertion_auc": 0.8304,
-        "deletion_auc": 0.5764
+        "insertion_auc": 0.8364,
+        "deletion_auc": 0.6363,
+        "insertion_std": 0.1094,
+        "deletion_std": 0.2165
       }
     },
     "fgsm_accuracy": {
-      "0.0": 0.9417,
-      "0.01": 0.6979,
-      "0.03": 0.7562,
-      "0.05": 0.7896
+      "0.0": 0.94,
+      "0.01": 0.6533,
+      "0.03": 0.6783,
+      "0.05": 0.695
+    },
+    "fgsm_pred_accuracy": {
+      "0.0": 0.94,
+      "0.01": 0.7033,
+      "0.03": 0.7267,
+      "0.05": 0.7383
     },
     "pgd_accuracy": {
-      "0.0": 0.9417,
-      "0.01": 0.2687,
-      "0.03": 0.1917,
-      "0.05": 0.1792
+      "0.0": 0.94,
+      "0.01": 0.0433,
+      "0.03": 0.0183,
+      "0.05": 0.0167
     }
   },
   "efficientnet_b0": {
-    "checkpoint": "checkpoints/best_efficientnet_b0.pth",
-    "test_accuracy": 0.9387,
-    "macro_f1": 0.94,
-    "weighted_f1": 0.9385,
+    "seed": 0,
+    "checkpoint": "checkpoints/best_efficientnet_b0_intel_seed0.pth",
+    "test_accuracy": 0.9373,
+    "macro_f1": 0.9384,
+    "weighted_f1": 0.9372,
+    "per_class_accuracy": {
+      "buildings": 0.9085,
+      "forest": 0.9916,
+      "glacier": 0.8752,
+      "mountain": 0.9143,
+      "sea": 0.9804,
+      "street": 0.9601
+    },
     "stats": {
       "total_params_m": 4.02,
       "trainable_params_m": 4.02,
-      "latency_ms": 8.24
+      "latency_ms": 8.3
     },
     "xai_faithfulness": {
       "gradcam": {
-        "insertion_auc": 0.7441,
-        "deletion_auc": 0.656
+        "insertion_auc": 0.7496,
+        "deletion_auc": 0.6523,
+        "insertion_std": 0.1792,
+        "deletion_std": 0.217
       },
       "gradcam++": {
-        "insertion_auc": 0.6751,
-        "deletion_auc": 0.7441
+        "insertion_auc": 0.6585,
+        "deletion_auc": 0.7568,
+        "insertion_std": 0.2006,
+        "deletion_std": 0.173
       },
       "layercam": {
-        "insertion_auc": 0.7266,
-        "deletion_auc": 0.6924
+        "insertion_auc": 0.6987,
+        "deletion_auc": 0.7285,
+        "insertion_std": 0.187,
+        "deletion_std": 0.181
       }
     },
     "fgsm_accuracy": {
-      "0.0": 0.9417,
-      "0.01": 0.2771,
-      "0.03": 0.7063,
-      "0.05": 0.5396
+      "0.0": 0.9433,
+      "0.01": 0.1717,
+      "0.03": 0.435,
+      "0.05": 0.2367
+    },
+    "fgsm_pred_accuracy": {
+      "0.0": 0.9433,
+      "0.01": 0.2217,
+      "0.03": 0.4717,
+      "0.05": 0.2333
     },
     "pgd_accuracy": {
-      "0.0": 0.9417,
+      "0.0": 0.9433,
       "0.01": 0.0,
       "0.03": 0.0,
       "0.05": 0.0
     }
   },
   "swin_tiny": {
-    "checkpoint": "checkpoints/best_swin_tiny.pth",
-    "test_accuracy": 0.946,
-    "macro_f1": 0.9469,
-    "weighted_f1": 0.9457,
+    "seed": 0,
+    "checkpoint": "checkpoints/best_swin_tiny_intel_seed0.pth",
+    "test_accuracy": 0.9463,
+    "macro_f1": 0.9473,
+    "weighted_f1": 0.9461,
+    "per_class_accuracy": {
+      "buildings": 0.8947,
+      "forest": 0.9937,
+      "glacier": 0.8788,
+      "mountain": 0.939,
+      "sea": 0.9824,
+      "street": 0.992
+    },
     "stats": {
       "total_params_m": 27.52,
       "trainable_params_m": 27.52,
-      "latency_ms": 11.34
+      "latency_ms": 12.81
     },
     "xai_faithfulness": {
       "gradcam": {
-        "insertion_auc": 0.6031,
-        "deletion_auc": 0.671
+        "insertion_auc": 0.6762,
+        "deletion_auc": 0.7702,
+        "insertion_std": 0.1993,
+        "deletion_std": 0.2074
       },
       "gradcam++": {
-        "insertion_auc": 0.7666,
-        "deletion_auc": 0.4899
+        "insertion_auc": 0.7988,
+        "deletion_auc": 0.6409,
+        "insertion_std": 0.1294,
+        "deletion_std": 0.2418
       },
       "layercam": {
-        "insertion_auc": 0.744,
-        "deletion_auc": 0.6203
+        "insertion_auc": 0.8264,
+        "deletion_auc": 0.6923,
+        "insertion_std": 0.1116,
+        "deletion_std": 0.2414
       }
     },
     "fgsm_accuracy": {
-      "0.0": 0.9187,
-      "0.01": 0.6625,
-      "0.03": 0.6125,
-      "0.05": 0.6021
+      "0.0": 0.9417,
+      "0.01": 0.595,
+      "0.03": 0.5367,
+      "0.05": 0.53
+    },
+    "fgsm_pred_accuracy": {
+      "0.0": 0.9417,
+      "0.01": 0.645,
+      "0.03": 0.5867,
+      "0.05": 0.5783
     },
     "pgd_accuracy": {
-      "0.0": 0.9187,
-      "0.01": 0.0917,
-      "0.03": 0.0167,
-      "0.05": 0.0146
+      "0.0": 0.9417,
+      "0.01": 0.0467,
+      "0.03": 0.0017,
+      "0.05": 0.0
+    }
+  },
+  "clip_zeroshot": {
+    "seed": 0,
+    "checkpoint": "checkpoints/best_clip_zeroshot_intel_seed0.pth",
+    "test_accuracy": 0.927,
+    "macro_f1": 0.928,
+    "weighted_f1": 0.9265,
+    "per_class_accuracy": {
+      "buildings": 0.9291,
+      "forest": 0.9979,
+      "glacier": 0.859,
+      "mountain": 0.8629,
+      "sea": 0.9804,
+      "street": 0.9461
+    },
+    "stats": {
+      "total_params_m": 86.19,
+      "trainable_params_m": 0.0,
+      "latency_ms": 16.16
+    },
+    "xai_faithfulness": {
+      "gradcam": {
+        "insertion_auc": 0.8312,
+        "deletion_auc": 0.7165,
+        "insertion_std": 0.1037,
+        "deletion_std": 0.1677
+      },
+      "gradcam++": {
+        "insertion_auc": 0.7937,
+        "deletion_auc": 0.7479,
+        "insertion_std": 0.1164,
+        "deletion_std": 0.1711
+      },
+      "layercam": {
+        "insertion_auc": 0.7408,
+        "deletion_auc": 0.8183,
+        "insertion_std": 0.1558,
+        "deletion_std": 0.1088
+      }
+    },
+    "fgsm_accuracy": {
+      "0.0": 0.93,
+      "0.01": 0.4367,
+      "0.03": 0.4383,
+      "0.05": 0.4933
+    },
+    "fgsm_pred_accuracy": {
+      "0.0": 0.93,
+      "0.01": 0.4917,
+      "0.03": 0.4917,
+      "0.05": 0.54
+    },
+    "pgd_accuracy": {
+      "0.0": 0.93,
+      "0.01": 0.0,
+      "0.03": 0.0,
+      "0.05": 0.0
+    }
+  },
+  "clip_linear": {
+    "seed": 0,
+    "checkpoint": "checkpoints/best_clip_linear_intel_seed0.pth",
+    "test_accuracy": 0.94,
+    "macro_f1": 0.9414,
+    "weighted_f1": 0.9398,
+    "per_class_accuracy": {
+      "buildings": 0.9336,
+      "forest": 0.9958,
+      "glacier": 0.8571,
+      "mountain": 0.9181,
+      "sea": 0.9863,
+      "street": 0.9601
+    },
+    "stats": {
+      "total_params_m": 86.2,
+      "trainable_params_m": 0.0,
+      "latency_ms": 16.13
+    },
+    "xai_faithfulness": {
+      "gradcam": {
+        "insertion_auc": 0.8236,
+        "deletion_auc": 0.7158,
+        "insertion_std": 0.1075,
+        "deletion_std": 0.1827
+      },
+      "gradcam++": {
+        "insertion_auc": 0.7734,
+        "deletion_auc": 0.7604,
+        "insertion_std": 0.1481,
+        "deletion_std": 0.1573
+      },
+      "layercam": {
+        "insertion_auc": 0.7314,
+        "deletion_auc": 0.8146,
+        "insertion_std": 0.1643,
+        "deletion_std": 0.117
+      }
+    },
+    "fgsm_accuracy": {
+      "0.0": 0.95,
+      "0.01": 0.4567,
+      "0.03": 0.4733,
+      "0.05": 0.535
+    },
+    "fgsm_pred_accuracy": {
+      "0.0": 0.95,
+      "0.01": 0.495,
+      "0.03": 0.5083,
+      "0.05": 0.56
+    },
+    "pgd_accuracy": {
+      "0.0": 0.95,
+      "0.01": 0.0,
+      "0.03": 0.0,
+      "0.05": 0.0
     }
   }
 }

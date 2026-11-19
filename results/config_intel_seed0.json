@@ -1,0 +1,16 @@
+{
+  "dataset": "intel",
+  "seed": 0,
+  "num_classes": 6,
+  "class_names": [
+    "buildings",
+    "forest",
+    "glacier",
+    "mountain",
+    "sea",
+    "street"
+  ],
+  "num_train": 11932,
+  "num_val": 2102,
+  "num_test": 3000
+}

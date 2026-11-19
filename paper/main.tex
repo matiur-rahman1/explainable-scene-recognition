@@ -30,7 +30,7 @@
 \maketitle
 
 \begin{abstract}
-Multi-class scene recognition is a foundational task in computer vision supporting autonomous navigation, robotic perception, and environmental monitoring. Although modern Convolutional Neural Networks (CNNs), hierarchical Vision Transformers (ViTs), and contrastive Vision-Language Models (VLMs) achieve high classification accuracy on natural scene benchmarks, their deployment in safety-critical applications is hindered by two persistent challenges: opaque decision-making and vulnerability to adversarial perturbations. Existing studies typically evaluate predictive accuracy, visual explainability, or adversarial robustness in isolation, leaving their cross-architectural trade-offs poorly understood. In this paper, we present a unified, reproducible benchmark comparing representative CNN backbones (ResNet-50, EfficientNet-B0), a hierarchical Vision Transformer (Swin-Tiny), and a contrastive vision-language foundation model (CLIP ViT-B/16 in zero-shot and linear-probe settings) across natural scene benchmarks (Intel Natural Scenes and a 100-class SUN397 protocol). Beyond standard classification accuracy, macro-F1, and inference latency, we quantitatively evaluate three gradient-based class activation mapping techniques---Grad-CAM, Grad-CAM++, and LayerCAM---using progressive Insertion and Deletion Area Under the Curve (AUC) faithfulness metrics, and assess adversarial resilience under Fast Gradient Sign Method (FGSM) and Projected Gradient Descent ($\text{PGD-}L_\infty$) attacks as well as PGD adversarial training (PGD-AT). Our empirical results demonstrate a pronounced trilemma: while Swin-Tiny and linear-probe CLIP achieve superior classification accuracy (94.60\% and \textbf{[TBD]}\% on Intel Natural Scenes), ResNet-50 yields significantly higher spatial explanation faithfulness under Grad-CAM (0.8405 Insertion AUC) and stronger native PGD resilience (19.17\% vs.\ 1.67\% at $\epsilon=0.03$). Furthermore, second-order gradient weighting in Grad-CAM++ substantially improves explanation faithfulness on Swin-Tiny compared to standard Grad-CAM (0.7666 vs.\ 0.6031 Insertion AUC), and PGD-AT restores adversarial accuracy while regularizing attention drift.
+Multi-class scene recognition is a foundational task in computer vision supporting autonomous navigation, robotic perception, and environmental monitoring. Although modern Convolutional Neural Networks (CNNs), hierarchical Vision Transformers (ViTs), and contrastive Vision-Language Models (VLMs) achieve high classification accuracy on natural scene benchmarks, their deployment in safety-critical applications is hindered by two persistent challenges: opaque decision-making and vulnerability to adversarial perturbations. Existing studies typically evaluate predictive accuracy, visual explainability, or adversarial robustness in isolation, leaving their cross-architectural trade-offs poorly understood. In this paper, we present a unified, reproducible benchmark comparing representative CNN backbones (ResNet-50, EfficientNet-B0), a hierarchical Vision Transformer (Swin-Tiny), and a contrastive vision-language foundation model (CLIP ViT-B/16 in zero-shot and linear-probe settings) across natural scene benchmarks (Intel Natural Scenes and a 100-class SUN397 protocol). Beyond standard classification accuracy, macro-F1, and inference latency, we quantitatively evaluate three gradient-based class activation mapping techniques---Grad-CAM, Grad-CAM++, and LayerCAM---using progressive Insertion and Deletion Area Under the Curve (AUC) faithfulness metrics, and assess adversarial resilience under Fast Gradient Sign Method (FGSM) and Projected Gradient Descent ($\text{PGD-}L_\infty$) attacks as well as PGD adversarial training (PGD-AT). Our empirical results demonstrate a pronounced trilemma: while Swin-Tiny and linear-probe CLIP achieve superior 3-seed classification accuracy ($94.40 \pm 0.21\%$ and $93.97 \pm 0.03\%$ on Intel Natural Scenes, with ResNet-50 at $94.18 \pm 0.19\%$), ResNet-50 and zero-shot CLIP yield higher first-order Grad-CAM spatial faithfulness ($0.8015 \pm 0.0303$ and $0.8312$ Insertion AUC across class-stratified test samples), and ResNet-50 exhibits stronger native PGD resilience. Furthermore, second-order gradient weighting in Grad-CAM++ and element-wise LayerCAM substantially improve explanation faithfulness on Swin-Tiny compared to standard Grad-CAM ($0.7810 \pm 0.0128$ and $0.7964 \pm 0.0234$ vs.\ $0.6854 \pm 0.0246$ Insertion AUC), and PGD-AT restores adversarial accuracy while regularizing attention drift.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -214,7 +214,31 @@ PGD-$L_\infty$ Attack & $T=10$ steps, $\alpha = 2.5\epsilon / T$, $\epsilon \in 
 \label{sec:results}
 
 \subsection{Classification Accuracy and Computational Efficiency}
-Table~\ref{tab:intel_prelim} reports our baseline single-seed classification performance and computational efficiency on Intel Natural Scenes, while Table~\ref{tab:intel_multiseed} presents the full 3-seed ($\{0, 1, 2\}$) comparison including Zero-Shot and Linear-Probe CLIP ViT-B/16. Swin-Tiny achieves the highest baseline accuracy of 94.60\% (Macro-F1: 94.69\%), outperforming ResNet-50 (93.97\%) and EfficientNet-B0 (93.87\%). Notably, EfficientNet-B0 matches ResNet-50 within 0.10\% accuracy while requiring $5.85\times$ fewer parameters (4.02M vs.\ 23.52M), whereas ResNet-50 achieves the lowest single-image inference latency (5.96~ms vs.\ 11.34~ms for Swin-Tiny).
+Table~\ref{tab:intel_prelim} reports our initial canonical single-seed run on Intel Natural Scenes, while Table~\ref{tab:intel_multiseed} presents the full 3-seed ($s \in \{0, 1, 2\}$) class-stratified benchmark across all five configurations including Zero-Shot and Linear-Probe CLIP ViT-B/16. Across three random seeds, Swin-Tiny achieves the highest mean classification accuracy of $94.40 \pm 0.21\%$ (Macro-F1: $94.51 \pm 0.20\%$), followed closely by ResNet-50 ($94.18 \pm 0.19\%$), Linear-Probe CLIP ViT-B/16 ($93.97 \pm 0.03\%$), and EfficientNet-B0 ($93.31 \pm 0.30\%$). Remarkably, Zero-Shot CLIP achieves $92.70\%$ accuracy on the 3,000-image test set without a single task-specific gradient update, and training a lightweight linear probe on frozen CLIP features boosts accuracy by $+1.27\%$ to $93.97 \pm 0.03\%$. Per-class evaluation across all models confirms near-ceiling recognition on \emph{forest} ($99.37\%$--$99.79\%$) and \emph{sea} ($97.91\%$--$98.30\%$), while the primary error modes concentrate in \emph{glacier} ($85.90\%$--$87.94\%$) and \emph{mountain} ($86.29\%$--$92.70\%$).
+
+To verify whether top-1 accuracy differences on the 3,000 test instances are statistically significant, Table~\ref{tab:mcnemar_intel} reports paired McNemar test statistics ($\chi^2$ with continuity correction and exact binomial $p$-values). Linear probing over Zero-Shot CLIP is highly significant ($\chi^2 = 20.93, p = 3.0 \times 10^{-6}$), as are the gains of Swin-Tiny over Zero-Shot CLIP ($\chi^2 = 16.75, p = 3.8 \times 10^{-5}$) and Swin-Tiny over EfficientNet-B0 ($\chi^2 = 5.24, p = 0.0217$). However, the top-tier supervised backbones---Swin-Tiny vs.\ ResNet-50 ($p = 0.2792$) and ResNet-50 vs.\ Linear-Probe CLIP ($p = 0.6852$)---are statistically indistinguishable in clean top-1 accuracy, demonstrating why quantitative XAI faithfulness and adversarial robustness are essential for distinguishing among high-performing architectures.
+
+\begin{table}[!t]
+\centering
+\caption{Paired McNemar Statistical Significance Tests Between Architectures on Intel Natural Scenes ($N=3,000$ Test Images).}
+\label{tab:mcnemar_intel}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Model Pair ($A$ vs.\ $B$)} & $n_{10} / n_{01}$ & $\chi^2_{\text{cc}}$ & \textbf{Exact $p$} & \textbf{Sig.\ ($.05$)} \\
+\hline
+CLIP-Linear vs.\ CLIP-ZS & 54 / 15 & 20.9275 & $3.0 \times 10^{-6}$ & \textbf{Yes} \\
+Swin-Tiny vs.\ CLIP-ZS & 126 / 68 & 16.7474 & $3.8 \times 10^{-5}$ & \textbf{Yes} \\
+ResNet-50 vs.\ CLIP-ZS & 122 / 77 & 9.7286 & $0.0017$ & \textbf{Yes} \\
+Swin-Tiny vs.\ EfficientNet-B0 & 78 / 51 & 5.2403 & $0.0217$ & \textbf{Yes} \\
+EfficientNet-B0 vs.\ CLIP-ZS & 124 / 93 & 4.1475 & $0.0414$ & \textbf{Yes} \\
+Swin-Tiny vs.\ CLIP-Linear & 86 / 67 & 2.1176 & $0.1454$ & No \\
+ResNet-50 vs.\ EfficientNet-B0 & 70 / 56 & 1.3413 & $0.2467$ & No \\
+Swin-Tiny vs.\ ResNet-50 & 68 / 55 & 1.1707 & $0.2792$ & No \\
+CLIP-Linear vs.\ EfficientNet-B0 & 89 / 81 & 0.2882 & $0.5915$ & No \\
+ResNet-50 vs.\ CLIP-Linear & 79 / 73 & 0.1645 & $0.6852$ & No \\
+\hline
+\end{tabular}
+\end{table}
 
 \begin{table*}[!t]
 \centering
@@ -233,17 +257,34 @@ EfficientNet-B0 (CNN) & 93.87 & 94.00 & 93.85 & \textbf{4.02} & 8.24 & 0.7441 / 
 
 \begin{table*}[!t]
 \centering
-\caption{Multi-Seed ($s \in \{0, 1, 2\}$) Benchmark on Intel Natural Scenes Including CLIP ViT-B/16 Vision-Language Baselines (Mean $\pm$ Std).}
+\caption{Multi-Seed ($s \in \{0, 1, 2\}$) Benchmark on Intel Natural Scenes Including CLIP ViT-B/16 Vision-Language Baselines (Mean $\pm$ Std Across 3 Seeds, Stratified Evaluation).}
 \label{tab:intel_multiseed}
-\begin{tabular}{lcccccc}
+\begin{tabular}{llccccc}
 \hline
-\textbf{Architecture} & \textbf{Paradigm} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM Ins$\uparrow$ / Del$\downarrow$} & \textbf{Grad-CAM++ Ins$\uparrow$ / Del$\downarrow$} & \textbf{PGD ($\epsilon=0.03$) (\%)} \\
+\textbf{Architecture} & \textbf{Paradigm} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM Ins$\uparrow$ / Del$\downarrow$} & \textbf{Grad-CAM++ Ins$\uparrow$ / Del$\downarrow$} & \textbf{LayerCAM Ins$\uparrow$ / Del$\downarrow$} \\
 \hline
-ResNet-50 & CNN & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-EfficientNet-B0 & CNN & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-Swin-Tiny & Hierarchical ViT & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-CLIP ViT-B/16 (Zero-Shot) & VLM (Frozen) & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-CLIP ViT-B/16 (Linear Probe) & VLM (Linear) & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
+Swin-Tiny & Hierarchical ViT & \textbf{94.40 $\pm$ 0.21} & \textbf{94.51 $\pm$ 0.20} & 0.6854 / 0.7484 & 0.7810 / 0.6563 & \textbf{0.7964} / 0.6807 \\
+ResNet-50 & Residual CNN & 94.18 $\pm$ 0.19 & 94.30 $\pm$ 0.18 & 0.8015 / \textbf{0.6071} & \textbf{0.7967} / \textbf{0.6193} & 0.7935 / \textbf{0.6242} \\
+CLIP ViT-B/16 (Linear Probe) & VLM (Linear Head) & 93.97 $\pm$ 0.03 & 94.11 $\pm$ 0.03 & 0.7997 / 0.6954 & 0.7539 / 0.7338 & 0.7081 / 0.7955 \\
+EfficientNet-B0 & Mobile CNN & 93.31 $\pm$ 0.30 & 93.43 $\pm$ 0.29 & 0.7787 / 0.6395 & 0.6760 / 0.7484 & 0.7115 / 0.7093 \\
+CLIP ViT-B/16 (Zero-Shot) & VLM (Prompt Ens.) & 92.70 $\pm$ 0.00 & 92.80 $\pm$ 0.00 & \textbf{0.8312} / 0.7165 & 0.7937 / 0.7479 & 0.7408 / 0.8183 \\
+\hline
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\centering
+\caption{Multi-Seed ($s \in \{0, 1, 2\}$) Adversarial Robustness (Accuracy \%) Under True-Label FGSM, Predicted-Label $\text{FGSM}_{\text{pred}}$, and 10-Step Scaled $\text{PGD-}L_\infty$ on the Class-Stratified Intel Test Set (600 Images, Mean $\pm$ Std).}
+\label{tab:intel_adv_multiseed}
+\begin{tabular}{lccccccc}
+\hline
+\textbf{Architecture} & \textbf{Clean ($\epsilon=0$)} & \textbf{FGSM (.01)} & \textbf{FGSM (.03)} & \textbf{$\text{FGSM}_{\text{pred}}$ (.01)} & \textbf{$\text{FGSM}_{\text{pred}}$ (.03)} & \textbf{PGD (.01)} & \textbf{PGD (.03)} \\
+\hline
+ResNet-50 & 94.17 $\pm$ 0.62 & \textbf{67.89 $\pm$ 2.11} & \textbf{69.44 $\pm$ 1.53} & \textbf{72.72 $\pm$ 2.05} & \textbf{73.61 $\pm$ 1.00} & \textbf{6.72 $\pm$ 1.70} & \textbf{2.44 $\pm$ 0.55} \\
+Swin-Tiny & \textbf{94.56 $\pm$ 0.44} & 59.05 $\pm$ 0.88 & 54.45 $\pm$ 1.22 & 63.72 $\pm$ 1.10 & 59.17 $\pm$ 1.21 & 4.11 $\pm$ 0.57 & 0.06 $\pm$ 0.08 \\
+CLIP ViT-B/16 (Linear Probe) & 94.44 $\pm$ 0.42 & 46.61 $\pm$ 1.70 & 47.94 $\pm$ 1.63 & 51.06 $\pm$ 2.20 & 52.11 $\pm$ 2.17 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
+CLIP ViT-B/16 (Zero-Shot) & 93.00 $\pm$ 0.00 & 43.67 $\pm$ 0.00 & 43.83 $\pm$ 0.00 & 49.17 $\pm$ 0.00 & 49.17 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
+EfficientNet-B0 & 94.22 $\pm$ 0.95 & 17.00 $\pm$ 1.71 & 43.06 $\pm$ 0.63 & 21.83 $\pm$ 2.33 & 46.39 $\pm$ 0.78 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
 \hline
 \end{tabular}
 \end{table*}

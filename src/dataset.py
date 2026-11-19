@@ -15,6 +15,24 @@ IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 
 
+class HFDatasetWrapper(Dataset):
+    """Wraps a HuggingFace Dataset split so it behaves like a torchvision ImageFolder."""
+
+    def __init__(self, hf_split):
+        self.hf_split = hf_split
+        self.targets = [int(x) for x in hf_split["label"]]
+
+    def __len__(self) -> int:
+        return len(self.targets)
+
+    def __getitem__(self, idx: int):
+        item = self.hf_split[int(idx)]
+        img = item["image"]
+        if getattr(img, "mode", "RGB") != "RGB":
+            img = img.convert("RGB")
+        return img, int(item["label"])
+
+
 class TransformSubset(Dataset):
     """Wraps a dataset subset with an independent transform pipeline and optional label remap."""
 
@@ -160,7 +178,7 @@ def create_dataloaders(
 
     Supported datasets:
         - 'intel': Intel Natural Scenes (6 classes, auto-downloaded via kagglehub).
-        - 'sun397' / 'sun397_100': SUN397 Scene Dataset (full 397 or deterministic top-N subset).
+        - 'sun397' / 'sun397_100': SUN397 Scene Dataset (standard 50-train/50-test split via HF datasets).
         - 'custom': Local folder with 'train/' and 'test/' (and optional 'val/').
     """
     tfs = get_transforms(img_size)
@@ -193,53 +211,64 @@ def create_dataloaders(
     elif name in ("sun397", "sun397_100"):
         if name == "sun397_100" and max_classes is None:
             max_classes = 100
-        root_path = Path(data_dir or "./data")
-        base_ds = datasets.SUN397(root=str(root_path), download=True)
-        raw_labels = np.asarray(base_ds._labels)
-        all_classes = list(base_ds.classes)
 
+        from datasets import load_dataset
+
+        # Cache in /tmp/hf_cache to avoid consuming Kaggle's 19.5 GiB /kaggle/working quota
+        hf_ds = load_dataset("tanganke/sun397", cache_dir="/tmp/hf_cache")
+        all_classes = list(hf_ds["train"].features["label"].names)
+
+        rng = np.random.default_rng(42)  # Fixed canonical class subset selection seed=42
         if max_classes is not None and max_classes < len(all_classes):
-            # Deterministically select top-N classes by sample count (tie-broken by class index)
-            unique_cls, counts = np.unique(raw_labels, return_counts=True)
-            order = np.lexsort((unique_cls, -counts))
-            chosen_orig_ids = sorted(unique_cls[order[:max_classes]].tolist())
+            chosen_orig_ids = sorted(
+                rng.choice(len(all_classes), size=max_classes, replace=False).tolist()
+            )
         else:
             chosen_orig_ids = list(range(len(all_classes)))
 
         label_map = {orig_id: new_id for new_id, orig_id in enumerate(chosen_orig_ids)}
         class_names = [all_classes[i] for i in chosen_orig_ids]
+        chosen_set = set(chosen_orig_ids)
 
-        rng = np.random.default_rng(seed)
-        filtered_indices: List[int] = []
-        filtered_targets: List[int] = []
-        for orig_id in chosen_orig_ids:
-            cls_idx = np.where(raw_labels == orig_id)[0]
-            rng.shuffle(cls_idx)
-            if max_samples_per_class is not None:
-                cls_idx = cls_idx[:max_samples_per_class]
-            filtered_indices.extend(cls_idx.tolist())
-            filtered_targets.extend([label_map[orig_id]] * len(cls_idx))
+        base_train_hf = HFDatasetWrapper(hf_ds["train"])
+        base_test_hf = HFDatasetWrapper(hf_ds["test"])
 
-        train_rel, rest_rel = _stratified_split_indices(
-            filtered_targets, val_ratio=0.30, seed=seed
+        train_pool_indices = [
+            i for i, lbl in enumerate(base_train_hf.targets) if lbl in chosen_set
+        ]
+        train_pool_targets = [
+            label_map[base_train_hf.targets[i]] for i in train_pool_indices
+        ]
+        test_indices = [
+            i for i, lbl in enumerate(base_test_hf.targets) if lbl in chosen_set
+        ]
+
+        tr_rel, val_rel = _stratified_split_indices(
+            train_pool_targets, val_ratio=val_ratio, seed=seed
         )
-        rest_targets = [filtered_targets[i] for i in rest_rel]
-        val_rel2, test_rel2 = _stratified_split_indices(
-            rest_targets, val_ratio=0.50, seed=seed
-        )
-
-        train_idx = [filtered_indices[i] for i in train_rel]
-        val_idx = [filtered_indices[rest_rel[i]] for i in val_rel2]
-        test_idx = [filtered_indices[rest_rel[i]] for i in test_rel2]
+        train_idx = [train_pool_indices[i] for i in tr_rel]
+        val_idx = [train_pool_indices[i] for i in val_rel]
 
         train_ds = TransformSubset(
-            base_ds, train_idx, transform=tfs["train"], label_map=label_map, raw_targets=raw_labels
+            base_train_hf,
+            train_idx,
+            transform=tfs["train"],
+            label_map=label_map,
+            raw_targets=base_train_hf.targets,
         )
         val_ds = TransformSubset(
-            base_ds, val_idx, transform=tfs["eval"], label_map=label_map, raw_targets=raw_labels
+            base_train_hf,
+            val_idx,
+            transform=tfs["eval"],
+            label_map=label_map,
+            raw_targets=base_train_hf.targets,
         )
         test_ds = TransformSubset(
-            base_ds, test_idx, transform=tfs["eval"], label_map=label_map, raw_targets=raw_labels
+            base_test_hf,
+            test_indices,
+            transform=tfs["eval"],
+            label_map=label_map,
+            raw_targets=base_test_hf.targets,
         )
 
     elif name == "custom":

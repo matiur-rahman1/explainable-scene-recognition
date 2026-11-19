@@ -105,9 +105,16 @@ def compute_insertion_deletion_auc(
 
     ins_tensor = torch.cat(ins_batch, dim=0)
     del_tensor = torch.cat(del_batch, dim=0)
+    combined = torch.cat([ins_tensor, del_tensor], dim=0)
 
-    ins_probs = torch.softmax(model(ins_tensor), dim=1)[:, target_class].cpu().numpy()
-    del_probs = torch.softmax(model(del_tensor), dim=1)[:, target_class].cpu().numpy()
+    use_amp = device.type == "cuda"
+    with torch.amp.autocast(device_type=device.type, enabled=use_amp):
+        all_probs = (
+            torch.softmax(model(combined), dim=1)[:, target_class].float().cpu().numpy()
+        )
+    mid = ins_tensor.size(0)
+    ins_probs = all_probs[:mid]
+    del_probs = all_probs[mid:]
 
     ins_auc = _trapz(ins_probs, fractions)
     del_auc = _trapz(del_probs, fractions)

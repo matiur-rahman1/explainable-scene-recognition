@@ -1,0 +1,1552 @@
+{
+  "dataset": "intel",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "aggregated": {
+    "resnet50": {
+      "num_seeds": 3,
+      "test_accuracy": {
+        "mean": 0.9418,
+        "std": 0.0019
+      },
+      "macro_f1": {
+        "mean": 0.943,
+        "std": 0.0018
+      },
+      "weighted_f1": {
+        "mean": 0.9415,
+        "std": 0.0019
+      },
+      "stats": {
+        "total_params_m": 23.52,
+        "trainable_params_m": 23.52,
+        "latency_ms": 6.29
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": {
+            "mean": 0.8015,
+            "std": 0.0303
+          },
+          "deletion_auc": {
+            "mean": 0.6071,
+            "std": 0.011
+          }
+        },
+        "gradcam++": {
+          "insertion_auc": {
+            "mean": 0.7967,
+            "std": 0.0289
+          },
+          "deletion_auc": {
+            "mean": 0.6193,
+            "std": 0.0102
+          }
+        },
+        "layercam": {
+          "insertion_auc": {
+            "mean": 0.7935,
+            "std": 0.0307
+          },
+          "deletion_auc": {
+            "mean": 0.6242,
+            "std": 0.0098
+          }
+        }
+      },
+      "fgsm_accuracy": {
+        "0.0": {
+          "mean": 0.9417,
+          "std": 0.0062
+        },
+        "0.01": {
+          "mean": 0.6789,
+          "std": 0.0211
+        },
+        "0.03": {
+          "mean": 0.6944,
+          "std": 0.0153
+        },
+        "0.05": {
+          "mean": 0.6861,
+          "std": 0.0064
+        }
+      },
+      "fgsm_pred_accuracy": {
+        "0.0": {
+          "mean": 0.9417,
+          "std": 0.0062
+        },
+        "0.01": {
+          "mean": 0.7272,
+          "std": 0.0205
+        },
+        "0.03": {
+          "mean": 0.7361,
+          "std": 0.01
+        },
+        "0.05": {
+          "mean": 0.7155,
+          "std": 0.0177
+        }
+      },
+      "pgd_accuracy": {
+        "0.0": {
+          "mean": 0.9417,
+          "std": 0.0062
+        },
+        "0.01": {
+          "mean": 0.0672,
+          "std": 0.017
+        },
+        "0.03": {
+          "mean": 0.0244,
+          "std": 0.0055
+        },
+        "0.05": {
+          "mean": 0.0139,
+          "std": 0.0028
+        }
+      },
+      "per_class_accuracy": {
+        "buildings": {
+          "mean": 0.9306,
+          "std": 0.0011
+        },
+        "forest": {
+          "mean": 0.9972,
+          "std": 0.002
+        },
+        "glacier": {
+          "mean": 0.8734,
+          "std": 0.0053
+        },
+        "mountain": {
+          "mean": 0.9105,
+          "std": 0.0016
+        },
+        "sea": {
+          "mean": 0.983,
+          "std": 0.004
+        },
+        "street": {
+          "mean": 0.9654,
+          "std": 0.0057
+        }
+      }
+    },
+    "efficientnet_b0": {
+      "num_seeds": 3,
+      "test_accuracy": {
+        "mean": 0.9331,
+        "std": 0.003
+      },
+      "macro_f1": {
+        "mean": 0.9343,
+        "std": 0.0029
+      },
+      "weighted_f1": {
+        "mean": 0.9329,
+        "std": 0.0031
+      },
+      "stats": {
+        "total_params_m": 4.02,
+        "trainable_params_m": 4.02,
+        "latency_ms": 8.3
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": {
+            "mean": 0.7787,
+            "std": 0.0228
+          },
+          "deletion_auc": {
+            "mean": 0.6395,
+            "std": 0.0215
+          }
+        },
+        "gradcam++": {
+          "insertion_auc": {
+            "mean": 0.676,
+            "std": 0.0132
+          },
+          "deletion_auc": {
+            "mean": 0.7484,
+            "std": 0.0238
+          }
+        },
+        "layercam": {
+          "insertion_auc": {
+            "mean": 0.7115,
+            "std": 0.0091
+          },
+          "deletion_auc": {
+            "mean": 0.7093,
+            "std": 0.0216
+          }
+        }
+      },
+      "fgsm_accuracy": {
+        "0.0": {
+          "mean": 0.9422,
+          "std": 0.0095
+        },
+        "0.01": {
+          "mean": 0.17,
+          "std": 0.0171
+        },
+        "0.03": {
+          "mean": 0.4306,
+          "std": 0.0063
+        },
+        "0.05": {
+          "mean": 0.2372,
+          "std": 0.0198
+        }
+      },
+      "fgsm_pred_accuracy": {
+        "0.0": {
+          "mean": 0.9422,
+          "std": 0.0095
+        },
+        "0.01": {
+          "mean": 0.2183,
+          "std": 0.0233
+        },
+        "0.03": {
+          "mean": 0.4639,
+          "std": 0.0078
+        },
+        "0.05": {
+          "mean": 0.2378,
+          "std": 0.0207
+        }
+      },
+      "pgd_accuracy": {
+        "0.0": {
+          "mean": 0.9422,
+          "std": 0.0095
+        },
+        "0.01": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "0.03": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "0.05": {
+          "mean": 0.0,
+          "std": 0.0
+        }
+      },
+      "per_class_accuracy": {
+        "buildings": {
+          "mean": 0.9176,
+          "std": 0.0065
+        },
+        "forest": {
+          "mean": 0.9937,
+          "std": 0.0017
+        },
+        "glacier": {
+          "mean": 0.8704,
+          "std": 0.018
+        },
+        "mountain": {
+          "mean": 0.8984,
+          "std": 0.028
+        },
+        "sea": {
+          "mean": 0.9791,
+          "std": 0.0018
+        },
+        "street": {
+          "mean": 0.9481,
+          "std": 0.0098
+        }
+      }
+    },
+    "swin_tiny": {
+      "num_seeds": 3,
+      "test_accuracy": {
+        "mean": 0.944,
+        "std": 0.0021
+      },
+      "macro_f1": {
+        "mean": 0.9451,
+        "std": 0.002
+      },
+      "weighted_f1": {
+        "mean": 0.9438,
+        "std": 0.0021
+      },
+      "stats": {
+        "total_params_m": 27.52,
+        "trainable_params_m": 27.52,
+        "latency_ms": 12.81
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": {
+            "mean": 0.6854,
+            "std": 0.0246
+          },
+          "deletion_auc": {
+            "mean": 0.7484,
+            "std": 0.0177
+          }
+        },
+        "gradcam++": {
+          "insertion_auc": {
+            "mean": 0.781,
+            "std": 0.0128
+          },
+          "deletion_auc": {
+            "mean": 0.6563,
+            "std": 0.0114
+          }
+        },
+        "layercam": {
+          "insertion_auc": {
+            "mean": 0.7964,
+            "std": 0.0234
+          },
+          "deletion_auc": {
+            "mean": 0.6807,
+            "std": 0.009
+          }
+        }
+      },
+      "fgsm_accuracy": {
+        "0.0": {
+          "mean": 0.9456,
+          "std": 0.0044
+        },
+        "0.01": {
+          "mean": 0.5905,
+          "std": 0.0088
+        },
+        "0.03": {
+          "mean": 0.5445,
+          "std": 0.0122
+        },
+        "0.05": {
+          "mean": 0.5361,
+          "std": 0.0086
+        }
+      },
+      "fgsm_pred_accuracy": {
+        "0.0": {
+          "mean": 0.9456,
+          "std": 0.0044
+        },
+        "0.01": {
+          "mean": 0.6372,
+          "std": 0.011
+        },
+        "0.03": {
+          "mean": 0.5917,
+          "std": 0.0121
+        },
+        "0.05": {
+          "mean": 0.5811,
+          "std": 0.0104
+        }
+      },
+      "pgd_accuracy": {
+        "0.0": {
+          "mean": 0.9456,
+          "std": 0.0044
+        },
+        "0.01": {
+          "mean": 0.0411,
+          "std": 0.0057
+        },
+        "0.03": {
+          "mean": 0.0006,
+          "std": 0.0008
+        },
+        "0.05": {
+          "mean": 0.0,
+          "std": 0.0
+        }
+      },
+      "per_class_accuracy": {
+        "buildings": {
+          "mean": 0.9207,
+          "std": 0.0206
+        },
+        "forest": {
+          "mean": 0.9951,
+          "std": 0.001
+        },
+        "glacier": {
+          "mean": 0.8794,
+          "std": 0.0067
+        },
+        "mountain": {
+          "mean": 0.927,
+          "std": 0.011
+        },
+        "sea": {
+          "mean": 0.9797,
+          "std": 0.0082
+        },
+        "street": {
+          "mean": 0.9687,
+          "std": 0.0187
+        }
+      }
+    },
+    "clip_zeroshot": {
+      "num_seeds": 3,
+      "test_accuracy": {
+        "mean": 0.927,
+        "std": 0.0
+      },
+      "macro_f1": {
+        "mean": 0.928,
+        "std": 0.0
+      },
+      "weighted_f1": {
+        "mean": 0.9265,
+        "std": 0.0
+      },
+      "stats": {
+        "total_params_m": 86.19,
+        "trainable_params_m": 0.0,
+        "latency_ms": 16.16
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": {
+            "mean": 0.8312,
+            "std": 0.0
+          },
+          "deletion_auc": {
+            "mean": 0.7165,
+            "std": 0.0
+          }
+        },
+        "gradcam++": {
+          "insertion_auc": {
+            "mean": 0.7937,
+            "std": 0.0
+          },
+          "deletion_auc": {
+            "mean": 0.7479,
+            "std": 0.0
+          }
+        },
+        "layercam": {
+          "insertion_auc": {
+            "mean": 0.7408,
+            "std": 0.0
+          },
+          "deletion_auc": {
+            "mean": 0.8183,
+            "std": 0.0
+          }
+        }
+      },
+      "fgsm_accuracy": {
+        "0.0": {
+          "mean": 0.93,
+          "std": 0.0
+        },
+        "0.01": {
+          "mean": 0.4367,
+          "std": 0.0
+        },
+        "0.03": {
+          "mean": 0.4383,
+          "std": 0.0
+        },
+        "0.05": {
+          "mean": 0.4933,
+          "std": 0.0
+        }
+      },
+      "fgsm_pred_accuracy": {
+        "0.0": {
+          "mean": 0.93,
+          "std": 0.0
+        },
+        "0.01": {
+          "mean": 0.4917,
+          "std": 0.0
+        },
+        "0.03": {
+          "mean": 0.4917,
+          "std": 0.0
+        },
+        "0.05": {
+          "mean": 0.54,
+          "std": 0.0
+        }
+      },
+      "pgd_accuracy": {
+        "0.0": {
+          "mean": 0.93,
+          "std": 0.0
+        },
+        "0.01": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "0.03": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "0.05": {
+          "mean": 0.0,
+          "std": 0.0
+        }
+      },
+      "per_class_accuracy": {
+        "buildings": {
+          "mean": 0.9291,
+          "std": 0.0
+        },
+        "forest": {
+          "mean": 0.9979,
+          "std": 0.0
+        },
+        "glacier": {
+          "mean": 0.859,
+          "std": 0.0
+        },
+        "mountain": {
+          "mean": 0.8629,
+          "std": 0.0
+        },
+        "sea": {
+          "mean": 0.9804,
+          "std": 0.0
+        },
+        "street": {
+          "mean": 0.9461,
+          "std": 0.0
+        }
+      }
+    },
+    "clip_linear": {
+      "num_seeds": 3,
+      "test_accuracy": {
+        "mean": 0.9397,
+        "std": 0.0003
+      },
+      "macro_f1": {
+        "mean": 0.9411,
+        "std": 0.0003
+      },
+      "weighted_f1": {
+        "mean": 0.9394,
+        "std": 0.0003
+      },
+      "stats": {
+        "total_params_m": 86.2,
+        "trainable_params_m": 0.0,
+        "latency_ms": 16.13
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": {
+            "mean": 0.7997,
+            "std": 0.0179
+          },
+          "deletion_auc": {
+            "mean": 0.6954,
+            "std": 0.0172
+          }
+        },
+        "gradcam++": {
+          "insertion_auc": {
+            "mean": 0.7539,
+            "std": 0.0153
+          },
+          "deletion_auc": {
+            "mean": 0.7338,
+            "std": 0.0311
+          }
+        },
+        "layercam": {
+          "insertion_auc": {
+            "mean": 0.7081,
+            "std": 0.0213
+          },
+          "deletion_auc": {
+            "mean": 0.7955,
+            "std": 0.0175
+          }
+        }
+      },
+      "fgsm_accuracy": {
+        "0.0": {
+          "mean": 0.9444,
+          "std": 0.0042
+        },
+        "0.01": {
+          "mean": 0.4661,
+          "std": 0.017
+        },
+        "0.03": {
+          "mean": 0.4794,
+          "std": 0.0163
+        },
+        "0.05": {
+          "mean": 0.54,
+          "std": 0.0147
+        }
+      },
+      "fgsm_pred_accuracy": {
+        "0.0": {
+          "mean": 0.9444,
+          "std": 0.0042
+        },
+        "0.01": {
+          "mean": 0.5106,
+          "std": 0.022
+        },
+        "0.03": {
+          "mean": 0.5211,
+          "std": 0.0217
+        },
+        "0.05": {
+          "mean": 0.5778,
+          "std": 0.0217
+        }
+      },
+      "pgd_accuracy": {
+        "0.0": {
+          "mean": 0.9444,
+          "std": 0.0042
+        },
+        "0.01": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "0.03": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "0.05": {
+          "mean": 0.0,
+          "std": 0.0
+        }
+      },
+      "per_class_accuracy": {
+        "buildings": {
+          "mean": 0.9344,
+          "std": 0.0011
+        },
+        "forest": {
+          "mean": 0.9958,
+          "std": 0.0
+        },
+        "glacier": {
+          "mean": 0.8571,
+          "std": 0.0
+        },
+        "mountain": {
+          "mean": 0.913,
+          "std": 0.0036
+        },
+        "sea": {
+          "mean": 0.9876,
+          "std": 0.0009
+        },
+        "street": {
+          "mean": 0.9614,
+          "std": 0.0009
+        }
+      }
+    }
+  },
+  "per_seed_runs": {
+    "resnet50": [
+      {
+        "seed": 0,
+        "checkpoint": "checkpoints/best_resnet50_intel_seed0.pth",
+        "test_accuracy": 0.942,
+        "macro_f1": 0.9432,
+        "weighted_f1": 0.9418,
+        "per_class_accuracy": {
+          "buildings": 0.9291,
+          "forest": 0.9958,
+          "glacier": 0.8788,
+          "mountain": 0.9124,
+          "sea": 0.9784,
+          "street": 0.9661
+        },
+        "stats": {
+          "total_params_m": 23.52,
+          "trainable_params_m": 23.52,
+          "latency_ms": 6.29
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.8436,
+            "deletion_auc": 0.6155,
+            "insertion_std": 0.1014,
+            "deletion_std": 0.2307
+          },
+          "gradcam++": {
+            "insertion_auc": 0.8369,
+            "deletion_auc": 0.6304,
+            "insertion_std": 0.108,
+            "deletion_std": 0.2215
+          },
+          "layercam": {
+            "insertion_auc": 0.8364,
+            "deletion_auc": 0.6363,
+            "insertion_std": 0.1094,
+            "deletion_std": 0.2165
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.94,
+          "0.01": 0.6533,
+          "0.03": 0.6783,
+          "0.05": 0.695
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.94,
+          "0.01": 0.7033,
+          "0.03": 0.7267,
+          "0.05": 0.7383
+        },
+        "pgd_accuracy": {
+          "0.0": 0.94,
+          "0.01": 0.0433,
+          "0.03": 0.0183,
+          "0.05": 0.0167
+        }
+      },
+      {
+        "seed": 1,
+        "checkpoint": "checkpoints/best_resnet50_intel_seed1.pth",
+        "test_accuracy": 0.944,
+        "macro_f1": 0.9451,
+        "weighted_f1": 0.9436,
+        "per_class_accuracy": {
+          "buildings": 0.9314,
+          "forest": 0.9958,
+          "glacier": 0.8752,
+          "mountain": 0.9105,
+          "sea": 0.9882,
+          "street": 0.9721
+        },
+        "stats": {
+          "total_params_m": 23.52,
+          "trainable_params_m": 23.52,
+          "latency_ms": 6.32
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.7874,
+            "deletion_auc": 0.6142,
+            "insertion_std": 0.1458,
+            "deletion_std": 0.243
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7825,
+            "deletion_auc": 0.6217,
+            "insertion_std": 0.1528,
+            "deletion_std": 0.2358
+          },
+          "layercam": {
+            "insertion_auc": 0.778,
+            "deletion_auc": 0.6241,
+            "insertion_std": 0.1555,
+            "deletion_std": 0.2351
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.935,
+          "0.01": 0.6783,
+          "0.03": 0.69,
+          "0.05": 0.68
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.935,
+          "0.01": 0.725,
+          "0.03": 0.7317,
+          "0.05": 0.7133
+        },
+        "pgd_accuracy": {
+          "0.0": 0.935,
+          "0.01": 0.0817,
+          "0.03": 0.0233,
+          "0.05": 0.01
+        }
+      },
+      {
+        "seed": 2,
+        "checkpoint": "checkpoints/best_resnet50_intel_seed2.pth",
+        "test_accuracy": 0.9393,
+        "macro_f1": 0.9406,
+        "weighted_f1": 0.939,
+        "per_class_accuracy": {
+          "buildings": 0.9314,
+          "forest": 1.0,
+          "glacier": 0.8662,
+          "mountain": 0.9086,
+          "sea": 0.9824,
+          "street": 0.9581
+        },
+        "stats": {
+          "total_params_m": 23.52,
+          "trainable_params_m": 23.52,
+          "latency_ms": 6.35
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.7736,
+            "deletion_auc": 0.5915,
+            "insertion_std": 0.1543,
+            "deletion_std": 0.2272
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7706,
+            "deletion_auc": 0.6057,
+            "insertion_std": 0.1548,
+            "deletion_std": 0.2171
+          },
+          "layercam": {
+            "insertion_auc": 0.7662,
+            "deletion_auc": 0.6123,
+            "insertion_std": 0.1586,
+            "deletion_std": 0.2168
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.95,
+          "0.01": 0.705,
+          "0.03": 0.715,
+          "0.05": 0.6833
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.95,
+          "0.01": 0.7533,
+          "0.03": 0.75,
+          "0.05": 0.695
+        },
+        "pgd_accuracy": {
+          "0.0": 0.95,
+          "0.01": 0.0767,
+          "0.03": 0.0317,
+          "0.05": 0.015
+        }
+      }
+    ],
+    "efficientnet_b0": [
+      {
+        "seed": 0,
+        "checkpoint": "checkpoints/best_efficientnet_b0_intel_seed0.pth",
+        "test_accuracy": 0.9373,
+        "macro_f1": 0.9384,
+        "weighted_f1": 0.9372,
+        "per_class_accuracy": {
+          "buildings": 0.9085,
+          "forest": 0.9916,
+          "glacier": 0.8752,
+          "mountain": 0.9143,
+          "sea": 0.9804,
+          "street": 0.9601
+        },
+        "stats": {
+          "total_params_m": 4.02,
+          "trainable_params_m": 4.02,
+          "latency_ms": 8.3
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.7496,
+            "deletion_auc": 0.6523,
+            "insertion_std": 0.1792,
+            "deletion_std": 0.217
+          },
+          "gradcam++": {
+            "insertion_auc": 0.6585,
+            "deletion_auc": 0.7568,
+            "insertion_std": 0.2006,
+            "deletion_std": 0.173
+          },
+          "layercam": {
+            "insertion_auc": 0.6987,
+            "deletion_auc": 0.7285,
+            "insertion_std": 0.187,
+            "deletion_std": 0.181
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.1717,
+          "0.03": 0.435,
+          "0.05": 0.2367
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.2217,
+          "0.03": 0.4717,
+          "0.05": 0.2333
+        },
+        "pgd_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 1,
+        "checkpoint": "checkpoints/best_efficientnet_b0_intel_seed1.pth",
+        "test_accuracy": 0.9313,
+        "macro_f1": 0.9327,
+        "weighted_f1": 0.9312,
+        "per_class_accuracy": {
+          "buildings": 0.9222,
+          "forest": 0.9958,
+          "glacier": 0.8463,
+          "mountain": 0.9219,
+          "sea": 0.9765,
+          "street": 0.9361
+        },
+        "stats": {
+          "total_params_m": 4.02,
+          "trainable_params_m": 4.02,
+          "latency_ms": 8.25
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.8054,
+            "deletion_auc": 0.6569,
+            "insertion_std": 0.1467,
+            "deletion_std": 0.2201
+          },
+          "gradcam++": {
+            "insertion_auc": 0.6904,
+            "deletion_auc": 0.7724,
+            "insertion_std": 0.2038,
+            "deletion_std": 0.1642
+          },
+          "layercam": {
+            "insertion_auc": 0.7167,
+            "deletion_auc": 0.7204,
+            "insertion_std": 0.1861,
+            "deletion_std": 0.1756
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.19,
+          "0.03": 0.435,
+          "0.05": 0.2133
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.245,
+          "0.03": 0.4667,
+          "0.05": 0.215
+        },
+        "pgd_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 2,
+        "checkpoint": "checkpoints/best_efficientnet_b0_intel_seed2.pth",
+        "test_accuracy": 0.9307,
+        "macro_f1": 0.9318,
+        "weighted_f1": 0.9303,
+        "per_class_accuracy": {
+          "buildings": 0.9222,
+          "forest": 0.9937,
+          "glacier": 0.8897,
+          "mountain": 0.859,
+          "sea": 0.9804,
+          "street": 0.9481
+        },
+        "stats": {
+          "total_params_m": 4.02,
+          "trainable_params_m": 4.02,
+          "latency_ms": 9.72
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.7812,
+            "deletion_auc": 0.6092,
+            "insertion_std": 0.1551,
+            "deletion_std": 0.232
+          },
+          "gradcam++": {
+            "insertion_auc": 0.679,
+            "deletion_auc": 0.716,
+            "insertion_std": 0.2227,
+            "deletion_std": 0.1828
+          },
+          "layercam": {
+            "insertion_auc": 0.719,
+            "deletion_auc": 0.6791,
+            "insertion_std": 0.1946,
+            "deletion_std": 0.1899
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.9533,
+          "0.01": 0.1483,
+          "0.03": 0.4217,
+          "0.05": 0.2617
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.9533,
+          "0.01": 0.1883,
+          "0.03": 0.4533,
+          "0.05": 0.265
+        },
+        "pgd_accuracy": {
+          "0.0": 0.9533,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      }
+    ],
+    "swin_tiny": [
+      {
+        "seed": 0,
+        "checkpoint": "checkpoints/best_swin_tiny_intel_seed0.pth",
+        "test_accuracy": 0.9463,
+        "macro_f1": 0.9473,
+        "weighted_f1": 0.9461,
+        "per_class_accuracy": {
+          "buildings": 0.8947,
+          "forest": 0.9937,
+          "glacier": 0.8788,
+          "mountain": 0.939,
+          "sea": 0.9824,
+          "street": 0.992
+        },
+        "stats": {
+          "total_params_m": 27.52,
+          "trainable_params_m": 27.52,
+          "latency_ms": 12.81
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.6762,
+            "deletion_auc": 0.7702,
+            "insertion_std": 0.1993,
+            "deletion_std": 0.2074
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7988,
+            "deletion_auc": 0.6409,
+            "insertion_std": 0.1294,
+            "deletion_std": 0.2418
+          },
+          "layercam": {
+            "insertion_auc": 0.8264,
+            "deletion_auc": 0.6923,
+            "insertion_std": 0.1116,
+            "deletion_std": 0.2414
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.9417,
+          "0.01": 0.595,
+          "0.03": 0.5367,
+          "0.05": 0.53
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.9417,
+          "0.01": 0.645,
+          "0.03": 0.5867,
+          "0.05": 0.5783
+        },
+        "pgd_accuracy": {
+          "0.0": 0.9417,
+          "0.01": 0.0467,
+          "0.03": 0.0017,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 1,
+        "checkpoint": "checkpoints/best_swin_tiny_intel_seed1.pth",
+        "test_accuracy": 0.9443,
+        "macro_f1": 0.9455,
+        "weighted_f1": 0.9443,
+        "per_class_accuracy": {
+          "buildings": 0.9222,
+          "forest": 0.9958,
+          "glacier": 0.8879,
+          "mountain": 0.9295,
+          "sea": 0.9686,
+          "street": 0.9681
+        },
+        "stats": {
+          "total_params_m": 27.52,
+          "trainable_params_m": 27.52,
+          "latency_ms": 13.91
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.661,
+            "deletion_auc": 0.7483,
+            "insertion_std": 0.1846,
+            "deletion_std": 0.2125
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7754,
+            "deletion_auc": 0.6601,
+            "insertion_std": 0.1703,
+            "deletion_std": 0.2382
+          },
+          "layercam": {
+            "insertion_auc": 0.7937,
+            "deletion_auc": 0.6792,
+            "insertion_std": 0.1712,
+            "deletion_std": 0.237
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.5983,
+          "0.03": 0.5617,
+          "0.05": 0.5483
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.645,
+          "0.03": 0.6083,
+          "0.05": 0.595
+        },
+        "pgd_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.0433,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 2,
+        "checkpoint": "checkpoints/best_swin_tiny_intel_seed2.pth",
+        "test_accuracy": 0.9413,
+        "macro_f1": 0.9424,
+        "weighted_f1": 0.941,
+        "per_class_accuracy": {
+          "buildings": 0.9451,
+          "forest": 0.9958,
+          "glacier": 0.8716,
+          "mountain": 0.9124,
+          "sea": 0.9882,
+          "street": 0.9461
+        },
+        "stats": {
+          "total_params_m": 27.52,
+          "trainable_params_m": 27.52,
+          "latency_ms": 11.56
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.7191,
+            "deletion_auc": 0.7268,
+            "insertion_std": 0.2175,
+            "deletion_std": 0.2507
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7689,
+            "deletion_auc": 0.668,
+            "insertion_std": 0.1783,
+            "deletion_std": 0.2686
+          },
+          "layercam": {
+            "insertion_auc": 0.7692,
+            "deletion_auc": 0.6705,
+            "insertion_std": 0.1848,
+            "deletion_std": 0.2721
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.9517,
+          "0.01": 0.5783,
+          "0.03": 0.535,
+          "0.05": 0.53
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.9517,
+          "0.01": 0.6217,
+          "0.03": 0.58,
+          "0.05": 0.57
+        },
+        "pgd_accuracy": {
+          "0.0": 0.9517,
+          "0.01": 0.0333,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      }
+    ],
+    "clip_zeroshot": [
+      {
+        "seed": 0,
+        "checkpoint": "checkpoints/best_clip_zeroshot_intel_seed0.pth",
+        "test_accuracy": 0.927,
+        "macro_f1": 0.928,
+        "weighted_f1": 0.9265,
+        "per_class_accuracy": {
+          "buildings": 0.9291,
+          "forest": 0.9979,
+          "glacier": 0.859,
+          "mountain": 0.8629,
+          "sea": 0.9804,
+          "street": 0.9461
+        },
+        "stats": {
+          "total_params_m": 86.19,
+          "trainable_params_m": 0.0,
+          "latency_ms": 16.16
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.8312,
+            "deletion_auc": 0.7165,
+            "insertion_std": 0.1037,
+            "deletion_std": 0.1677
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7937,
+            "deletion_auc": 0.7479,
+            "insertion_std": 0.1164,
+            "deletion_std": 0.1711
+          },
+          "layercam": {
+            "insertion_auc": 0.7408,
+            "deletion_auc": 0.8183,
+            "insertion_std": 0.1558,
+            "deletion_std": 0.1088
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.4367,
+          "0.03": 0.4383,
+          "0.05": 0.4933
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.4917,
+          "0.03": 0.4917,
+          "0.05": 0.54
+        },
+        "pgd_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 0,
+        "checkpoint": "checkpoints/best_clip_zeroshot_intel_seed0.pth",
+        "test_accuracy": 0.927,
+        "macro_f1": 0.928,
+        "weighted_f1": 0.9265,
+        "per_class_accuracy": {
+          "buildings": 0.9291,
+          "forest": 0.9979,
+          "glacier": 0.859,
+          "mountain": 0.8629,
+          "sea": 0.9804,
+          "street": 0.9461
+        },
+        "stats": {
+          "total_params_m": 86.19,
+          "trainable_params_m": 0.0,
+          "latency_ms": 16.16
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.8312,
+            "deletion_auc": 0.7165,
+            "insertion_std": 0.1037,
+            "deletion_std": 0.1677
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7937,
+            "deletion_auc": 0.7479,
+            "insertion_std": 0.1164,
+            "deletion_std": 0.1711
+          },
+          "layercam": {
+            "insertion_auc": 0.7408,
+            "deletion_auc": 0.8183,
+            "insertion_std": 0.1558,
+            "deletion_std": 0.1088
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.4367,
+          "0.03": 0.4383,
+          "0.05": 0.4933
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.4917,
+          "0.03": 0.4917,
+          "0.05": 0.54
+        },
+        "pgd_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 0,
+        "checkpoint": "checkpoints/best_clip_zeroshot_intel_seed0.pth",
+        "test_accuracy": 0.927,
+        "macro_f1": 0.928,
+        "weighted_f1": 0.9265,
+        "per_class_accuracy": {
+          "buildings": 0.9291,
+          "forest": 0.9979,
+          "glacier": 0.859,
+          "mountain": 0.8629,
+          "sea": 0.9804,
+          "street": 0.9461
+        },
+        "stats": {
+          "total_params_m": 86.19,
+          "trainable_params_m": 0.0,
+          "latency_ms": 16.16
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.8312,
+            "deletion_auc": 0.7165,
+            "insertion_std": 0.1037,
+            "deletion_std": 0.1677
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7937,
+            "deletion_auc": 0.7479,
+            "insertion_std": 0.1164,
+            "deletion_std": 0.1711
+          },
+          "layercam": {
+            "insertion_auc": 0.7408,
+            "deletion_auc": 0.8183,
+            "insertion_std": 0.1558,
+            "deletion_std": 0.1088
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.4367,
+          "0.03": 0.4383,
+          "0.05": 0.4933
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.4917,
+          "0.03": 0.4917,
+          "0.05": 0.54
+        },
+        "pgd_accuracy": {
+          "0.0": 0.93,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      }
+    ],
+    "clip_linear": [
+      {
+        "seed": 0,
+        "checkpoint": "checkpoints/best_clip_linear_intel_seed0.pth",
+        "test_accuracy": 0.94,
+        "macro_f1": 0.9414,
+        "weighted_f1": 0.9398,
+        "per_class_accuracy": {
+          "buildings": 0.9336,
+          "forest": 0.9958,
+          "glacier": 0.8571,
+          "mountain": 0.9181,
+          "sea": 0.9863,
+          "street": 0.9601
+        },
+        "stats": {
+          "total_params_m": 86.2,
+          "trainable_params_m": 0.0,
+          "latency_ms": 16.13
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.8236,
+            "deletion_auc": 0.7158,
+            "insertion_std": 0.1075,
+            "deletion_std": 0.1827
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7734,
+            "deletion_auc": 0.7604,
+            "insertion_std": 0.1481,
+            "deletion_std": 0.1573
+          },
+          "layercam": {
+            "insertion_auc": 0.7314,
+            "deletion_auc": 0.8146,
+            "insertion_std": 0.1643,
+            "deletion_std": 0.117
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.95,
+          "0.01": 0.4567,
+          "0.03": 0.4733,
+          "0.05": 0.535
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.95,
+          "0.01": 0.495,
+          "0.03": 0.5083,
+          "0.05": 0.56
+        },
+        "pgd_accuracy": {
+          "0.0": 0.95,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 1,
+        "checkpoint": "checkpoints/best_clip_linear_intel_seed1.pth",
+        "test_accuracy": 0.9393,
+        "macro_f1": 0.9407,
+        "weighted_f1": 0.9391,
+        "per_class_accuracy": {
+          "buildings": 0.9336,
+          "forest": 0.9958,
+          "glacier": 0.8571,
+          "mountain": 0.9105,
+          "sea": 0.9882,
+          "street": 0.9621
+        },
+        "stats": {
+          "total_params_m": 86.2,
+          "trainable_params_m": 0.0,
+          "latency_ms": 16.1
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.795,
+            "deletion_auc": 0.6966,
+            "insertion_std": 0.1307,
+            "deletion_std": 0.205
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7521,
+            "deletion_auc": 0.7508,
+            "insertion_std": 0.1658,
+            "deletion_std": 0.1705
+          },
+          "layercam": {
+            "insertion_auc": 0.713,
+            "deletion_auc": 0.7996,
+            "insertion_std": 0.2024,
+            "deletion_std": 0.1365
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.4517,
+          "0.03": 0.4633,
+          "0.05": 0.525
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.495,
+          "0.03": 0.5033,
+          "0.05": 0.565
+        },
+        "pgd_accuracy": {
+          "0.0": 0.9433,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      },
+      {
+        "seed": 2,
+        "checkpoint": "checkpoints/best_clip_linear_intel_seed2.pth",
+        "test_accuracy": 0.9397,
+        "macro_f1": 0.9411,
+        "weighted_f1": 0.9394,
+        "per_class_accuracy": {
+          "buildings": 0.9359,
+          "forest": 0.9958,
+          "glacier": 0.8571,
+          "mountain": 0.9105,
+          "sea": 0.9882,
+          "street": 0.9621
+        },
+        "stats": {
+          "total_params_m": 86.2,
+          "trainable_params_m": 0.0,
+          "latency_ms": 16.19
+        },
+        "xai_faithfulness": {
+          "gradcam": {
+            "insertion_auc": 0.7805,
+            "deletion_auc": 0.6738,
+            "insertion_std": 0.1495,
+            "deletion_std": 0.2067
+          },
+          "gradcam++": {
+            "insertion_auc": 0.7361,
+            "deletion_auc": 0.6902,
+            "insertion_std": 0.1795,
+            "deletion_std": 0.1964
+          },
+          "layercam": {
+            "insertion_auc": 0.68,
+            "deletion_auc": 0.7724,
+            "insertion_std": 0.1945,
+            "deletion_std": 0.158
+          }
+        },
+        "fgsm_accuracy": {
+          "0.0": 0.94,
+          "0.01": 0.49,
+          "0.03": 0.5017,
+          "0.05": 0.56
+        },
+        "fgsm_pred_accuracy": {
+          "0.0": 0.94,
+          "0.01": 0.5417,
+          "0.03": 0.5517,
+          "0.05": 0.6083
+        },
+        "pgd_accuracy": {
+          "0.0": 0.94,
+          "0.01": 0.0,
+          "0.03": 0.0,
+          "0.05": 0.0
+        }
+      }
+    ]
+  }
+}

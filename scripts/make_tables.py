@@ -33,6 +33,7 @@ def generate_classification_table(multi_seed: Dict[str, Any], out_path: Path) ->
         "\\centering",
         "\\caption{Multi-Seed Classification Performance and Computational Efficiency (Mean $\\pm$ Std across Seeds).}",
         "\\label{tab:classification_main}",
+        "\\resizebox{\\textwidth}{!}{%",
         "\\begin{tabular}{lccccc}",
         "\\hline",
         "\\textbf{Architecture} & \\textbf{Test Accuracy (\\%)} & \\textbf{Macro-F1 (\\%)} & \\textbf{Weighted-F1 (\\%)} & \\textbf{Params (M)} & \\textbf{Latency (ms)} \\\\",
@@ -47,7 +48,7 @@ def generate_classification_table(multi_seed: Dict[str, Any], out_path: Path) ->
         params = f"{stats.get('total_params_m', 0.0):.2f}"
         lat = f"{stats.get('latency_ms', 0.0):.2f}"
         lines.append(f"{disp} & {acc} & {mf1} & {wf1} & {params} & {lat} \\\\")
-    lines.extend(["\\hline", "\\end{tabular}", "\\end{table*}"])
+    lines.extend(["\\hline", "\\end{tabular}%", "}", "\\end{table*}"])
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -59,6 +60,7 @@ def generate_xai_table(multi_seed: Dict[str, Any], out_path: Path) -> None:
         "\\centering",
         "\\caption{Quantitative XAI Faithfulness: Insertion AUC ($\\uparrow$) and Deletion AUC ($\\downarrow$) on Stratified Test Samples.}",
         "\\label{tab:xai_faithfulness}",
+        "\\resizebox{\\textwidth}{!}{%",
         "\\begin{tabular}{lcccccc}",
         "\\hline",
         "\\textbf{Model} & \\textbf{Grad-CAM Ins$\\uparrow$} & \\textbf{Grad-CAM Del$\\downarrow$} & \\textbf{Grad-CAM++ Ins$\\uparrow$} & \\textbf{Grad-CAM++ Del$\\downarrow$} & \\textbf{LayerCAM Ins$\\uparrow$} & \\textbf{LayerCAM Del$\\downarrow$} \\\\",
@@ -76,7 +78,7 @@ def generate_xai_table(multi_seed: Dict[str, Any], out_path: Path) -> None:
                 ins, dele = "--", "--"
             cells.extend([ins, dele])
         lines.append(f"{disp} & " + " & ".join(cells) + " \\\\")
-    lines.extend(["\\hline", "\\end{tabular}", "\\end{table*}"])
+    lines.extend(["\\hline", "\\end{tabular}%", "}", "\\end{table*}"])
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -88,6 +90,7 @@ def generate_robustness_table(multi_seed: Dict[str, Any], out_path: Path) -> Non
         "\\centering",
         "\\caption{Adversarial Robustness (Accuracy \\%) under FGSM and PGD-$L_\\infty$ Attacks on Class-Stratified Test Set.}",
         "\\label{tab:adversarial_robustness}",
+        "\\resizebox{\\textwidth}{!}{%",
         "\\begin{tabular}{lccccccc}",
         "\\hline",
         "\\textbf{Model} & \\textbf{Clean} & \\textbf{FGSM .01} & \\textbf{FGSM .03} & \\textbf{FGSM .05} & \\textbf{PGD .01} & \\textbf{PGD .03} & \\textbf{PGD .05} \\\\",
@@ -107,7 +110,7 @@ def generate_robustness_table(multi_seed: Dict[str, Any], out_path: Path) -> Non
         lines.append(
             f"{disp} & {clean} & {f01} & {f03} & {f05} & {p01} & {p03} & {p05} \\\\"
         )
-    lines.extend(["\\hline", "\\end{tabular}", "\\end{table*}"])
+    lines.extend(["\\hline", "\\end{tabular}%", "}", "\\end{table*}"])
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

@@ -2,6 +2,7 @@
 \centering
 \caption{Quantitative XAI Faithfulness: Insertion AUC ($\uparrow$) and Deletion AUC ($\downarrow$) on Stratified Test Samples.}
 \label{tab:xai_faithfulness}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc}
 \hline
 \textbf{Model} & \textbf{Grad-CAM Ins$\uparrow$} & \textbf{Grad-CAM Del$\downarrow$} & \textbf{Grad-CAM++ Ins$\uparrow$} & \textbf{Grad-CAM++ Del$\downarrow$} & \textbf{LayerCAM Ins$\uparrow$} & \textbf{LayerCAM Del$\downarrow$} \\
@@ -12,5 +13,6 @@ Swin-Tiny (ViT) & 0.6854 $\pm$ 0.0246 & 0.7484 $\pm$ 0.0177 & 0.7810 $\pm$ 0.012
 CLIP ViT-B/16 (Zero-Shot) & 0.8312 $\pm$ 0.0000 & 0.7165 $\pm$ 0.0000 & 0.7937 $\pm$ 0.0000 & 0.7479 $\pm$ 0.0000 & 0.7408 $\pm$ 0.0000 & 0.8183 $\pm$ 0.0000 \\
 CLIP ViT-B/16 (Linear Probe) & 0.7997 $\pm$ 0.0179 & 0.6954 $\pm$ 0.0172 & 0.7539 $\pm$ 0.0153 & 0.7338 $\pm$ 0.0311 & 0.7081 $\pm$ 0.0213 & 0.7955 $\pm$ 0.0175 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table*}

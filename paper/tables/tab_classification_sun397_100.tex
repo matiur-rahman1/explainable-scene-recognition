@@ -2,6 +2,7 @@
 \centering
 \caption{Multi-Seed Classification Performance and Computational Efficiency (Mean $\pm$ Std across Seeds).}
 \label{tab:classification_main}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccc}
 \hline
 \textbf{Architecture} & \textbf{Test Accuracy (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Weighted-F1 (\%)} & \textbf{Params (M)} & \textbf{Latency (ms)} \\
@@ -12,5 +13,6 @@ Swin-Tiny (ViT) & 79.44 $\pm$ 0.00 & 79.35 $\pm$ 0.00 & 79.35 $\pm$ 0.00 & 27.60
 CLIP ViT-B/16 (Zero-Shot) & 82.16 $\pm$ 0.00 & 81.36 $\pm$ 0.00 & 81.36 $\pm$ 0.00 & 86.19 & 15.78 \\
 CLIP ViT-B/16 (Linear Probe) & 86.02 $\pm$ 0.00 & 85.81 $\pm$ 0.00 & 85.81 $\pm$ 0.00 & 86.24 & 15.71 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table*}

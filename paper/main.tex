@@ -22,7 +22,7 @@
 
 \author{MD~Matiur~Rahman%
 % TODO: co-author permission (Prof. Huanjie Tao)
-\thanks{MD Matiur Rahman is with the School of Information Science and Technology, Nantong University, Nantong 226019, China (e-mail: matiurrahman1353@gmail.com).}%
+\thanks{MD Matiur Rahman is with the School of Artificial Intelligence and Computer Science, Nantong University, Nantong 226019, China (e-mail: matiurrahman1353@gmail.com).}%
 \thanks{Source code, trained checkpoints, and reproducibility configurations are publicly available at: \url{https://github.com/matiur-rahman1/explainable-scene-recognition}.}}
 
 \markboth{IEEE Access}{Rahman: Accuracy, Faithfulness, and Robustness in Explainable Scene Recognition}
@@ -253,6 +253,7 @@ ResNet-50 vs.\ CLIP-Linear & 79 / 73 & 0.1645 & $0.6852$ & No \\
 \centering
 \caption{Baseline Classification Performance, Efficiency, XAI Faithfulness, and PGD Robustness on Intel Natural Scenes (Canonical Run).}
 \label{tab:intel_prelim}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccccc}
 \hline
 \textbf{Architecture} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Weighted-F1 (\%)} & \textbf{Params (M)} & \textbf{Latency (ms)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$/Del$\downarrow$)} & \textbf{PGD ($\epsilon=0.03$)} \\
@@ -261,13 +262,15 @@ Swin-Tiny (ViT) & \textbf{94.60} & \textbf{94.69} & \textbf{94.57} & 27.52 & 11.
 ResNet-50 (CNN) & 93.97 & 94.11 & 93.94 & 23.52 & \textbf{5.96} & \textbf{0.8405} / 0.5538 & 0.8326 / 0.5664 & \textbf{19.17\%} \\
 EfficientNet-B0 (CNN) & 93.87 & 94.00 & 93.85 & \textbf{4.02} & 8.24 & 0.7441 / 0.6560 & 0.6751 / 0.7441 & 0.00\% \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table*}
 
 \begin{table*}[!t]
 \centering
 \caption{Multi-Seed ($s \in \{0, 1, 2\}$) Benchmark on Intel Natural Scenes Including CLIP ViT-B/16 Vision-Language Baselines (Mean $\pm$ Std Across 3 Seeds, Stratified Evaluation).}
 \label{tab:intel_multiseed}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{llccccc}
 \hline
 \textbf{Architecture} & \textbf{Paradigm} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM Ins$\uparrow$ / Del$\downarrow$} & \textbf{Grad-CAM++ Ins$\uparrow$ / Del$\downarrow$} & \textbf{LayerCAM Ins$\uparrow$ / Del$\downarrow$} \\
@@ -278,13 +281,15 @@ CLIP ViT-B/16 (Linear Probe) & VLM (Linear Head) & 93.97 $\pm$ 0.03 & 94.11 $\pm
 EfficientNet-B0 & Mobile CNN & 93.31 $\pm$ 0.30 & 93.43 $\pm$ 0.29 & 0.7787 / 0.6395 & 0.6760 / 0.7484 & 0.7115 / 0.7093 \\
 CLIP ViT-B/16 (Zero-Shot) & VLM (Prompt Ens.) & 92.70 $\pm$ 0.00 & 92.80 $\pm$ 0.00 & \textbf{0.8312} / 0.7165 & 0.7937 / 0.7479 & 0.7408 / 0.8183 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table*}
 
 \begin{table*}[!t]
 \centering
 \caption{Multi-Seed ($s \in \{0, 1, 2\}$) Adversarial Robustness (Accuracy \%) Under True-Label FGSM, Predicted-Label $\text{FGSM}_{\text{pred}}$, and 10-Step Scaled $\text{PGD-}L_\infty$ on the Class-Stratified Intel Test Set (600 Images, Mean $\pm$ Std).}
 \label{tab:intel_adv_multiseed}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccccc}
 \hline
 \textbf{Architecture} & \textbf{Clean ($\epsilon=0$)} & \textbf{FGSM (.01)} & \textbf{FGSM (.03)} & \textbf{$\text{FGSM}_{\text{pred}}$ (.01)} & \textbf{$\text{FGSM}_{\text{pred}}$ (.03)} & \textbf{PGD (.01)} & \textbf{PGD (.03)} \\
@@ -295,7 +300,8 @@ CLIP ViT-B/16 (Linear Probe) & 94.44 $\pm$ 0.42 & 46.61 $\pm$ 1.70 & 47.94 $\pm$
 CLIP ViT-B/16 (Zero-Shot) & 93.00 $\pm$ 0.00 & 43.67 $\pm$ 0.00 & 43.83 $\pm$ 0.00 & 49.17 $\pm$ 0.00 & 49.17 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
 EfficientNet-B0 & 94.22 $\pm$ 0.95 & 17.00 $\pm$ 1.71 & 43.06 $\pm$ 0.63 & 21.83 $\pm$ 2.33 & 46.39 $\pm$ 0.78 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table*}
 
 \subsection{Quantitative XAI Faithfulness Analysis}
@@ -318,8 +324,8 @@ As shown in Table~\ref{tab:intel_prelim} and Table~\ref{tab:intel_multiseed}, ev
 \label{fig:xai_comparison}
 \end{figure*}
 \begin{enumerate}
-    \item \textbf{CNN Spatial Localization Advantage:} ResNet-50 achieves the highest overall Insertion AUC across all three attribution methods (0.8405 for Grad-CAM, 0.8326 for Grad-CAM++, and 0.8304 for LayerCAM), outperforming EfficientNet-B0 (0.7441) and Swin-Tiny (0.7666). Because ResNet-50 preserves continuous 2D spatial topology through residual bottlenecks, its final $7\times7$ feature maps align tightly with foreground scene structures.
-    \item \textbf{Why Grad-CAM++ Outperforms Grad-CAM on Swin-Tiny:} On Swin-Tiny, standard Grad-CAM yields a comparatively low Insertion AUC of 0.6031 and Deletion AUC of 0.6710. However, switching to Grad-CAM++ boosts Insertion AUC by $+0.1635$ (to 0.7666) and lowers Deletion AUC by $-0.1811$ (to 0.4899---the best Deletion score across all models). In shifted-window self-attention, token activations in the final normalization layer distribute semantic information non-uniformly across window partitions; uniform global average pooling of gradients in standard Grad-CAM averages out localized positive token gradients, whereas the second-order weighting in Grad-CAM++ isolates dominant discriminative tokens.
+    \item \textbf{CNN Spatial Localization Advantage:} In the canonical single-seed run (Table~\ref{tab:intel_prelim}), ResNet-50 achieves the highest Insertion AUC among supervised backbones (0.8405 for Grad-CAM and 0.8326 for Grad-CAM++), outperforming EfficientNet-B0 (0.7441) and Swin-Tiny (0.7666). Across the 3-seed class-stratified evaluation (Table~\ref{tab:intel_multiseed}), ResNet-50 consistently maintains the lowest Deletion AUC across all three attribution methods ($0.6071$ for Grad-CAM, $0.6193$ for Grad-CAM++, and $0.6242$ for LayerCAM), while Zero-Shot CLIP achieves the highest Grad-CAM Insertion AUC ($0.8312$). Because ResNet-50 preserves continuous 2D spatial topology through residual bottlenecks, its final $7\times7$ feature maps align tightly with foreground scene structures.
+    \item \textbf{Why Grad-CAM++ Outperforms Grad-CAM on Swin-Tiny:} On Swin-Tiny, standard Grad-CAM yields a comparatively low Insertion AUC of 0.6031 (Deletion AUC: 0.6710) in the canonical run (Table~\ref{tab:intel_prelim}), and $0.6854$ (Deletion AUC: $0.7484$) across the 3-seed stratified mean (Table~\ref{tab:intel_multiseed}). However, switching to Grad-CAM++ boosts Insertion AUC by $+0.1635$ (to 0.7666) and lowers Deletion AUC by $-0.1811$ (to 0.4899) in Table~\ref{tab:intel_prelim}, while improving the 3-seed stratified Insertion AUC to $0.7810$ (and $0.7964$ for LayerCAM) in Table~\ref{tab:intel_multiseed}. In shifted-window self-attention, token activations in the final normalization layer distribute semantic information non-uniformly across window partitions; uniform global average pooling of gradients in standard Grad-CAM averages out localized positive token gradients, whereas the second-order weighting in Grad-CAM++ isolates dominant discriminative tokens.
 \end{enumerate}
 
 \subsection{Adversarial Robustness, Label-Leaking Diagnosis, and PGD-AT}
@@ -348,6 +354,7 @@ Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges (Table~\re
 \centering
 \caption{Impact of PGD Adversarial Training ($\text{PGD-AT}, \epsilon=0.03$) on Clean Accuracy, PGD Robustness, and XAI Faithfulness (Intel Natural Scenes).}
 \label{tab:pgd_at_results}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lccccc}
 \hline
 \textbf{Model} & \textbf{Clean} & \textbf{PGD .01} & \textbf{PGD .03} & \textbf{GCAM Ins$\uparrow$} & \textbf{LCAM Ins$\uparrow$} \\
@@ -358,7 +365,8 @@ ResNet-50 + PGD-AT & 88.33\% & 18.67\% & 5.83\% & 0.6300 & 0.6218 \\
 Swin-Tiny (Clean) & \textbf{94.40\%} & 4.11\% & 0.06\% & 0.6854 & \textbf{0.7964} \\
 Swin-Tiny + PGD-AT & 93.27\% & \textbf{67.33\%} & \textbf{37.50\%} & \textbf{0.6924} & 0.7916 \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \begin{figure*}[!t]
@@ -376,6 +384,7 @@ To validate scalability beyond 6 categories, Table~\ref{tab:sun397_results} and 
 \centering
 \caption{Large-Scale Benchmark Results on the 100-Class SUN397 Protocol (5,000 Test Images; 200-Image Stratified XAI Faithfulness; 500-Image Stratified FGSM/PGD Robustness).}
 \label{tab:sun397_results}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccccc}
 \hline
 \textbf{Architecture} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$/Del$\downarrow$)} & \textbf{LayerCAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{FGSM (.03)} & \textbf{PGD (.03)} \\
@@ -386,7 +395,8 @@ Swin-Tiny (ViT) & 79.44 & 79.35 & \textbf{0.5518} / 0.3980 & \textbf{0.4861} / 0
 EfficientNet-B0 (CNN) & 73.38 & 73.34 & 0.4436 / 0.1836 & 0.4172 / 0.1996 & 0.4134 / 0.1967 & 7.20\% & 0.00\% \\
 ResNet-50 (CNN) & 71.14 & 70.28 & 0.3618 / \textbf{0.1293} & 0.3507 / \textbf{0.1340} & 0.3489 / \textbf{0.1359} & \textbf{22.00\%} & \textbf{0.20\%} \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table*}
 
 \begin{figure*}[!t]

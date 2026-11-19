@@ -80,6 +80,15 @@ Szegedy et al.\ \cite{szegedy2014intriguing} and Goodfellow et al.\ \cite{goodfe
 \section{Methodology}
 \label{sec:methodology}
 
+Fig.~\ref{fig:pipeline_overview} illustrates the end-to-end architecture of our unified explainable and adversarial scene recognition benchmark.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/pipeline_overview.png}
+\caption{Overview of the unified explainable and adversarial scene recognition benchmark pipeline across CNN, hierarchical Vision Transformer (Swin-Tiny), and Vision-Language (CLIP ViT-B/16) paradigms.}
+\label{fig:pipeline_overview}
+\end{figure*}
+
 \subsection{Problem Formulation and Architectures}
 Let $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^{N}$ denote a multi-class natural scene dataset, where $x_i \in [0, 1]^{3 \times H \times W}$ is an RGB image resized to $H=W=224$ and $y_i \in \{1, \dots, K\}$ is its scene category label. An input image is standardized channel-wise using ImageNet statistics $\mu = (0.485, 0.456, 0.406)$ and $\sigma = (0.229, 0.224, 0.225)$ via $\tilde{x} = (x - \mu) / \sigma$. A deep classifier $f_\theta: \mathbb{R}^{3 \times H \times W} \to \mathbb{R}^K$ maps $\tilde{x}$ to class logits $z = f_\theta(\tilde{x})$, yielding posterior probabilities $p_c(\tilde{x}) = \text{softmax}(z)_c = \exp(z_c) / \sum_{j=1}^K \exp(z_j)$.
 
@@ -290,7 +299,24 @@ EfficientNet-B0 & 94.22 $\pm$ 0.95 & 17.00 $\pm$ 1.71 & 43.06 $\pm$ 0.63 & 21.83
 \end{table*}
 
 \subsection{Quantitative XAI Faithfulness Analysis}
-As shown in Table~\ref{tab:intel_prelim}, evaluating Insertion and Deletion AUC reveals a striking architectural divergence between convolutional and self-attention feature maps:
+As shown in Table~\ref{tab:intel_prelim} and Table~\ref{tab:intel_multiseed}, evaluating Insertion and Deletion AUC reveals a striking architectural divergence between convolutional, shifted-window self-attention, and vision-language feature maps (visualized qualitatively across paradigms in Fig.~\ref{fig:xai_comparison} and summarized in Fig.~\ref{fig:paradigm_comparison}):
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/clip_cnn_vit_comparison.png}
+\caption{Cross-paradigm comparison of clean test accuracy (\%), best XAI Insertion AUC ($\times 100$), and PGD robustness ($\epsilon=0.03$, \%) across CNNs, Swin-Tiny, and CLIP ViT-B/16 on Intel Natural Scenes.}
+\label{fig:paradigm_comparison}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/xai_grid_resnet50.png}\hfill
+\includegraphics[width=0.48\textwidth]{figures/xai_grid_swin_tiny.png}\\[4pt]
+\includegraphics[width=0.48\textwidth]{figures/xai_grid_clip_zeroshot.png}\hfill
+\includegraphics[width=0.48\textwidth]{figures/xai_grid_clip_linear.png}
+\caption{Qualitative comparison of gradient-based visual explanations (Original, Grad-CAM, Grad-CAM++, and LayerCAM) across ResNet-50 (top-left), Swin-Tiny (top-right), Zero-Shot CLIP ViT-B/16 (bottom-left), and Linear-Probe CLIP ViT-B/16 (bottom-right).}
+\label{fig:xai_comparison}
+\end{figure*}
 \begin{enumerate}
     \item \textbf{CNN Spatial Localization Advantage:} ResNet-50 achieves the highest overall Insertion AUC across all three attribution methods (0.8405 for Grad-CAM, 0.8326 for Grad-CAM++, and 0.8304 for LayerCAM), outperforming EfficientNet-B0 (0.7441) and Swin-Tiny (0.7666). Because ResNet-50 preserves continuous 2D spatial topology through residual bottlenecks, its final $7\times7$ feature maps align tightly with foreground scene structures.
     \item \textbf{Why Grad-CAM++ Outperforms Grad-CAM on Swin-Tiny:} On Swin-Tiny, standard Grad-CAM yields a comparatively low Insertion AUC of 0.6031 and Deletion AUC of 0.6710. However, switching to Grad-CAM++ boosts Insertion AUC by $+0.1635$ (to 0.7666) and lowers Deletion AUC by $-0.1811$ (to 0.4899---the best Deletion score across all models). In shifted-window self-attention, token activations in the final normalization layer distribute semantic information non-uniformly across window partitions; uniform global average pooling of gradients in standard Grad-CAM averages out localized positive token gradients, whereas the second-order weighting in Grad-CAM++ isolates dominant discriminative tokens.
@@ -299,7 +325,24 @@ As shown in Table~\ref{tab:intel_prelim}, evaluating Insertion and Deletion AUC 
 \subsection{Adversarial Robustness, Label-Leaking Diagnosis, and PGD-AT}
 In our initial unstratified FGSM evaluation (Table~\ref{tab:intel_prelim}), single-step true-label FGSM exhibited non-monotonic accuracy on ResNet-50 (69.79\% at $\epsilon=0.01$ vs.\ 75.62\% at $\epsilon=0.03$) and EfficientNet-B0 (27.71\% vs.\ 70.63\%). Our code audit identified two compounding causes: (i) evaluating the first 15 unshuffled test batches sampled 91\% \emph{buildings} images (class 0), where sharp rectilinear edges amplify gradient sign correlation, and (ii) training with label smoothing ($\varepsilon_{\text{ls}}=0.05$, Eq.~\ref{eq:ls_ce}) induces the \emph{label leaking} effect \cite{kurakin2017adversarial}, where a large single-step true-label gradient step overshoots the narrow smoothed loss peak. Replacing true labels with predicted labels ($\text{FGSM}_{\text{pred}}$) or applying iterative 10-step $\text{PGD-}L_\infty$ completely eliminates label leaking, yielding strictly monotonic accuracy degradation across all models.
 
-Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges: EfficientNet-B0 drops to 0.00\% and Swin-Tiny falls to 1.67\%, whereas ResNet-50 retains 19.17\% accuracy. Table~\ref{tab:pgd_at_results} and Table~\ref{tab:sun397_results} report the impact of PGD adversarial training (PGD-AT, $\epsilon=0.03$) and large-scale generalization on SUN397-100.
+Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges (Table~\ref{tab:intel_adv_multiseed} and Fig.~\ref{fig:robustness_curves}): on the 3-seed class-stratified evaluation, EfficientNet-B0 and both CLIP ViT-B/16 configurations drop to $0.00\%$, and Swin-Tiny falls to $0.06 \pm 0.08\%$, whereas ResNet-50 retains $6.72 \pm 1.70\%$ at $\epsilon=0.01$ and $2.44 \pm 0.55\%$ at $\epsilon=0.03$. Fig.~\ref{fig:adv_drift_and_failures} illustrates how adversarial perturbations induce spatial attention drift in Grad-CAM overlays and highlights representative natural boundary misclassifications (\emph{glacier} vs.\ \emph{mountain}). Table~\ref{tab:pgd_at_results} and Table~\ref{tab:sun397_results} report the impact of PGD adversarial training (PGD-AT, $\epsilon=0.03$) and large-scale generalization on SUN397-100.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.32\textwidth]{figures/training_curves.png}\hfill
+\includegraphics[width=0.33\textwidth]{figures/robustness_fgsm.png}\hfill
+\includegraphics[width=0.33\textwidth]{figures/robustness_pgd.png}
+\caption{Validation learning curves (left) and classification accuracy degradation under FGSM (center) and 10-step $\text{PGD-}L_\infty$ (right) across perturbation budgets $\epsilon \in \{0.0, 0.01, 0.03, 0.05\}$.}
+\label{fig:robustness_curves}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.58\textwidth]{figures/adv_drift_swin_tiny.png}\hfill
+\includegraphics[width=0.39\textwidth]{figures/failures_swin_tiny.png}
+\caption{Left: Adversarial attention-drift analysis on Swin-Tiny comparing clean and FGSM ($\epsilon=0.03$) Grad-CAM maps. Right: Natural misclassification failure cases showing semantic confusion between visually ambiguous scene categories.}
+\label{fig:adv_drift_and_failures}
+\end{figure*}
 
 \begin{table}[!t]
 \centering

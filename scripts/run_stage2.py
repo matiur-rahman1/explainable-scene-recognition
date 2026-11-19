@@ -2,8 +2,11 @@
 
 import json
 import shutil
+import sys
 from pathlib import Path
 from typing import Any, Dict
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import torch
 
@@ -45,13 +48,13 @@ def run_pgd_at_intel(
 
     pgd_at_summary: Dict[str, Any] = {}
     for model_name in ("resnet50", "swin_tiny"):
-        print(f"\n{'=' * 60}\nPGD-AT (eps=0.03, 3-step inner PGD): {model_name}\n{'=' * 60}")
+        print(f"\n{'=' * 60}\nPGD-AT (eps=0.03): {model_name}\n{'=' * 60}")
         set_seed(seed)
         model = build_model(
             model_name, num_classes=num_classes, pretrained=True, class_names=class_names
         )
 
-        # Warm-start from Stage 1 checkpoint if present, otherwise train 4 clean epochs first
+        # Warm-start from Stage 1 checkpoint if present, otherwise run 3 clean warm-up epochs
         candidates = [
             checkpoint_dir / f"best_{model_name}_intel_seed{seed}.pth",
             checkpoint_dir / f"best_{model_name}.pth",
@@ -65,7 +68,7 @@ def run_pgd_at_intel(
                 loaded = True
                 break
         if not loaded:
-            print(f"[{model_name}] No clean checkpoint found; running 4 warm-up epochs first...")
+            print(f"[{model_name}] Running 3 clean warm-up epochs before PGD-AT...")
             model, _, _ = train_model(
                 model=model,
                 model_name=model_name,
@@ -73,7 +76,7 @@ def run_pgd_at_intel(
                 val_loader=val_loader,
                 class_names=class_names,
                 device=device,
-                epochs=4,
+                epochs=3,
                 lr=2e-4,
                 checkpoint_dir=str(checkpoint_dir),
             )
@@ -88,14 +91,14 @@ def run_pgd_at_intel(
             epochs=3,
             lr=1e-4,
             epsilon=0.03,
-            pgd_steps=3,
+            pgd_steps=2,
             clean_weight=0.5,
             checkpoint_dir=str(checkpoint_dir),
         )
 
         eval_res = evaluate_model(model, test_loader, device, class_names)
         xai_faith = evaluate_xai_faithfulness(
-            model, model_name, test_loader, device, max_samples=60, seed=seed
+            model, model_name, test_loader, device, max_samples=60, steps=20, seed=seed
         )
         fgsm_res = evaluate_adversarial_robustness(
             model, test_loader, device, attack_type="fgsm", max_samples=600, seed=seed
@@ -188,7 +191,7 @@ def run_sun397_100(
         model = build_model(
             model_name, num_classes=num_classes, pretrained=True, class_names=class_names
         )
-        epochs = 5 if model_name == "clip_linear" else 8
+        epochs = 5 if model_name == "clip_linear" else 6
         lr = 1e-3 if model_name == "clip_linear" else 2e-4
 
         model, hist, ckpt_path = train_model(
@@ -221,6 +224,7 @@ def run_sun397_100(
             device,
             methods=("gradcam", "gradcam++", "layercam"),
             max_samples=500,
+            steps=10,
             seed=seed,
         )
         print(f"[SUN397-100 | {model_name}] XAI Faithfulness (500 imgs): {xai_faith}")

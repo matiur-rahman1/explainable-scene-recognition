@@ -1,0 +1,16 @@
+\begin{table*}[!t]
+\centering
+\caption{Adversarial Robustness (Accuracy \%) under FGSM and PGD-$L_\infty$ Attacks on Class-Stratified Test Set.}
+\label{tab:adversarial_robustness}
+\begin{tabular}{lccccccc}
+\hline
+\textbf{Model} & \textbf{Clean} & \textbf{FGSM .01} & \textbf{FGSM .03} & \textbf{FGSM .05} & \textbf{PGD .01} & \textbf{PGD .03} & \textbf{PGD .05} \\
+\hline
+ResNet-50 (CNN) & 72.00 $\pm$ 0.00 & 21.20 $\pm$ 0.00 & 22.00 $\pm$ 0.00 & 20.40 $\pm$ 0.00 & 1.00 $\pm$ 0.00 & 0.20 $\pm$ 0.00 & 0.20 $\pm$ 0.00 \\
+EfficientNet-B0 (CNN) & 75.00 $\pm$ 0.00 & 6.00 $\pm$ 0.00 & 7.20 $\pm$ 0.00 & 9.80 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
+Swin-Tiny (ViT) & 80.00 $\pm$ 0.00 & 10.80 $\pm$ 0.00 & 8.00 $\pm$ 0.00 & 9.20 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
+CLIP ViT-B/16 (Zero-Shot) & 84.20 $\pm$ 0.00 & 13.40 $\pm$ 0.00 & 15.40 $\pm$ 0.00 & 20.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
+CLIP ViT-B/16 (Linear Probe) & 88.00 $\pm$ 0.00 & 12.60 $\pm$ 0.00 & 16.20 $\pm$ 0.00 & 20.40 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 \\
+\hline
+\end{tabular}
+\end{table*}

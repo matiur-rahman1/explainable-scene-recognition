@@ -1,0 +1,128 @@
+{
+  "resnet50_pgd_at": {
+    "checkpoint": "checkpoints/best_resnet50_pgd_at.pth",
+    "history": {
+      "train_loss": [
+        0.9108,
+        0.8208,
+        0.7891
+      ],
+      "val_clean_acc": [
+        0.9167,
+        0.9267,
+        0.9333
+      ],
+      "val_pgd_acc": [
+        0.0767,
+        0.0667,
+        0.0633
+      ]
+    },
+    "test_accuracy": 0.8833,
+    "macro_f1": 0.8858,
+    "weighted_f1": 0.882,
+    "per_class_accuracy": {
+      "buildings": 0.9176,
+      "forest": 0.9937,
+      "glacier": 0.7215,
+      "mountain": 0.7771,
+      "sea": 0.9843,
+      "street": 0.9361
+    },
+    "xai_faithfulness": {
+      "gradcam": {
+        "insertion_auc": 0.63,
+        "deletion_auc": 0.4638,
+        "insertion_std": 0.1829,
+        "deletion_std": 0.2294
+      },
+      "gradcam++": {
+        "insertion_auc": 0.624,
+        "deletion_auc": 0.4706,
+        "insertion_std": 0.1902,
+        "deletion_std": 0.2277
+      },
+      "layercam": {
+        "insertion_auc": 0.6218,
+        "deletion_auc": 0.4737,
+        "insertion_std": 0.1913,
+        "deletion_std": 0.2272
+      }
+    },
+    "fgsm_accuracy": {
+      "0.0": 0.8867,
+      "0.01": 0.7467,
+      "0.03": 0.7617,
+      "0.05": 0.7733
+    },
+    "pgd_accuracy": {
+      "0.0": 0.8867,
+      "0.01": 0.1867,
+      "0.03": 0.0583,
+      "0.05": 0.0317
+    }
+  },
+  "swin_tiny_pgd_at": {
+    "checkpoint": "checkpoints/best_swin_tiny_pgd_at.pth",
+    "history": {
+      "train_loss": [
+        1.0277,
+        0.7555,
+        0.6627
+      ],
+      "val_clean_acc": [
+        0.9367,
+        0.9433,
+        0.9433
+      ],
+      "val_pgd_acc": [
+        0.1867,
+        0.3133,
+        0.3467
+      ]
+    },
+    "test_accuracy": 0.9327,
+    "macro_f1": 0.9342,
+    "weighted_f1": 0.9324,
+    "per_class_accuracy": {
+      "buildings": 0.9336,
+      "forest": 0.9958,
+      "glacier": 0.859,
+      "mountain": 0.8952,
+      "sea": 0.9686,
+      "street": 0.9561
+    },
+    "xai_faithfulness": {
+      "gradcam": {
+        "insertion_auc": 0.6924,
+        "deletion_auc": 0.7535,
+        "insertion_std": 0.2034,
+        "deletion_std": 0.2376
+      },
+      "gradcam++": {
+        "insertion_auc": 0.761,
+        "deletion_auc": 0.7129,
+        "insertion_std": 0.1881,
+        "deletion_std": 0.2371
+      },
+      "layercam": {
+        "insertion_auc": 0.7916,
+        "deletion_auc": 0.7013,
+        "insertion_std": 0.1534,
+        "deletion_std": 0.2214
+      }
+    },
+    "fgsm_accuracy": {
+      "0.0": 0.9283,
+      "0.01": 0.8217,
+      "0.03": 0.8117,
+      "0.05": 0.7817
+    },
+    "pgd_accuracy": {
+      "0.0": 0.9283,
+      "0.01": 0.6733,
+      "0.03": 0.375,
+      "0.05": 0.18
+    }
+  }
+}

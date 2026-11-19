@@ -325,7 +325,7 @@ As shown in Table~\ref{tab:intel_prelim} and Table~\ref{tab:intel_multiseed}, ev
 \subsection{Adversarial Robustness, Label-Leaking Diagnosis, and PGD-AT}
 In our initial unstratified FGSM evaluation (Table~\ref{tab:intel_prelim}), single-step true-label FGSM exhibited non-monotonic accuracy on ResNet-50 (69.79\% at $\epsilon=0.01$ vs.\ 75.62\% at $\epsilon=0.03$) and EfficientNet-B0 (27.71\% vs.\ 70.63\%). Our code audit identified two compounding causes: (i) evaluating the first 15 unshuffled test batches sampled 91\% \emph{buildings} images (class 0), where sharp rectilinear edges amplify gradient sign correlation, and (ii) training with label smoothing ($\varepsilon_{\text{ls}}=0.05$, Eq.~\ref{eq:ls_ce}) induces the \emph{label leaking} effect \cite{kurakin2017adversarial}, where a large single-step true-label gradient step overshoots the narrow smoothed loss peak. Replacing true labels with predicted labels ($\text{FGSM}_{\text{pred}}$) or applying iterative 10-step $\text{PGD-}L_\infty$ completely eliminates label leaking, yielding strictly monotonic accuracy degradation across all models.
 
-Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges (Table~\ref{tab:intel_adv_multiseed} and Fig.~\ref{fig:robustness_curves}): on the 3-seed class-stratified evaluation, EfficientNet-B0 and both CLIP ViT-B/16 configurations drop to $0.00\%$, and Swin-Tiny falls to $0.06 \pm 0.08\%$, whereas ResNet-50 retains $6.72 \pm 1.70\%$ at $\epsilon=0.01$ and $2.44 \pm 0.55\%$ at $\epsilon=0.03$. Fig.~\ref{fig:adv_drift_and_failures} illustrates how adversarial perturbations induce spatial attention drift in Grad-CAM overlays and highlights representative natural boundary misclassifications (\emph{glacier} vs.\ \emph{mountain}). Table~\ref{tab:pgd_at_results} and Table~\ref{tab:sun397_results} report the impact of PGD adversarial training (PGD-AT, $\epsilon=0.03$) and large-scale generalization on SUN397-100.
+Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges (Table~\ref{tab:intel_adv_multiseed} and Fig.~\ref{fig:robustness_curves}): on the 3-seed class-stratified evaluation, EfficientNet-B0 and both CLIP ViT-B/16 configurations drop to $0.00\%$, and Swin-Tiny falls to $0.06 \pm 0.08\%$, whereas ResNet-50 retains $6.72 \pm 1.70\%$ at $\epsilon=0.01$ and $2.44 \pm 0.55\%$ at $\epsilon=0.03$. Fig.~\ref{fig:adv_drift_and_failures} illustrates how adversarial perturbations induce spatial attention drift in Grad-CAM overlays and highlights representative natural boundary misclassifications (\emph{glacier} vs.\ \emph{mountain}). Table~\ref{tab:pgd_at_results} and Fig.~\ref{fig:pgd_at_visual} demonstrate a striking divergence under PGD adversarial training ($\epsilon=0.03$): Swin-Tiny adapts substantially better to mixed PGD-AT than ResNet-50, retaining 93.27\% clean accuracy while boosting PGD ($\epsilon=0.03$) accuracy from 0.06\% to \textbf{37.50\%} (and PGD $\epsilon=0.01$ to \textbf{67.33\%}) and improving Grad-CAM Insertion AUC ($0.6854 \to 0.6924$). By contrast, ResNet-50 + PGD-AT trades 5.85\% clean accuracy (88.33\%) for moderate PGD gains (5.83\% at $\epsilon=0.03$) while sharpening Grad-CAM Deletion AUC ($0.6071 \to 0.4638$). Table~\ref{tab:sun397_results} reports large-scale generalization on SUN397-100.
 
 \begin{figure*}[!t]
 \centering
@@ -348,35 +348,55 @@ Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges (Table~\re
 \centering
 \caption{Impact of PGD Adversarial Training ($\text{PGD-AT}, \epsilon=0.03$) on Clean Accuracy, PGD Robustness, and XAI Faithfulness (Intel Natural Scenes).}
 \label{tab:pgd_at_results}
-\begin{tabular}{lcccc}
+\begin{tabular}{lccccc}
 \hline
-\textbf{Model} & \textbf{Clean Acc.} & \textbf{PGD (.03)} & \textbf{Grad-CAM Ins$\uparrow$} & \textbf{Grad-CAM++ Ins$\uparrow$} \\
+\textbf{Model} & \textbf{Clean} & \textbf{PGD .01} & \textbf{PGD .03} & \textbf{GCAM Ins$\uparrow$} & \textbf{LCAM Ins$\uparrow$} \\
 \hline
-ResNet-50 (Clean) & 93.97\% & 19.17\% & 0.8405 & 0.8326 \\
-ResNet-50 + PGD-AT & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
+ResNet-50 (Clean) & 94.18\% & 6.72\% & 2.44\% & \textbf{0.8015} & \textbf{0.7935} \\
+ResNet-50 + PGD-AT & 88.33\% & 18.67\% & 5.83\% & 0.6300 & 0.6218 \\
 \hline
-Swin-Tiny (Clean) & 94.60\% & 1.67\% & 0.6031 & 0.7666 \\
-Swin-Tiny + PGD-AT & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
+Swin-Tiny (Clean) & \textbf{94.40\%} & 4.11\% & 0.06\% & 0.6854 & \textbf{0.7964} \\
+Swin-Tiny + PGD-AT & 93.27\% & \textbf{67.33\%} & \textbf{37.50\%} & \textbf{0.6924} & 0.7916 \\
 \hline
 \end{tabular}
 \end{table}
 
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.58\textwidth]{figures/adv_drift_swin_tiny_pgd_at.png}\hfill
+\includegraphics[width=0.39\textwidth]{figures/xai_grid_swin_tiny_pgd_at.png}
+\caption{Effect of PGD Adversarial Training ($\epsilon=0.03$) on Swin-Tiny: adversarial attention-drift comparison under FGSM perturbation (left) and post-AT CAM visual explanations across scene classes (right).}
+\label{fig:pgd_at_visual}
+\end{figure*}
+
+\subsection{Large-Scale Generalization on SUN397-100}
+To validate scalability beyond 6 categories, Table~\ref{tab:sun397_results} and Fig.~\ref{fig:sun397_curves} report the full benchmark on the deterministic 100-class SUN397 protocol ($N=5,000$ held-out test images, 50 per class; 200 stratified images with 10 steps for XAI faithfulness; 500 stratified images for FGSM/PGD). In contrast to the 6-class Intel dataset where Swin-Tiny led slightly, web-scale contrastive pretraining provides a decisive advantage under fine-grained 100-way scene ambiguity: Linear-Probe CLIP ViT-B/16 achieves \textbf{86.02\%} test accuracy (Macro-F1: \textbf{85.81\%}), and Zero-Shot CLIP achieves \textbf{82.16\%}, outperforming fully fine-tuned Swin-Tiny (79.44\%), EfficientNet-B0 (73.38\%), and ResNet-50 (71.14\%). Pairwise McNemar tests across all $5,000$ SUN397-100 test samples confirm that every inter-model accuracy difference is statistically significant ($p \le 4.48 \times 10^{-4}$). Furthermore, Swin-Tiny achieves the highest LayerCAM Insertion AUC (0.5724) on SUN397-100, while Linear-Probe CLIP achieves strong Grad-CAM Insertion AUC (0.4751) alongside its 86.02\% accuracy.
+
 \begin{table*}[!t]
 \centering
-\caption{Large-Scale Benchmark Results on the 100-Class SUN397 Protocol (Classification, XAI Faithfulness, and Adversarial Robustness).}
+\caption{Large-Scale Benchmark Results on the 100-Class SUN397 Protocol (5,000 Test Images; 200-Image Stratified XAI Faithfulness; 500-Image Stratified FGSM/PGD Robustness).}
 \label{tab:sun397_results}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccccccc}
 \hline
-\textbf{Architecture} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM Ins$\uparrow$ / Del$\downarrow$} & \textbf{Grad-CAM++ Ins$\uparrow$ / Del$\downarrow$} & \textbf{FGSM (.03) (\%)} & \textbf{PGD (.03) (\%)} \\
+\textbf{Architecture} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$/Del$\downarrow$)} & \textbf{LayerCAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{FGSM (.03)} & \textbf{PGD (.03)} \\
 \hline
-ResNet-50 (CNN) & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-EfficientNet-B0 (CNN) & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-Swin-Tiny (ViT) & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-CLIP ViT-B/16 (Zero-Shot) & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
-CLIP ViT-B/16 (Linear Probe) & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} & \textbf{[TBD]} \\
+CLIP ViT-B/16 (Linear Probe) & \textbf{86.02} & \textbf{85.81} & 0.4751 / 0.3187 & 0.3970 / 0.3702 & 0.3504 / 0.4193 & 16.20\% & 0.00\% \\
+CLIP ViT-B/16 (Zero-Shot) & 82.16 & 81.36 & 0.4520 / 0.3086 & 0.3792 / 0.3639 & 0.3368 / 0.4010 & 15.40\% & 0.00\% \\
+Swin-Tiny (ViT) & 79.44 & 79.35 & \textbf{0.5518} / 0.3980 & \textbf{0.4861} / 0.4509 & \textbf{0.5724} / 0.3859 & 8.00\% & 0.00\% \\
+EfficientNet-B0 (CNN) & 73.38 & 73.34 & 0.4436 / 0.1836 & 0.4172 / 0.1996 & 0.4134 / 0.1967 & 7.20\% & 0.00\% \\
+ResNet-50 (CNN) & 71.14 & 70.28 & 0.3618 / \textbf{0.1293} & 0.3507 / \textbf{0.1340} & 0.3489 / \textbf{0.1359} & \textbf{22.00\%} & \textbf{0.20\%} \\
 \hline
 \end{tabular}
 \end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.32\textwidth]{figures/sun397_training_curves.png}\hfill
+\includegraphics[width=0.32\textwidth]{figures/sun397_robustness_pgd.png}\hfill
+\includegraphics[width=0.34\textwidth]{figures/sun397_xai_grid_clip_linear.png}
+\caption{SUN397-100 benchmark results: validation learning curves (left), 10-step $\text{PGD-}L_\infty$ robustness degradation (center), and gradient-based visual explanations for Linear-Probe CLIP ViT-B/16 (right).}
+\label{fig:sun397_curves}
+\end{figure*}
 
 \section{Discussion}
 \label{sec:discussion}
@@ -388,13 +408,13 @@ Our benchmark demonstrates that selecting a scene recognition backbone solely by
 Qualitative inspection of misclassified test samples with Grad-CAM overlays reveals that residual errors cluster primarily along semantically overlapping natural boundaries---specifically between \emph{glacier} and \emph{mountain} (where snow-covered rocky peaks share identical visual textures) and between urban \emph{street} and \emph{buildings} scenes. Based on our findings, we recommend: (1) pairing Swin-Tiny or ViT backbones with \textbf{Grad-CAM++} or \textbf{LayerCAM} rather than vanilla Grad-CAM for visual auditing; (2) using \textbf{class-stratified subsets} and \textbf{iterative PGD / $\text{FGSM}_{\text{pred}}$} when auditing label-smoothed classifiers to avoid label-leaking artifacts; and (3) applying mixed-objective \textbf{PGD-AT} when deploying scene classifiers in security-sensitive pipelines.
 
 \subsection{Limitations}
-To operate within single-session cloud GPU constraints (2$\times$ NVIDIA T4), our large-scale SUN397 evaluation adopts a deterministic 100-class subset protocol and evaluates pixel-perturbation AUC and PGD curves on a fixed, class-balanced test subset of 500--1,000 images. Additionally, our CLIP experiments focus on zero-shot prompt ensembling and frozen-backbone linear probing rather than end-to-end multimodal contrastive fine-tuning.
+To operate within single-session cloud GPU constraints (2$\times$ NVIDIA T4), our large-scale SUN397 evaluation adopts a deterministic 100-class subset protocol ($5,000$ test images) and evaluates pixel-perturbation AUC on 200 stratified test images (10 perturbation steps) and FGSM/PGD curves on 500 stratified test images. Additionally, our CLIP experiments focus on zero-shot prompt ensembling and frozen-backbone linear probing rather than end-to-end multimodal contrastive fine-tuning.
 
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 This paper presented a unified benchmark of CNNs (ResNet-50, EfficientNet-B0), a hierarchical Vision Transformer (Swin-Tiny), and a Vision-Language Model (CLIP ViT-B/16) for explainable multi-class scene recognition. By jointly measuring predictive performance, Insertion/Deletion XAI faithfulness, white-box FGSM/PGD robustness, and the effect of PGD adversarial training across Intel Natural Scenes and SUN397-100, we exposed a clear trade-off between clean accuracy, spatial explanation quality, and adversarial resilience.
 
-In future work, we plan to extend this explainable robustness framework from holistic scene categorization to **natural language-driven, open-vocabulary object detection and visual grounding** using architectures such as Grounding DINO \cite{liu2024grounding}, enabling fine-grained, text-conditioned spatial attribution and adversarial defense at both the object and scene levels.
+In future work, we plan to extend this explainable robustness framework from holistic scene categorization to \textbf{natural language-driven, open-vocabulary object detection and visual grounding} using architectures such as Grounding DINO \cite{liu2024grounding}, enabling fine-grained, text-conditioned spatial attribution and adversarial defense at both the object and scene levels.
 
 \section*{Data and Code Availability}
 All source code, data split configurations, automated LaTeX table scripts, and interactive Gradio demo files are openly available at \url{https://github.com/matiur-rahman1/explainable-scene-recognition}.

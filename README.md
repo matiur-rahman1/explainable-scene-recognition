@@ -6,112 +6,72 @@
 ![Dataset](https://img.shields.io/badge/Datasets-Intel%20Scenes%20%7C%20SUN397--100-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-A modular, reproducible PyTorch research framework comparing **Convolutional Neural Networks (`ResNet-50`, `EfficientNet-B0`)**, **Vision Transformers (`Swin-Tiny`)**, and **Contrastive Vision-Language Models (`CLIP ViT-B/16`)** for multi-class natural scene recognition, paired with **gradient-based visual explanations (`Grad-CAM`, `Grad-CAM++`, `LayerCAM`)**, **quantitative XAI faithfulness evaluation (`Insertion/Deletion AUC`)**, **adversarial robustness analysis (`FGSM`, `FGSM_pred`, `PGD`)**, **PGD adversarial training (`PGD-AT`)**, and **paired McNemar statistical tests**.
+Official PyTorch implementation for **"Accuracy, Faithfulness, and Robustness in Scene Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense across CNNs, Vision Transformers, and Vision-Language Models"** (*Neurocomputing* submission).
 
----
-
-## 1. Multi-Seed Benchmark Results (Intel Natural Scenes — Seeds `0, 1, 2`)
-
-### 1.1 Classification, Efficiency & XAI Faithfulness (Stratified 3-Seed Mean ± Std)
-
-| Architecture | Paradigm | Test Acc. (%) | Macro-F1 (%) | Params (M) | Grad-CAM (Ins ↑ / Del ↓) | Grad-CAM++ (Ins ↑ / Del ↓) | LayerCAM (Ins ↑ / Del ↓) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`swin_tiny`** | Hierarchical ViT | **94.40 ± 0.21** | **94.51 ± 0.20** | 27.52 | 0.6854 / 0.7484 | 0.7810 / 0.6563 | **0.7964** / 0.6807 |
-| **`resnet50`** | Residual CNN | 94.18 ± 0.19 | 94.30 ± 0.18 | 23.52 | 0.8015 / **0.6071** | **0.7967** / **0.6193** | 0.7935 / **0.6242** |
-| **`clip_linear`** | VLM (Linear Probe) | 93.97 ± 0.03 | 94.11 ± 0.03 | 86.20 | 0.7997 / 0.6954 | 0.7539 / 0.7338 | 0.7081 / 0.7955 |
-| **`efficientnet_b0`** | Lightweight CNN | 93.31 ± 0.30 | 93.43 ± 0.29 | **4.02** | 0.7787 / 0.6395 | 0.6760 / 0.7484 | 0.7115 / 0.7093 |
-| **`clip_zeroshot`** | VLM (Prompt Ens.) | 92.70 ± 0.00 | 92.80 ± 0.00 | 86.19 | **0.8312** / 0.7165 | 0.7937 / 0.7479 | 0.7408 / 0.8183 |
+This repository benchmarks six architectures across three paradigms—**Classical & Mobile CNNs (`ResNet-50`, `EfficientNet-B0`)**, **Modernized ConvNet (`ConvNeXt-Tiny`)**, **Hierarchical Vision Transformer (`Swin-Tiny`)**, and **Contrastive Vision-Language Models (`CLIP ViT-B/16` Zero-Shot & Linear Probe)**—and introduces two methodological contributions:
+1. **Variance-Gated LayerCAM (`VG-LayerCAM`):** Couples second-order gradient-energy channel gating with element-wise spatial positive gradients to suppress noisy background channels while preserving fine-grained token attribution.
+2. **Spatial Attribution-Consistent Adversarial Training (`SAC-PGD-AT`):** Regularizes L2-normalized target-layer spatial energy maps ($\beta \|\bar{E}(x) - \bar{E}(x_{\text{PGD}})\|_F^2$) in a single forward pass to suppress adversarial attention drift while boosting $\text{PGD-}L_\infty$ robustness.
 
 <p align="center">
-  <img src="paper/figures/clip_cnn_vit_comparison.png" alt="Cross-Paradigm Comparison" width="85%"/>
+  <img src="paper/figures/graphical_abstract.png" alt="Graphical Abstract" width="95%"/>
 </p>
-
-### 1.2 PGD Adversarial Training (`PGD-AT`, $\epsilon=0.03$) on Intel Natural Scenes
-
-| Model | Clean Acc. (%) | PGD ($\epsilon=0.01$) | PGD ($\epsilon=0.03$) | Grad-CAM Ins ↑ | LayerCAM Ins ↑ |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| `resnet50` (Clean) | 94.18% | 6.72% | 2.44% | **0.8015** | **0.7935** |
-| `resnet50 + PGD-AT` | 88.33% | 18.67% | 5.83% | 0.6300 | 0.6218 |
-| `swin_tiny` (Clean) | **94.40%** | 4.11% | 0.06% | 0.6854 | **0.7964** |
-| **`swin_tiny + PGD-AT`** | **93.27%** | **67.33%** | **37.50%** | **0.6924** | 0.7916 |
 
 ---
 
-## 2. Large-Scale Generalization (`SUN397-100` — 100 Classes, 5,000 Test Images)
+## 1. Multi-Seed Six-Architecture Benchmark (Intel Natural Scenes — Seeds `0, 1, 2`)
 
-| Architecture | Test Acc. (%) | Macro-F1 (%) | Grad-CAM (Ins ↑ / Del ↓) | LayerCAM (Ins ↑ / Del ↓) | FGSM (.03) | PGD (.03) |
+| Architecture | Paradigm (Params) | Test Acc. (%) | Macro-F1 (%) | Grad-CAM (Ins↑/Del↓) | LayerCAM (Ins↑/Del↓) | **VG-LayerCAM (Ours) (Ins↑/Del↓/$\Delta\text{AUC}$↑)** |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`clip_linear`** | **86.02%** | **85.81%** | 0.4751 / 0.3187 | 0.3504 / 0.4193 | 16.20% | 0.00% |
-| **`clip_zeroshot`** | 82.16% | 81.36% | 0.4520 / 0.3086 | 0.3368 / 0.4010 | 15.40% | 0.00% |
-| **`swin_tiny`** | 79.44% | 79.35% | **0.5518** / 0.3980 | **0.5724** / 0.3859 | 8.00% | 0.00% |
-| **`efficientnet_b0`** | 73.38% | 73.34% | 0.4436 / 0.1836 | 0.4134 / 0.1967 | 7.20% | 0.00% |
-| **`resnet50`** | 71.14% | 70.28% | 0.3618 / **0.1293** | 0.3489 / **0.1359** | **22.00%** | **0.20%** |
+| **`swin_tiny`** | Shifted-Window ViT (27.5M) | **94.40 ± 0.21** | **94.51 ± 0.20** | 0.6854 / 0.7484 | 0.7964 / 0.6807 | **0.8175 / 0.6278 / +0.1898** |
+| **`resnet50`** | Residual CNN (23.5M) | 94.18 ± 0.19 | 94.30 ± 0.18 | 0.8015 / 0.6071 | 0.7935 / 0.6242 | 0.7523 / **0.5632** / +0.1891 |
+| **`clip_linear`** | VLM Linear Probe (86.2M) | 93.97 ± 0.03 | 94.11 ± 0.03 | 0.7997 / 0.6954 | 0.7081 / 0.7955 | 0.7155 / 0.7829 / -0.0674 |
+| **`convnext_tiny`** | Modern ConvNet (27.8M) | 93.82 ± 0.25 | 93.96 ± 0.24 | **0.8657 / 0.5831** | **0.8110** / 0.7084 | **0.8561 / 0.5742 / +0.2819** |
+| **`efficientnet_b0`** | Mobile CNN (**4.0M**) | 93.31 ± 0.30 | 93.43 ± 0.29 | 0.7787 / 0.6395 | 0.7115 / 0.7093 | 0.7028 / **0.5210** / +0.1818 |
+| **`clip_zeroshot`** | VLM Prompt Ens. (86.2M) | 92.70 ± 0.00 | 92.80 ± 0.00 | 0.8312 / 0.7165 | 0.7408 / 0.8183 | 0.7443 / 0.7939 / -0.0495 |
+
+---
+
+## 2. SAC-PGD-AT Defense & Attention-Drift Suppression ($\epsilon=0.03$)
+
+| Backbone | Defense Configuration | Clean Acc. | PGD (.01) | PGD (.03) | VG-LayerCAM $\Delta\text{AUC}$ ↑ | Adv CAM Cosine Sim ↑ |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **ResNet-50** | Standard Clean | 94.18% | 6.72% | 2.44% | +0.1891 | 0.7500 |
+| **ResNet-50** | Standard PGD-AT ($\beta=0.0$) | 92.07% | **21.33%** | **11.50%** | +0.1736 | 0.8587 |
+| **ResNet-50** | **SAC-PGD-AT ($\beta=0.1$)** | 92.07% | 20.50% | **11.50%** | **+0.1814** | **0.8914** |
+| **ConvNeXt-Tiny** | Standard Clean | 93.82% | 12.72% | 0.11% | **+0.2819** | 0.7791 |
+| **ConvNeXt-Tiny** | Standard PGD-AT ($\beta=0.0$) | 90.70% | 84.83% | **62.33%** | +0.1877 | 0.9865 |
+| **ConvNeXt-Tiny** | **SAC-PGD-AT ($\beta=0.2$)** | **90.77%** | **84.83%** | **62.33%** | +0.1865 | **0.9872** |
+| **Swin-Tiny** | Standard Clean | **94.40%** | 4.11% | 0.06% | +0.1898 | 0.6449 |
+| **Swin-Tiny** | Standard PGD-AT ($\beta=0.0$) | 93.50% | 67.50% | 36.33% | +0.2079 | 0.7667 |
+| **Swin-Tiny** | **SAC-PGD-AT ($\beta=0.05$)** | 93.47% | 67.50% | 35.33% | **+0.2094** | **0.7945** |
+| **Swin-Tiny** | **SAC-PGD-AT ($\beta=0.2$)** | 93.47% | **68.50%** | **37.50%** | +0.2086 | 0.7706 |
 
 <p align="center">
-  <img src="paper/figures/sun397_training_curves.png" alt="SUN397-100 Training Curves" width="48%"/>
-  <img src="paper/figures/sun397_xai_grid_clip_linear.png" alt="SUN397-100 CLIP XAI Grid" width="48%"/>
+  <img src="paper/figures/adv_drift_swin_tiny_sac_pgd_at.png" alt="SAC-PGD-AT Attention Drift Suppression" width="90%"/>
 </p>
 
 ---
 
-## 3. Repository Structure
+## 3. Large-Scale Generalization (`SUN397-100` — 100 Classes, 5,000 Test Images)
 
-```text
-explainable-scene-recognition/
-├── app.py                              # Interactive Gradio demo
-├── main.py                             # Multi-seed benchmark, CLIP, PGD-AT & McNemar runner
-├── requirements.txt                    # Dependencies
-├── paper/                              # IEEE Access LaTeX manuscript, BibTeX, figures, tables
-│   ├── main.tex
-│   ├── references.bib
-│   ├── cover_letter.tex
-│   ├── highlights.md
-│   ├── self_review.md
-│   └── figures/                        # 300-DPI publication figures
-├── results/                            # Reproducible JSON logs & split configs
-├── scripts/
-│   ├── make_tables.py                  # Auto-generates LaTeX tables from results/
-│   ├── make_figures.py                 # Generates 300-DPI pipeline & comparison charts
-│   └── run_stage2.py                   # Stage 2 runner (PGD-AT + SUN397-100)
-└── src/
-    ├── dataset.py                      # Intel / SUN397-100 / Custom ImageFolder loaders
-    ├── models.py                       # timm & CLIP factory + CAM target layer hooks
-    ├── clip_model.py                   # CLIP ViT-B/16 Zero-Shot & Linear-Probe wrappers
-    ├── trainer.py                      # AMP training loop, checkpoint resume & metrics
-    ├── xai.py                          # Grad-CAM, Grad-CAM++, LayerCAM & Insertion/Deletion AUC
-    ├── adversarial.py                  # FGSM, FGSM_pred, PGD & PGD-AT
-    ├── stats.py                        # Pairwise McNemar test & multi-seed aggregation
-    ├── utils.py                        # Global seed locking & class-stratified sampling
-    └── visualize.py                    # 300-DPI publication-quality figures
-```
+| Architecture | Test Acc. (%) | Macro-F1 (%) | Grad-CAM (Ins↑/Del↓) | LayerCAM (Ins↑/Del↓) | **VG-LayerCAM (Ins↑/Del↓/$\Delta\text{AUC}$↑)** | FGSM (.03) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`clip_linear`** | **86.02%** | **85.81%** | 0.4751 / 0.3187 | 0.3504 / 0.4193 | 0.3554 / 0.4086 / -0.0532 | 16.20% |
+| **`clip_zeroshot`** | 82.16% | 81.36% | 0.4520 / 0.3086 | 0.3368 / 0.4010 | 0.3403 / 0.3923 / -0.0520 | 15.40% |
+| **`convnext_tiny`** | **79.92%** | **79.83%** | **0.5565** / 0.1895 | 0.4905 / 0.2942 | 0.5430 / 0.1846 / **+0.3584** | 6.00% |
+| **`swin_tiny`** | 79.44% | 79.35% | 0.5518 / 0.3980 | **0.5724** / 0.3859 | **0.5636** / 0.3089 / **+0.2547** | 8.00% |
+| **`efficientnet_b0`** | 73.38% | 73.34% | 0.4436 / 0.1836 | 0.4134 / 0.1967 | 0.4008 / 0.1903 / +0.2105 | 7.20% |
+| **`resnet50`** | 71.14% | 70.28% | 0.3618 / 0.1293 | 0.3489 / 0.1359 | 0.2748 / **0.1107** / +0.1641 | **22.00%** |
 
 ---
 
-## 4. Quick Start
-
-```bash
-pip install -r requirements.txt
-
-# 3-seed Intel Natural Scenes benchmark (CNNs + Swin-Tiny + CLIP ViT-B/16)
-python main.py --dataset intel --models resnet50 efficientnet_b0 swin_tiny clip_zeroshot clip_linear --seeds 0 1 2 --epochs 6
-
-# Stage 2: PGD Adversarial Training + 100-Class SUN397 Protocol
-python scripts/run_stage2.py
-
-# Interactive Gradio demo
-python app.py
-```
-
----
-
-## 5. Citation
-
-If you find this benchmark or codebase useful in your research, please cite:
+## 4. Citation
 
 ```bibtex
-@article{rahman2026explainable_scene,
-  author  = {Rahman, MD Matiur},
-  title   = {Accuracy, Faithfulness, and Robustness: An Explainable Benchmark of CNNs, Vision Transformers, and Vision-Language Models for Scene Recognition},
+@article{rahman2026explainable_neurocomputing,
+  author  = {Rahman, MD Matiur and Tao, Huanjie},
+  title   = {Accuracy, Faithfulness, and Robustness in Scene Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense across CNNs, Vision Transformers, and Vision-Language Models},
+  journal = {Neurocomputing},
   year    = {2026},
   url     = {https://github.com/matiur-rahman1/explainable-scene-recognition}
 }

@@ -1,0 +1,738 @@
+{
+  "resnet50": {
+    "0.0": {
+      "beta_sac": 0.0,
+      "checkpoint": "checkpoints/best_resnet50_sac_b00.pth",
+      "history": {
+        "train_loss": [
+          0.8701,
+          0.8027,
+          0.7839
+        ],
+        "sac_loss": [
+          0.1517,
+          0.1418,
+          0.1412
+        ],
+        "val_clean_acc": [
+          0.9433,
+          0.9467,
+          0.9367
+        ],
+        "val_pgd_acc": [
+          0.07,
+          0.1133,
+          0.07
+        ]
+      },
+      "test_accuracy": 0.9207,
+      "macro_f1": 0.9222,
+      "pgd_accuracy": {
+        "0.0": 0.9133,
+        "0.01": 0.2133,
+        "0.03": 0.115,
+        "0.05": 0.0633
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7017,
+          "deletion_auc": 0.5141,
+          "delta_auc": 0.1876,
+          "insertion_std": 0.1648,
+          "deletion_std": 0.2527,
+          "delta_std": 0.1519
+        },
+        "gradcam++": {
+          "insertion_auc": 0.6946,
+          "deletion_auc": 0.5199,
+          "delta_auc": 0.1748,
+          "insertion_std": 0.1716,
+          "deletion_std": 0.2478,
+          "delta_std": 0.1434
+        },
+        "layercam": {
+          "insertion_auc": 0.6915,
+          "deletion_auc": 0.5234,
+          "delta_auc": 0.1681,
+          "insertion_std": 0.175,
+          "deletion_std": 0.247,
+          "delta_std": 0.1425
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.6926,
+          "deletion_auc": 0.519,
+          "delta_auc": 0.1736,
+          "insertion_std": 0.1729,
+          "deletion_std": 0.2469,
+          "delta_std": 0.145
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.8587,
+        "cam_cosine_std": 0.0849,
+        "cam_l1_drift": 0.1467
+      }
+    },
+    "0.1": {
+      "beta_sac": 0.1,
+      "checkpoint": "checkpoints/best_resnet50_sac_b01.pth",
+      "history": {
+        "train_loss": [
+          0.8838,
+          0.8128,
+          0.7945
+        ],
+        "sac_loss": [
+          0.142,
+          0.1241,
+          0.1075
+        ],
+        "val_clean_acc": [
+          0.9433,
+          0.9533,
+          0.9467
+        ],
+        "val_pgd_acc": [
+          0.07,
+          0.0933,
+          0.0733
+        ]
+      },
+      "test_accuracy": 0.9207,
+      "macro_f1": 0.9223,
+      "pgd_accuracy": {
+        "0.0": 0.915,
+        "0.01": 0.205,
+        "0.03": 0.115,
+        "0.05": 0.075
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7042,
+          "deletion_auc": 0.5071,
+          "delta_auc": 0.1971,
+          "insertion_std": 0.1611,
+          "deletion_std": 0.2472,
+          "delta_std": 0.1554
+        },
+        "gradcam++": {
+          "insertion_auc": 0.6954,
+          "deletion_auc": 0.5129,
+          "delta_auc": 0.1826,
+          "insertion_std": 0.1699,
+          "deletion_std": 0.2425,
+          "delta_std": 0.1482
+        },
+        "layercam": {
+          "insertion_auc": 0.692,
+          "deletion_auc": 0.5164,
+          "delta_auc": 0.1756,
+          "insertion_std": 0.1729,
+          "deletion_std": 0.2418,
+          "delta_std": 0.1478
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.6938,
+          "deletion_auc": 0.5124,
+          "delta_auc": 0.1814,
+          "insertion_std": 0.1715,
+          "deletion_std": 0.2419,
+          "delta_std": 0.1485
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.8914,
+        "cam_cosine_std": 0.0788,
+        "cam_l1_drift": 0.1246
+      }
+    }
+  },
+  "convnext_tiny": {
+    "0.0": {
+      "beta_sac": 0.0,
+      "checkpoint": "checkpoints/best_convnext_tiny_sac_b00.pth",
+      "history": {
+        "train_loss": [
+          0.9869,
+          0.7541,
+          0.6325
+        ],
+        "sac_loss": [
+          0.0051,
+          0.0036,
+          0.004
+        ],
+        "val_clean_acc": [
+          0.8933,
+          0.9233,
+          0.9233
+        ],
+        "val_pgd_acc": [
+          0.5467,
+          0.6533,
+          0.6567
+        ]
+      },
+      "test_accuracy": 0.907,
+      "macro_f1": 0.9089,
+      "pgd_accuracy": {
+        "0.0": 0.9067,
+        "0.01": 0.8483,
+        "0.03": 0.6233,
+        "0.05": 0.3533
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7902,
+          "deletion_auc": 0.6056,
+          "delta_auc": 0.1846,
+          "insertion_std": 0.177,
+          "deletion_std": 0.2812,
+          "delta_std": 0.1819
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7108,
+          "deletion_auc": 0.6701,
+          "delta_auc": 0.0407,
+          "insertion_std": 0.2238,
+          "deletion_std": 0.2332,
+          "delta_std": 0.1707
+        },
+        "layercam": {
+          "insertion_auc": 0.7334,
+          "deletion_auc": 0.6546,
+          "delta_auc": 0.0788,
+          "insertion_std": 0.2071,
+          "deletion_std": 0.2479,
+          "delta_std": 0.165
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.7913,
+          "deletion_auc": 0.6037,
+          "delta_auc": 0.1877,
+          "insertion_std": 0.1736,
+          "deletion_std": 0.2829,
+          "delta_std": 0.1901
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.9865,
+        "cam_cosine_std": 0.0182,
+        "cam_l1_drift": 0.061
+      }
+    },
+    "0.05": {
+      "beta_sac": 0.05,
+      "checkpoint": "checkpoints/best_convnext_tiny_sac_b005.pth",
+      "history": {
+        "train_loss": [
+          0.9874,
+          0.7544,
+          0.6329
+        ],
+        "sac_loss": [
+          0.0049,
+          0.0032,
+          0.0035
+        ],
+        "val_clean_acc": [
+          0.8933,
+          0.9233,
+          0.9233
+        ],
+        "val_pgd_acc": [
+          0.5467,
+          0.6533,
+          0.6567
+        ]
+      },
+      "test_accuracy": 0.907,
+      "macro_f1": 0.9089,
+      "pgd_accuracy": {
+        "0.0": 0.9067,
+        "0.01": 0.85,
+        "0.03": 0.6233,
+        "0.05": 0.355
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7898,
+          "deletion_auc": 0.606,
+          "delta_auc": 0.1839,
+          "insertion_std": 0.177,
+          "deletion_std": 0.2811,
+          "delta_std": 0.1819
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7107,
+          "deletion_auc": 0.6701,
+          "delta_auc": 0.0406,
+          "insertion_std": 0.2237,
+          "deletion_std": 0.2329,
+          "delta_std": 0.17
+        },
+        "layercam": {
+          "insertion_auc": 0.7372,
+          "deletion_auc": 0.6533,
+          "delta_auc": 0.0839,
+          "insertion_std": 0.2067,
+          "deletion_std": 0.2483,
+          "delta_std": 0.1651
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.791,
+          "deletion_auc": 0.6038,
+          "delta_auc": 0.1872,
+          "insertion_std": 0.1736,
+          "deletion_std": 0.2829,
+          "delta_std": 0.19
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.9867,
+        "cam_cosine_std": 0.018,
+        "cam_l1_drift": 0.0607
+      }
+    },
+    "0.1": {
+      "beta_sac": 0.1,
+      "checkpoint": "checkpoints/best_convnext_tiny_sac_b01.pth",
+      "history": {
+        "train_loss": [
+          0.9878,
+          0.7547,
+          0.6336
+        ],
+        "sac_loss": [
+          0.0046,
+          0.0028,
+          0.0031
+        ],
+        "val_clean_acc": [
+          0.8967,
+          0.92,
+          0.9233
+        ],
+        "val_pgd_acc": [
+          0.5567,
+          0.65,
+          0.6567
+        ]
+      },
+      "test_accuracy": 0.9077,
+      "macro_f1": 0.9095,
+      "pgd_accuracy": {
+        "0.0": 0.9067,
+        "0.01": 0.8483,
+        "0.03": 0.6233,
+        "0.05": 0.36
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7895,
+          "deletion_auc": 0.6056,
+          "delta_auc": 0.1839,
+          "insertion_std": 0.1772,
+          "deletion_std": 0.2812,
+          "delta_std": 0.1825
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7103,
+          "deletion_auc": 0.6701,
+          "delta_auc": 0.0401,
+          "insertion_std": 0.2238,
+          "deletion_std": 0.2322,
+          "delta_std": 0.1685
+        },
+        "layercam": {
+          "insertion_auc": 0.7374,
+          "deletion_auc": 0.6529,
+          "delta_auc": 0.0845,
+          "insertion_std": 0.2062,
+          "deletion_std": 0.248,
+          "delta_std": 0.1657
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.7906,
+          "deletion_auc": 0.6037,
+          "delta_auc": 0.1869,
+          "insertion_std": 0.1738,
+          "deletion_std": 0.283,
+          "delta_std": 0.1902
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.9869,
+        "cam_cosine_std": 0.0177,
+        "cam_l1_drift": 0.0605
+      }
+    },
+    "0.2": {
+      "beta_sac": 0.2,
+      "checkpoint": "checkpoints/best_convnext_tiny_sac_b02.pth",
+      "history": {
+        "train_loss": [
+          0.9876,
+          0.7551,
+          0.634
+        ],
+        "sac_loss": [
+          0.0043,
+          0.0023,
+          0.0025
+        ],
+        "val_clean_acc": [
+          0.8967,
+          0.9233,
+          0.9233
+        ],
+        "val_pgd_acc": [
+          0.5533,
+          0.6467,
+          0.66
+        ]
+      },
+      "test_accuracy": 0.9077,
+      "macro_f1": 0.9095,
+      "pgd_accuracy": {
+        "0.0": 0.9067,
+        "0.01": 0.8483,
+        "0.03": 0.6233,
+        "0.05": 0.365
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7886,
+          "deletion_auc": 0.6053,
+          "delta_auc": 0.1833,
+          "insertion_std": 0.1777,
+          "deletion_std": 0.2814,
+          "delta_std": 0.1827
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7095,
+          "deletion_auc": 0.67,
+          "delta_auc": 0.0395,
+          "insertion_std": 0.2241,
+          "deletion_std": 0.2312,
+          "delta_std": 0.1658
+        },
+        "layercam": {
+          "insertion_auc": 0.7449,
+          "deletion_auc": 0.6445,
+          "delta_auc": 0.1004,
+          "insertion_std": 0.1984,
+          "deletion_std": 0.256,
+          "delta_std": 0.1717
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.7898,
+          "deletion_auc": 0.6032,
+          "delta_auc": 0.1865,
+          "insertion_std": 0.1741,
+          "deletion_std": 0.2832,
+          "delta_std": 0.19
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.9872,
+        "cam_cosine_std": 0.0173,
+        "cam_l1_drift": 0.0601
+      }
+    }
+  },
+  "swin_tiny": {
+    "0.0": {
+      "beta_sac": 0.0,
+      "checkpoint": "checkpoints/best_swin_tiny_sac_b00.pth",
+      "history": {
+        "train_loss": [
+          1.0475,
+          0.7544,
+          0.6651
+        ],
+        "sac_loss": [
+          0.056,
+          0.0458,
+          0.0432
+        ],
+        "val_clean_acc": [
+          0.94,
+          0.94,
+          0.9533
+        ],
+        "val_pgd_acc": [
+          0.2133,
+          0.26,
+          0.3533
+        ]
+      },
+      "test_accuracy": 0.935,
+      "macro_f1": 0.9362,
+      "pgd_accuracy": {
+        "0.0": 0.93,
+        "0.01": 0.675,
+        "0.03": 0.3633,
+        "0.05": 0.1617
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.695,
+          "deletion_auc": 0.7865,
+          "delta_auc": -0.0915,
+          "insertion_std": 0.2035,
+          "deletion_std": 0.1869,
+          "delta_std": 0.23
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7725,
+          "deletion_auc": 0.7293,
+          "delta_auc": 0.0432,
+          "insertion_std": 0.1626,
+          "deletion_std": 0.2133,
+          "delta_std": 0.2134
+        },
+        "layercam": {
+          "insertion_auc": 0.7986,
+          "deletion_auc": 0.7258,
+          "delta_auc": 0.0728,
+          "insertion_std": 0.1397,
+          "deletion_std": 0.2085,
+          "delta_std": 0.1661
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.8367,
+          "deletion_auc": 0.6288,
+          "delta_auc": 0.2079,
+          "insertion_std": 0.1239,
+          "deletion_std": 0.2477,
+          "delta_std": 0.2282
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.7667,
+        "cam_cosine_std": 0.1788,
+        "cam_l1_drift": 0.1693
+      }
+    },
+    "0.05": {
+      "beta_sac": 0.05,
+      "checkpoint": "checkpoints/best_swin_tiny_sac_b005.pth",
+      "history": {
+        "train_loss": [
+          1.0497,
+          0.7566,
+          0.6671
+        ],
+        "sac_loss": [
+          0.0498,
+          0.0365,
+          0.0323
+        ],
+        "val_clean_acc": [
+          0.94,
+          0.9367,
+          0.95
+        ],
+        "val_pgd_acc": [
+          0.23,
+          0.26,
+          0.3467
+        ]
+      },
+      "test_accuracy": 0.9347,
+      "macro_f1": 0.936,
+      "pgd_accuracy": {
+        "0.0": 0.9333,
+        "0.01": 0.675,
+        "0.03": 0.3533,
+        "0.05": 0.155
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.6941,
+          "deletion_auc": 0.78,
+          "delta_auc": -0.0859,
+          "insertion_std": 0.2087,
+          "deletion_std": 0.197,
+          "delta_std": 0.2407
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7697,
+          "deletion_auc": 0.7317,
+          "delta_auc": 0.038,
+          "insertion_std": 0.1737,
+          "deletion_std": 0.2079,
+          "delta_std": 0.1983
+        },
+        "layercam": {
+          "insertion_auc": 0.8077,
+          "deletion_auc": 0.7166,
+          "delta_auc": 0.0911,
+          "insertion_std": 0.1367,
+          "deletion_std": 0.2142,
+          "delta_std": 0.1618
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.836,
+          "deletion_auc": 0.6266,
+          "delta_auc": 0.2094,
+          "insertion_std": 0.1287,
+          "deletion_std": 0.2464,
+          "delta_std": 0.2248
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.7945,
+        "cam_cosine_std": 0.1697,
+        "cam_l1_drift": 0.1569
+      }
+    },
+    "0.1": {
+      "beta_sac": 0.1,
+      "checkpoint": "checkpoints/best_swin_tiny_sac_b01.pth",
+      "history": {
+        "train_loss": [
+          1.0509,
+          0.7558,
+          0.6674
+        ],
+        "sac_loss": [
+          0.0454,
+          0.029,
+          0.0257
+        ],
+        "val_clean_acc": [
+          0.94,
+          0.9433,
+          0.95
+        ],
+        "val_pgd_acc": [
+          0.22,
+          0.26,
+          0.37
+        ]
+      },
+      "test_accuracy": 0.9337,
+      "macro_f1": 0.9349,
+      "pgd_accuracy": {
+        "0.0": 0.9283,
+        "0.01": 0.68,
+        "0.03": 0.3683,
+        "0.05": 0.1617
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7067,
+          "deletion_auc": 0.774,
+          "delta_auc": -0.0673,
+          "insertion_std": 0.2019,
+          "deletion_std": 0.2063,
+          "delta_std": 0.2499
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7854,
+          "deletion_auc": 0.7159,
+          "delta_auc": 0.0695,
+          "insertion_std": 0.1366,
+          "deletion_std": 0.231,
+          "delta_std": 0.2096
+        },
+        "layercam": {
+          "insertion_auc": 0.8101,
+          "deletion_auc": 0.7141,
+          "delta_auc": 0.0961,
+          "insertion_std": 0.1266,
+          "deletion_std": 0.219,
+          "delta_std": 0.1701
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.8368,
+          "deletion_auc": 0.6298,
+          "delta_auc": 0.2069,
+          "insertion_std": 0.131,
+          "deletion_std": 0.2473,
+          "delta_std": 0.2328
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.7635,
+        "cam_cosine_std": 0.1888,
+        "cam_l1_drift": 0.1621
+      }
+    },
+    "0.2": {
+      "beta_sac": 0.2,
+      "checkpoint": "checkpoints/best_swin_tiny_sac_b02.pth",
+      "history": {
+        "train_loss": [
+          1.0585,
+          0.757,
+          0.6681
+        ],
+        "sac_loss": [
+          0.0394,
+          0.0226,
+          0.0191
+        ],
+        "val_clean_acc": [
+          0.94,
+          0.9467,
+          0.9533
+        ],
+        "val_pgd_acc": [
+          0.2333,
+          0.2667,
+          0.3633
+        ]
+      },
+      "test_accuracy": 0.9347,
+      "macro_f1": 0.9358,
+      "pgd_accuracy": {
+        "0.0": 0.9283,
+        "0.01": 0.685,
+        "0.03": 0.375,
+        "0.05": 0.16
+      },
+      "xai_faithfulness": {
+        "gradcam": {
+          "insertion_auc": 0.7067,
+          "deletion_auc": 0.7735,
+          "delta_auc": -0.0667,
+          "insertion_std": 0.1978,
+          "deletion_std": 0.2017,
+          "delta_std": 0.2471
+        },
+        "gradcam++": {
+          "insertion_auc": 0.7782,
+          "deletion_auc": 0.7204,
+          "delta_auc": 0.0578,
+          "insertion_std": 0.149,
+          "deletion_std": 0.2274,
+          "delta_std": 0.2054
+        },
+        "layercam": {
+          "insertion_auc": 0.8077,
+          "deletion_auc": 0.7173,
+          "delta_auc": 0.0903,
+          "insertion_std": 0.1258,
+          "deletion_std": 0.2094,
+          "delta_std": 0.1627
+        },
+        "vg_layercam": {
+          "insertion_auc": 0.8344,
+          "deletion_auc": 0.6259,
+          "delta_auc": 0.2086,
+          "insertion_std": 0.1266,
+          "deletion_std": 0.2384,
+          "delta_std": 0.2229
+        }
+      },
+      "adversarial_cam_similarity": {
+        "cam_cosine_sim": 0.7706,
+        "cam_cosine_std": 0.1884,
+        "cam_l1_drift": 0.1638
+      }
+    }
+  }
+}

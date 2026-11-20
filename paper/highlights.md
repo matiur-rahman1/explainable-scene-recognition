@@ -1,7 +1,7 @@
-# Research Highlights (IEEE Access Submission)
+# Research Highlights (Neurocomputing — Strictly <= 85 Characters Each)
 
-- **Unified Cross-Paradigm Scene Benchmark:** Jointly evaluates CNNs (`ResNet-50`, `EfficientNet-B0`), a hierarchical Vision Transformer (`Swin-Tiny`), and a Vision-Language Model (`CLIP ViT-B/16` Zero-Shot and Linear Probe) across multiple random seeds on Intel Natural Scenes and SUN397-100 with paired McNemar significance testing.
-- **Accuracy–Faithfulness–Robustness Trilemma:** Demonstrates that while `Swin-Tiny` and `CLIP ViT-B/16` lead in top-1 classification accuracy, `ResNet-50` yields superior first-order Grad-CAM spatial faithfulness (`0.8405` Insertion AUC) and stronger native PGD-$L_\infty$ resilience.
-- **Second-Order CAM Advantage for Shifted-Window ViTs:** Proves quantitatively via progressive Insertion/Deletion AUC that `Grad-CAM++` substantially outperforms standard `Grad-CAM` on `Swin-Tiny` (`0.7666` vs. `0.6031` Insertion AUC; `0.4899` vs. `0.6710` Deletion AUC).
-- **Label-Leaking Diagnosis & PGD Adversarial Training (PGD-AT):** Diagnoses the single-step FGSM label-leaking anomaly caused by label smoothing and class-ordered batch sampling, and demonstrates that PGD-AT ($\epsilon=0.03$) restores adversarial accuracy while curbing CAM attention drift.
-- **Open-Source Reproducibility:** Provides a complete PyTorch package, deterministic split manifests (`results/config.json`), automated LaTeX table scripts, and a live Gradio XAI web interface.
+- Unified scene benchmark of CNNs, ConvNeXt, Swin-Tiny, and CLIP ViT-B/16.
+- Variance-Gated LayerCAM suppresses channel noise in ViT and VLM heatmaps.
+- Spatial Attribution-Consistent PGD-AT curbs adversarial attention drift.
+- Diagnoses single-step FGSM overshooting vs. monotonic 10-step PGD-Linf.
+- Reproducible multi-seed evaluation on Intel Scenes and 100-class SUN397.

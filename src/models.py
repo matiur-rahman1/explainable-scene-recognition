@@ -1,4 +1,4 @@
-"""Model factory and architectural utilities for CNN, ViT, and CLIP backbones."""
+"""Model factory and architectural utilities for CNN, ConvNeXt, ViT, and CLIP backbones."""
 
 import math
 import time
@@ -13,18 +13,15 @@ from src.clip_model import CLIPSceneClassifier, clip_vit_reshape_transform
 MODEL_REGISTRY: Dict[str, str] = {
     "resnet50": "resnet50",
     "efficientnet_b0": "efficientnet_b0",
-    "swin_tiny": "swin_tiny_patch4_window7_224",
     "convnext_tiny": "convnext_tiny",
+    "swin_tiny": "swin_tiny_patch4_window7_224",
     "clip_zeroshot": "ViT-B-16",
     "clip_linear": "ViT-B-16",
 }
 
 
 def swin_reshape_transform(tensor: torch.Tensor) -> torch.Tensor:
-    """Reshape Swin Transformer block activations to (B, C, H, W) for CAM methods.
-
-    Handles both 4D (B, H, W, C) tensors from timm >= 0.9 and 3D (B, H*W, C) tensors.
-    """
+    """Reshape Swin Transformer block activations to (B, C, H, W) for CAM methods."""
     if tensor.ndim == 4:
         return tensor.permute(0, 3, 1, 2)
     if tensor.ndim == 3:
@@ -36,6 +33,16 @@ def swin_reshape_transform(tensor: torch.Tensor) -> torch.Tensor:
     raise ValueError(f"Unexpected Swin activation shape: {tuple(tensor.shape)}")
 
 
+def convnext_reshape_transform(tensor: torch.Tensor) -> torch.Tensor:
+    """Ensure ConvNeXt block activation tensor is (B, C, H, W) across all timm versions."""
+    if tensor.ndim == 4:
+        # If channel dimension (768) is last (B, H, W, C), permute to (B, C, H, W)
+        if tensor.shape[-1] > tensor.shape[1]:
+            return tensor.permute(0, 3, 1, 2)
+        return tensor
+    raise ValueError(f"Unexpected ConvNeXt activation shape: {tuple(tensor.shape)}")
+
+
 def build_model(
     model_name: str,
     num_classes: int,
@@ -43,7 +50,7 @@ def build_model(
     drop_rate: float = 0.2,
     class_names: Optional[List[str]] = None,
 ) -> nn.Module:
-    """Instantiate a classification backbone (CNN, Swin, or CLIP ViT-B/16)."""
+    """Instantiate a classification backbone (CNN, ConvNeXt, Swin, or CLIP ViT-B/16)."""
     key = model_name.lower()
     if key not in MODEL_REGISTRY:
         raise ValueError(
@@ -74,7 +81,7 @@ def get_target_layers_and_reshape(
     if key == "efficientnet_b0":
         return [model.conv_head], None
     if key == "convnext_tiny":
-        return [model.stages[-1].blocks[-1]], None
+        return [model.stages[-1].blocks[-1]], convnext_reshape_transform
     if key == "swin_tiny":
         return [model.layers[-1].blocks[-1].norm1], swin_reshape_transform
     if key in ("clip_zeroshot", "clip_linear"):

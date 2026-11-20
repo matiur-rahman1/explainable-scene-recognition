@@ -2,37 +2,37 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 
-\signature{MD Matiur Rahman\\
-School of Artificial Intelligence and Computer Science\\
-Nantong University, Nantong 226019, China\\
-E-mail: \texttt{matiurrahman1353@gmail.com}\\
+\signature{MD Matiur Rahman and Huanjie Tao (Corresponding Author)\\
+School of Artificial Intelligence and Computer Science, Nantong University\\
+School of Computer Science, Northwestern Polytechnical University\\
+E-mail: \texttt{matiurrahman1353@gmail.com}, \texttt{huanjie\_tao@126.com}\\
 GitHub: \url{https://github.com/matiur-rahman1/explainable-scene-recognition}}
 
-\address{MD Matiur Rahman\\
-School of Artificial Intelligence and Computer Science\\
-Nantong University\\
-Nantong 226019, Jiangsu, China}
+\address{Huanjie Tao (Corresponding Author)\\
+School of Computer Science\\
+Northwestern Polytechnical University\\
+Xi'an 710072, Shaanxi, China}
 
 \begin{document}
 
 \begin{letter}{Editor-in-Chief\\
-\textbf{IEEE Access}}
+\textbf{Neurocomputing} (Elsevier)}
 
 \opening{Dear Editor-in-Chief,}
 
-Please find enclosed our manuscript entitled \textbf{``Accuracy, Faithfulness, and Robustness: An Explainable Benchmark of CNNs, Vision Transformers, and Vision-Language Models for Scene Recognition''} for consideration for publication as a Regular Research Article in \emph{IEEE Access}.
+Please find enclosed our manuscript entitled \textbf{``Accuracy, Faithfulness, and Robustness in Scene Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense across CNNs, Vision Transformers, and Vision-Language Models''} by MD Matiur Rahman and Huanjie Tao, which we are submitting for consideration for publication as a Regular Paper in \emph{Neurocomputing} (Subscription Mode, \$0 APC).
 
-While deep scene recognition models spanning Convolutional Neural Networks (CNNs), hierarchical Vision Transformers (Swin-Tiny), and contrastive Vision-Language Models (CLIP ViT-B/16) achieve strong classification accuracy, they are almost universally evaluated on clean accuracy, visual explainability, or adversarial robustness in isolation. In this paper, we present a unified, multi-seed empirical benchmark that jointly evaluates predictive performance, computational efficiency, quantitative explanation faithfulness (Insertion and Deletion AUC across Grad-CAM, Grad-CAM++, and LayerCAM), white-box adversarial robustness (FGSM, predicted-label FGSM, and $\text{PGD-}L_\infty$), and the effect of PGD adversarial training (PGD-AT) across Intel Natural Scenes and a deterministic 100-class SUN397 protocol.
+Deep scene recognition models spanning classical Convolutional Neural Networks (ResNet-50, EfficientNet-B0), modernized ConvNets (ConvNeXt-Tiny), hierarchical Vision Transformers (Swin-Tiny), and contrastive Vision-Language Models (CLIP ViT-B/16) are predominantly evaluated on clean top-1 accuracy, post-hoc visual explainability, or adversarial robustness in isolation. Moreover, standard class activation maps suffer from spatial pooling dilution on shifted-window token grids, while standard adversarial training allows internal spatial attributions to drift under perturbation.
 
-Our key findings include:
+To address these gaps, our manuscript makes four contributions directly aligned with the scope of \emph{Neurocomputing}:
 \begin{enumerate}
-    \item Uncovering an \emph{accuracy--faithfulness--robustness trilemma}: whereas Swin-Tiny and CLIP ViT-B/16 achieve superior top-1 classification accuracy, ResNet-50 delivers significantly higher spatial attribution faithfulness under Grad-CAM and stronger native resilience under iterative PGD attacks.
-    \item Demonstrating quantitatively that second-order gradient weighting in Grad-CAM++ substantially outperforms standard Grad-CAM on shifted-window Swin Transformer representations (+0.1635 Insertion AUC improvement and $-0.1811$ Deletion AUC reduction).
-    \item Diagnosing and resolving single-step FGSM label leaking on label-smoothed scene classifiers, and showing how mixed-objective PGD adversarial training (PGD-AT) restores adversarial resilience while stabilizing spatial attribution maps.
-    \item Releasing a fully reproducible open-source PyTorch codebase and interactive Gradio diagnostic interface at \url{https://github.com/matiur-rahman1/explainable-scene-recognition}.
+    \item \textbf{Six-Architecture Cross-Paradigm Benchmark:} We evaluate ResNet-50, EfficientNet-B0, ConvNeXt-Tiny, Swin-Tiny, Zero-Shot CLIP ViT-B/16, and Linear-Probe CLIP ViT-B/16 across multiple random seeds on Intel Natural Scenes and a deterministic 100-class SUN397 protocol with paired McNemar statistical significance tests.
+    \item \textbf{Variance-Gated LayerCAM (VG-LayerCAM):} We formulate a novel closed-form gradient attribution method combining second-order gradient-energy channel gating with element-wise spatial gradient weighting, evaluated via Insertion AUC, Deletion AUC, and the unified Faithfulness Gap ($\Delta\text{AUC}$).
+    \item \textbf{Spatial Attribution-Consistent Adversarial Training (SAC-PGD-AT):} We propose a single-pass spatial energy consistency regularizer ($\beta \|\bar{E}(x) - \bar{E}(x_{\text{PGD}})\|_F^2$) that suppresses adversarial CAM attention drift while preserving clean and $\text{PGD-}L_\infty$ accuracy, supported by a systematic hyperparameter ablation study on $\beta$.
+    \item \textbf{Single-Step Loss-Surface Overshooting Diagnosis & Open-Source Reproducibility:} We diagnose why single-step FGSM and $\text{FGSM}_{\text{pred}}$ overshoot curved label-smoothed loss surfaces compared to strictly monotonic 10-step $\text{PGD-}L_\infty$, and release our complete PyTorch framework and interactive Gradio diagnostic tool.
 \end{enumerate}
 
-We confirm that this manuscript is original, has not been published elsewhere, and is not currently under consideration by any other journal or conference. All experimental numbers reported in the manuscript are produced by verifiable, logged runs included in the repository.
+We confirm that this manuscript is original, has not been published elsewhere, is not under consideration by any other journal, and has been approved by all authors.
 
 Thank you very much for your time and consideration.
 

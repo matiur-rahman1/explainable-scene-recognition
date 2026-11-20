@@ -1,4 +1,4 @@
-"""Gradient-based visual explanation (Grad-CAM, Grad-CAM++, LayerCAM) and faithfulness metrics."""
+"""Gradient-based visual explanation (Grad-CAM, Grad-CAM++, LayerCAM, and proposed VG-LayerCAM)."""
 
 from typing import Dict, Iterable, List, Optional, Tuple
 
@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from pytorch_grad_cam import GradCAM, GradCAMPlusPlus, LayerCAM
+from pytorch_grad_cam.base_cam import BaseCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from torch.utils.data import DataLoader
@@ -14,10 +15,51 @@ from torch.utils.data import DataLoader
 from src.dataset import build_stratified_eval_loader
 from src.models import get_target_layers_and_reshape
 
+
+class VGLayerCAM(BaseCAM):
+    """Proposed Variance-Gated LayerCAM (VG-LayerCAM).
+
+    Combines second-order gradient-energy channel gating w_k^c with element-wise
+    positive gradient spatial weighting ReLU(G_{k,i,j}^c) * A_{k,i,j} to suppress
+    noisy background channels while preserving fine-grained token/spatial localization:
+        w_k^c = sum_{i,j} (G_{k,i,j}^c)^2 * ReLU(A_{k,i,j}) / (sum_{i,j} (G_{k,i,j}^c)^2 + eps)
+        L_{VG-LayerCAM}^c(i,j) = ReLU( sum_k w_k^c * ReLU(G_{k,i,j}^c) * A_{k,i,j} )
+    """
+
+    def __init__(self, model, target_layers, reshape_transform=None):
+        super().__init__(
+            model=model,
+            target_layers=target_layers,
+            reshape_transform=reshape_transform,
+        )
+
+    def get_cam_image(
+        self,
+        input_tensor,
+        target_layer,
+        target_category,
+        activations,
+        grads,
+        eigen_smooth=False,
+    ):
+        eps = 1e-7
+        grad_sq = np.power(grads, 2)
+        relu_act = np.maximum(activations, 0.0)
+        num = np.sum(grad_sq * relu_act, axis=(2, 3), keepdims=True)
+        den = np.sum(grad_sq, axis=(2, 3), keepdims=True) + eps
+        w_k = num / den
+        w_k = w_k / (np.mean(w_k, axis=1, keepdims=True) + eps)
+
+        spatial_grad_gated = np.maximum(grads, 0.0) * activations
+        cam = np.sum(w_k * spatial_grad_gated, axis=1)
+        return np.maximum(cam, 0.0)
+
+
 CAM_METHODS = {
     "gradcam": GradCAM,
     "gradcam++": GradCAMPlusPlus,
     "layercam": LayerCAM,
+    "vg_layercam": VGLayerCAM,
 }
 
 
@@ -54,7 +96,6 @@ def generate_cam_explanation(
     cam_cls = CAM_METHODS[method_key]
     targets = [ClassifierOutputTarget(target_class)]
 
-    # Ensure autograd tracks activations even for frozen models (e.g., Zero-Shot CLIP)
     grad_input = input_tensor.detach().clone().requires_grad_(True)
     with cam_cls(
         model=model, target_layers=target_layers, reshape_transform=reshape_tf
@@ -73,11 +114,7 @@ def compute_insertion_deletion_auc(
     target_class: int,
     steps: int = 20,
 ) -> Tuple[float, float, np.ndarray, np.ndarray]:
-    """Compute Insertion AUC (higher=better) and Deletion AUC (lower=better).
-
-    Uses a heavily blurred baseline image instead of hard zeros to minimize
-    out-of-distribution edge artifacts during progressive pixel perturbation.
-    """
+    """Compute Insertion AUC (higher=better) and Deletion AUC (lower=better)."""
     model.eval()
     device = input_tensor.device
     _, c, h, w = input_tensor.shape
@@ -126,7 +163,7 @@ def evaluate_xai_faithfulness(
     model_name: str,
     loader: DataLoader,
     device: torch.device,
-    methods: Iterable[str] = ("gradcam", "gradcam++", "layercam"),
+    methods: Iterable[str] = ("gradcam", "gradcam++", "layercam", "vg_layercam"),
     max_samples: int = 60,
     steps: int = 20,
     seed: int = 42,
@@ -136,7 +173,7 @@ def evaluate_xai_faithfulness(
     model.to(device)
     methods_list = list(methods)
     scores: Dict[str, Dict[str, List[float]]] = {
-        m: {"insertion_auc": [], "deletion_auc": []} for m in methods_list
+        m: {"insertion_auc": [], "deletion_auc": [], "delta_auc": []} for m in methods_list
     }
 
     strat_loader = build_stratified_eval_loader(
@@ -162,6 +199,7 @@ def evaluate_xai_faithfulness(
                 )
                 scores[m]["insertion_auc"].append(ins_auc)
                 scores[m]["deletion_auc"].append(del_auc)
+                scores[m]["delta_auc"].append(ins_auc - del_auc)
 
             processed += 1
         if processed >= max_samples:
@@ -172,7 +210,9 @@ def evaluate_xai_faithfulness(
         summary[m] = {
             "insertion_auc": round(float(np.mean(scores[m]["insertion_auc"])), 4),
             "deletion_auc": round(float(np.mean(scores[m]["deletion_auc"])), 4),
+            "delta_auc": round(float(np.mean(scores[m]["delta_auc"])), 4),
             "insertion_std": round(float(np.std(scores[m]["insertion_auc"])), 4),
             "deletion_std": round(float(np.std(scores[m]["deletion_auc"])), 4),
+            "delta_std": round(float(np.std(scores[m]["delta_auc"])), 4),
         }
     return summary

@@ -81,12 +81,13 @@ def plot_xai_comparison_grid(
     device: torch.device,
     save_path: Optional[str] = None,
     num_samples: int = 4,
+    title_suffix: str = "",
 ) -> None:
-    """Visualize Original | Grad-CAM | Grad-CAM++ | LayerCAM across diverse classes."""
+    """Visualize Original | Grad-CAM | Grad-CAM++ | LayerCAM | VG-LayerCAM across diverse classes."""
     model.eval()
     model.to(device)
-    methods = ["gradcam", "gradcam++", "layercam"]
-    titles = ["Original", "Grad-CAM", "Grad-CAM++", "LayerCAM"]
+    methods = ["gradcam", "gradcam++", "layercam", "vg_layercam"]
+    titles = ["Original", "Grad-CAM", "Grad-CAM++", "LayerCAM", "VG-LayerCAM (Ours)"]
 
     selected = []
     seen_classes = set()
@@ -102,7 +103,7 @@ def plot_xai_comparison_grid(
             break
 
     rows = len(selected)
-    fig, axes = plt.subplots(rows, 4, figsize=(14, 3.3 * rows))
+    fig, axes = plt.subplots(rows, 5, figsize=(17, 3.3 * rows))
     if rows == 1:
         axes = np.expand_dims(axes, axis=0)
 
@@ -130,16 +131,12 @@ def plot_xai_comparison_grid(
                 f"Pred: {class_names[pred_idx]} ({pred_prob * 100:.1f}%)", fontsize=9
             )
 
-    plt.suptitle(
-        f"Gradient-Based Visual Explanations ({model_name})",
-        fontsize=13,
-        fontweight="bold",
-        y=1.01,
-    )
+    disp_title = f"Gradient-Based Visual Explanations ({model_name}{title_suffix})"
+    plt.suptitle(disp_title, fontsize=13, fontweight="bold", y=1.01)
     plt.tight_layout()
     if save_path:
         Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+        plt.savefig(save_path, dpi=220, bbox_inches="tight")
     plt.close(fig)
 
 

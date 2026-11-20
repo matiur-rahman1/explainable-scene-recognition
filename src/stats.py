@@ -111,9 +111,19 @@ def aggregate_seed_metrics(
                 for r in seed_runs
                 if method in r.get("xai_faithfulness", {})
             ]
+            delta_vals = [
+                r["xai_faithfulness"][method].get(
+                    "delta_auc",
+                    r["xai_faithfulness"][method]["insertion_auc"]
+                    - r["xai_faithfulness"][method]["deletion_auc"],
+                )
+                for r in seed_runs
+                if method in r.get("xai_faithfulness", {})
+            ]
             xai_agg[method] = {
                 "insertion_auc": _mean_std(ins_vals),
                 "deletion_auc": _mean_std(del_vals),
+                "delta_auc": _mean_std(delta_vals),
             }
         agg["xai_faithfulness"] = xai_agg
 

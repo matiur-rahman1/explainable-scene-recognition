@@ -30,7 +30,7 @@
 \maketitle
 
 \begin{abstract}
-Multi-class scene recognition is a foundational task in computer vision supporting autonomous navigation, robotic perception, and environmental monitoring. Although modern Convolutional Neural Networks (CNNs), hierarchical Vision Transformers (ViTs), and contrastive Vision-Language Models (VLMs) achieve high classification accuracy on natural scene benchmarks, their deployment in safety-critical applications is hindered by two persistent challenges: opaque decision-making and vulnerability to adversarial perturbations. Existing studies typically evaluate predictive accuracy, visual explainability, or adversarial robustness in isolation, leaving their cross-architectural trade-offs poorly understood. In this paper, we present a unified, reproducible benchmark comparing representative CNN backbones (ResNet-50, EfficientNet-B0), a hierarchical Vision Transformer (Swin-Tiny), and a contrastive vision-language foundation model (CLIP ViT-B/16 in zero-shot and linear-probe settings) across natural scene benchmarks (Intel Natural Scenes and a 100-class SUN397 protocol). Beyond standard classification accuracy, macro-F1, and inference latency, we quantitatively evaluate three gradient-based class activation mapping techniques---Grad-CAM, Grad-CAM++, and LayerCAM---using progressive Insertion and Deletion Area Under the Curve (AUC) faithfulness metrics, and assess adversarial resilience under Fast Gradient Sign Method (FGSM) and Projected Gradient Descent ($\text{PGD-}L_\infty$) attacks as well as PGD adversarial training (PGD-AT). Our empirical results demonstrate a pronounced trilemma: while Swin-Tiny and linear-probe CLIP achieve superior 3-seed classification accuracy ($94.40 \pm 0.21\%$ and $93.97 \pm 0.03\%$ on Intel Natural Scenes, with ResNet-50 at $94.18 \pm 0.19\%$), ResNet-50 and zero-shot CLIP yield higher first-order Grad-CAM spatial faithfulness ($0.8015 \pm 0.0303$ and $0.8312$ Insertion AUC across class-stratified test samples), and ResNet-50 exhibits stronger native PGD resilience. Furthermore, second-order gradient weighting in Grad-CAM++ and element-wise LayerCAM substantially improve explanation faithfulness on Swin-Tiny compared to standard Grad-CAM ($0.7810 \pm 0.0128$ and $0.7964 \pm 0.0234$ vs.\ $0.6854 \pm 0.0246$ Insertion AUC), and PGD-AT restores adversarial accuracy while regularizing attention drift.
+Multi-class scene recognition underpins autonomous navigation, robotic perception, and environmental monitoring. While Convolutional Neural Networks (CNNs), Vision Transformers (ViTs), and Vision-Language Models (VLMs) achieve high accuracy, their deployment in safety-critical settings is hindered by opaque decision-making and adversarial fragility. Existing studies typically evaluate accuracy, explainability, or robustness in isolation. We present a unified, reproducible benchmark comparing CNNs (ResNet-50, EfficientNet-B0), a hierarchical ViT (Swin-Tiny), and CLIP ViT-B/16 (zero-shot and linear-probe) across Intel Natural Scenes and a deterministic 100-class SUN397 protocol. We quantitatively evaluate Grad-CAM, Grad-CAM++, and LayerCAM via progressive Insertion and Deletion Area Under the Curve (AUC) faithfulness metrics, and assess white-box robustness under FGSM, predicted-label $\text{FGSM}_{\text{pred}}$, 10-step $\text{PGD-}L_\infty$, and PGD adversarial training (PGD-AT). Our multi-seed results expose a clear trilemma: Swin-Tiny and linear-probe CLIP lead in clean accuracy ($94.40 \pm 0.21\%$ and $93.97 \pm 0.03\%$ on Intel; CLIP reaches $86.02\%$ on SUN397-100), whereas ResNet-50 and zero-shot CLIP yield higher first-order Grad-CAM Insertion AUC ($0.8015 \pm 0.0303$ and $0.8312$). On Swin-Tiny, Grad-CAM++ and LayerCAM substantially outperform Grad-CAM ($0.7810 \pm 0.0128$ and $0.7964 \pm 0.0234$ vs.\ $0.6854 \pm 0.0246$ Insertion AUC). Finally, we diagnose single-step FGSM label leaking under label smoothing and show that PGD-AT boosts Swin-Tiny $\text{PGD}$ ($\epsilon=0.03$) accuracy from $0.06\%$ to $37.50\%$ while preserving $93.27\%$ clean accuracy and stabilizing spatial attention.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -200,6 +200,7 @@ All experiments are implemented in PyTorch 2.x using \texttt{timm}, \texttt{open
 \centering
 \caption{Summary of Experimental Hyperparameters.}
 \label{tab:hyperparams}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{ll}
 \hline
 \textbf{Parameter} & \textbf{Value / Configuration} \\
@@ -216,7 +217,8 @@ Random Seeds & $\{0, 1, 2\}$ (Mean $\pm$ Std reported) \\
 XAI Perturbation & 20 steps, $21\times21$ average-pooled blurred baseline \\
 PGD-$L_\infty$ Attack & $T=10$ steps, $\alpha = 2.5\epsilon / T$, $\epsilon \in \{0.01, 0.03, 0.05\}$ \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \section{Experimental Results}
@@ -231,6 +233,7 @@ To verify whether top-1 accuracy differences on the 3,000 test instances are sta
 \centering
 \caption{Paired McNemar Statistical Significance Tests Between Architectures on Intel Natural Scenes ($N=3,000$ Test Images).}
 \label{tab:mcnemar_intel}
+\resizebox{\columnwidth}{!}{%
 \begin{tabular}{lcccc}
 \hline
 \textbf{Model Pair ($A$ vs.\ $B$)} & $n_{10} / n_{01}$ & $\chi^2_{\text{cc}}$ & \textbf{Exact $p$} & \textbf{Sig.\ ($.05$)} \\
@@ -246,7 +249,8 @@ Swin-Tiny vs.\ ResNet-50 & 68 / 55 & 1.1707 & $0.2792$ & No \\
 CLIP-Linear vs.\ EfficientNet-B0 & 89 / 81 & 0.2882 & $0.5915$ & No \\
 ResNet-50 vs.\ CLIP-Linear & 79 / 73 & 0.1645 & $0.6852$ & No \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
 \begin{table*}[!t]
@@ -268,7 +272,7 @@ EfficientNet-B0 (CNN) & 93.87 & 94.00 & 93.85 & \textbf{4.02} & 8.24 & 0.7441 / 
 
 \begin{table*}[!t]
 \centering
-\caption{Multi-Seed ($s \in \{0, 1, 2\}$) Benchmark on Intel Natural Scenes Including CLIP ViT-B/16 Vision-Language Baselines (Mean $\pm$ Std Across 3 Seeds, Stratified Evaluation).}
+\caption{Multi-Seed ($s \in \{0, 1, 2\}$) Benchmark on Intel Natural Scenes Including CLIP ViT-B/16 Vision-Language Baselines (Stratified Evaluation; Accuracy/F1 report Mean $\pm$ Std across 3 seeds, while XAI columns report 3-seed means for compactness with full $\pm$ std values provided in the text and repository JSON logs).}
 \label{tab:intel_multiseed}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llccccc}
@@ -329,16 +333,16 @@ As shown in Table~\ref{tab:intel_prelim} and Table~\ref{tab:intel_multiseed}, ev
 \end{enumerate}
 
 \subsection{Adversarial Robustness, Label-Leaking Diagnosis, and PGD-AT}
-In our initial unstratified FGSM evaluation (Table~\ref{tab:intel_prelim}), single-step true-label FGSM exhibited non-monotonic accuracy on ResNet-50 (69.79\% at $\epsilon=0.01$ vs.\ 75.62\% at $\epsilon=0.03$) and EfficientNet-B0 (27.71\% vs.\ 70.63\%). Our code audit identified two compounding causes: (i) evaluating the first 15 unshuffled test batches sampled 91\% \emph{buildings} images (class 0), where sharp rectilinear edges amplify gradient sign correlation, and (ii) training with label smoothing ($\varepsilon_{\text{ls}}=0.05$, Eq.~\ref{eq:ls_ce}) induces the \emph{label leaking} effect \cite{kurakin2017adversarial}, where a large single-step true-label gradient step overshoots the narrow smoothed loss peak. Replacing true labels with predicted labels ($\text{FGSM}_{\text{pred}}$) or applying iterative 10-step $\text{PGD-}L_\infty$ completely eliminates label leaking, yielding strictly monotonic accuracy degradation across all models.
+In our initial unstratified FGSM evaluation (Table~\ref{tab:intel_prelim}), single-step true-label FGSM exhibited non-monotonic accuracy on ResNet-50 (69.79\% at $\epsilon=0.01$ vs.\ 75.62\% at $\epsilon=0.03$) and EfficientNet-B0 (27.71\% vs.\ 70.63\%). Our code audit identified two compounding causes: (i) evaluating the first 15 unshuffled test batches sampled 91\% \emph{buildings} images (class 0), where sharp rectilinear edges amplify gradient sign correlation, and (ii) training with label smoothing ($\varepsilon_{\text{ls}}=0.05$, Eq.~\ref{eq:ls_ce}) induces the \emph{label leaking} effect \cite{kurakin2017adversarial}, where a large single-step true-label gradient step overshoots the narrow smoothed loss peak. Replacing true labels with predicted labels ($\text{FGSM}_{\text{pred}}$) partially mitigates true-label leaking, yet single-step sign perturbations still overshoot curved smoothed loss surfaces at $\epsilon=0.03$ (e.g., in Table~\ref{tab:intel_adv_multiseed}, EfficientNet-B0 rises from 21.83\% at $\epsilon=0.01$ to 46.39\% at $\epsilon=0.03$, and ResNet-50 shifts from 72.72\% to 73.61\%). In contrast, multi-step iterative 10-step $\text{PGD-}L_\infty$ completely eliminates single-step overshooting and yields strictly monotonic accuracy degradation across all five models.
 
 Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges (Table~\ref{tab:intel_adv_multiseed} and Fig.~\ref{fig:robustness_curves}): on the 3-seed class-stratified evaluation, EfficientNet-B0 and both CLIP ViT-B/16 configurations drop to $0.00\%$, and Swin-Tiny falls to $0.06 \pm 0.08\%$, whereas ResNet-50 retains $6.72 \pm 1.70\%$ at $\epsilon=0.01$ and $2.44 \pm 0.55\%$ at $\epsilon=0.03$. Fig.~\ref{fig:adv_drift_and_failures} illustrates how adversarial perturbations induce spatial attention drift in Grad-CAM overlays and highlights representative natural boundary misclassifications (\emph{glacier} vs.\ \emph{mountain}). Table~\ref{tab:pgd_at_results} and Fig.~\ref{fig:pgd_at_visual} demonstrate a striking divergence under PGD adversarial training ($\epsilon=0.03$): Swin-Tiny adapts substantially better to mixed PGD-AT than ResNet-50, retaining 93.27\% clean accuracy while boosting PGD ($\epsilon=0.03$) accuracy from 0.06\% to \textbf{37.50\%} (and PGD $\epsilon=0.01$ to \textbf{67.33\%}) and improving Grad-CAM Insertion AUC ($0.6854 \to 0.6924$). By contrast, ResNet-50 + PGD-AT trades 5.85\% clean accuracy (88.33\%) for moderate PGD gains (5.83\% at $\epsilon=0.03$) while sharpening Grad-CAM Deletion AUC ($0.6071 \to 0.4638$). Table~\ref{tab:sun397_results} reports large-scale generalization on SUN397-100.
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.32\textwidth]{figures/training_curves.png}\hfill
-\includegraphics[width=0.33\textwidth]{figures/robustness_fgsm.png}\hfill
-\includegraphics[width=0.33\textwidth]{figures/robustness_pgd.png}
-\caption{Validation learning curves (left) and classification accuracy degradation under FGSM (center) and 10-step $\text{PGD-}L_\infty$ (right) across perturbation budgets $\epsilon \in \{0.0, 0.01, 0.03, 0.05\}$.}
+\includegraphics[width=0.86\textwidth]{figures/training_curves.png}\\[6pt]
+\includegraphics[width=0.48\textwidth]{figures/robustness_fgsm.png}\hfill
+\includegraphics[width=0.48\textwidth]{figures/robustness_pgd.png}
+\caption{Validation learning curves (top) and classification accuracy degradation under FGSM (bottom-left) and 10-step $\text{PGD-}L_\infty$ (bottom-right) across perturbation budgets $\epsilon \in \{0.0, 0.01, 0.03, 0.05\}$.}
 \label{fig:robustness_curves}
 \end{figure*}
 
@@ -355,15 +359,15 @@ Under iterative PGD ($\epsilon=0.03$), a sharp robustness gap emerges (Table~\re
 \caption{Impact of PGD Adversarial Training ($\text{PGD-AT}, \epsilon=0.03$) on Clean Accuracy, PGD Robustness, and XAI Faithfulness (Intel Natural Scenes).}
 \label{tab:pgd_at_results}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \hline
-\textbf{Model} & \textbf{Clean} & \textbf{PGD .01} & \textbf{PGD .03} & \textbf{GCAM Ins$\uparrow$} & \textbf{LCAM Ins$\uparrow$} \\
+\textbf{Model} & \textbf{Clean} & \textbf{PGD .01} & \textbf{PGD .03} & \textbf{GCAM Ins$\uparrow$} & \textbf{GCAM Del$\downarrow$} & \textbf{LCAM Ins$\uparrow$} \\
 \hline
-ResNet-50 (Clean) & 94.18\% & 6.72\% & 2.44\% & \textbf{0.8015} & \textbf{0.7935} \\
-ResNet-50 + PGD-AT & 88.33\% & 18.67\% & 5.83\% & 0.6300 & 0.6218 \\
+ResNet-50 (Clean) & 94.18\% & 6.72\% & 2.44\% & \textbf{0.8015} & 0.6071 & \textbf{0.7935} \\
+ResNet-50 + PGD-AT & 88.33\% & 18.67\% & 5.83\% & 0.6300 & \textbf{0.4638} & 0.6218 \\
 \hline
-Swin-Tiny (Clean) & \textbf{94.40\%} & 4.11\% & 0.06\% & 0.6854 & \textbf{0.7964} \\
-Swin-Tiny + PGD-AT & 93.27\% & \textbf{67.33\%} & \textbf{37.50\%} & \textbf{0.6924} & 0.7916 \\
+Swin-Tiny (Clean) & \textbf{94.40\%} & 4.11\% & 0.06\% & 0.6854 & \textbf{0.7484} & \textbf{0.7964} \\
+Swin-Tiny + PGD-AT & 93.27\% & \textbf{67.33\%} & \textbf{37.50\%} & \textbf{0.6924} & 0.7535 & 0.7916 \\
 \hline
 \end{tabular}%
 }
@@ -401,10 +405,10 @@ ResNet-50 (CNN) & 71.14 & 70.28 & 0.3618 / \textbf{0.1293} & 0.3507 / \textbf{0.
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.32\textwidth]{figures/sun397_training_curves.png}\hfill
-\includegraphics[width=0.32\textwidth]{figures/sun397_robustness_pgd.png}\hfill
-\includegraphics[width=0.34\textwidth]{figures/sun397_xai_grid_clip_linear.png}
-\caption{SUN397-100 benchmark results: validation learning curves (left), 10-step $\text{PGD-}L_\infty$ robustness degradation (center), and gradient-based visual explanations for Linear-Probe CLIP ViT-B/16 (right).}
+\includegraphics[width=0.58\textwidth]{figures/sun397_training_curves.png}\hfill
+\includegraphics[width=0.40\textwidth]{figures/sun397_robustness_pgd.png}\\[6pt]
+\includegraphics[width=0.72\textwidth]{figures/sun397_xai_grid_clip_linear.png}
+\caption{SUN397-100 benchmark results: validation learning curves (top-left), 10-step $\text{PGD-}L_\infty$ robustness degradation (top-right), and gradient-based visual explanations for Linear-Probe CLIP ViT-B/16 (bottom).}
 \label{fig:sun397_curves}
 \end{figure*}
 
@@ -431,5 +435,9 @@ All source code, data split configurations, automated LaTeX table scripts, and i
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+
+\begin{IEEEbiographynophoto}{MD Matiur Rahman}
+received the B.Eng.\ degree in Computer Science and Technology from the School of Artificial Intelligence and Computer Science, Nantong University, Nantong, China, in 2026. He also gained industry engineering experience as a Software Developer Intern at Daffodil Software Ltd., Dhaka, Bangladesh. His research interests include deep learning, pattern recognition, explainable artificial intelligence (XAI), adversarial robustness, and vision-language models.
+\end{IEEEbiographynophoto}
 
 \end{document}

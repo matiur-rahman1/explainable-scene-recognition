@@ -7,6 +7,18 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{xcolor}
+\usepackage{placeins}
+
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.85}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\dblfloatpagefraction}{0.85}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{8}
+\setcounter{dbltopnumber}{4}
 
 \hypersetup{
     colorlinks=true,
@@ -301,20 +313,20 @@ As shown in Table~\ref{tab:intel_prelim} (canonical run) and Table~\ref{tab:inte
     \item \textbf{Dilution of Vanilla Grad-CAM on Swin-Tiny and Efficacy of VG-LayerCAM:} On Swin-Tiny, standard Grad-CAM suffers a severe faithfulness penalty, yielding an Insertion AUC of only $0.6031$ in the canonical run (Table~\ref{tab:intel_prelim}) and $0.6854 \pm 0.0246$ (Deletion AUC: $0.7484 \pm 0.0177$, $\Delta\text{AUC} = -0.0630$) across the 3-seed stratified evaluation (Table~\ref{tab:intel_multiseed}). Because shifted-window self-attention distributes semantic token activations non-uniformly across local window partitions, uniform spatial averaging in Grad-CAM cancels localized token gradients. Switching to second-order Grad-CAM++ ($0.7810 \pm 0.0128$ Insertion AUC, $\Delta\text{AUC} = +0.1247$) or element-wise LayerCAM ($0.7964 \pm 0.0234$ Insertion AUC, $\Delta\text{AUC} = +0.1157$) substantially improves localization. Crucially, our proposed \textbf{VG-LayerCAM} combines second-order channel energy gating with element-wise spatial gradients to suppress background channel noise, achieving the highest Insertion AUC ($0.8175 \pm 0.0125$), the lowest Deletion AUC ($0.6278 \pm 0.0102$), and the highest Faithfulness Gap ($\Delta\text{AUC} = +0.1898 \pm 0.0139$) on Swin-Tiny---an improvement of $+0.2528$ in $\Delta\text{AUC}$ over vanilla Grad-CAM and $+0.0741$ over LayerCAM. Similarly, VG-LayerCAM lowers 3-seed Deletion AUC on ResNet-50 from $0.6071$ to $0.5632$ and on EfficientNet-B0 from $0.6395$ to $0.5210$.
 \end{enumerate}
 
-\begin{figure*}[!t]
+\begin{figure*}[!htbp]
 \centering
-\includegraphics[width=0.80\textwidth]{figures/clip_cnn_vit_comparison.png}
-\caption{Cross-paradigm comparison of clean test accuracy (\%), best XAI Insertion AUC ($\times 100$), and PGD robustness ($\epsilon=0.03$, \%) on Intel Natural Scenes.}
+\includegraphics[width=0.88\textwidth,height=0.34\textheight,keepaspectratio]{figures/clip_cnn_vit_comparison.png}
+\caption{Cross-paradigm comparison across all six architectures on Intel Natural Scenes: 3-seed clean test accuracy (\%), VG-LayerCAM Insertion AUC ($\times 100$), native unprotected 10-step PGD accuracy ($\epsilon=0.03$, \%), and SAC-PGD-AT defended PGD accuracy ($\epsilon=0.03$, \%; marked N/A for backbones evaluated without adversarial training).}
 \label{fig:paradigm_comparison}
 \end{figure*}
 
-\begin{figure*}[!t]
+\begin{figure*}[!htbp]
 \centering
-\includegraphics[width=0.48\textwidth]{figures/xai_grid_resnet50.png}\hfill
-\includegraphics[width=0.48\textwidth]{figures/xai_grid_swin_tiny.png}\\[4pt]
-\includegraphics[width=0.48\textwidth]{figures/xai_grid_clip_zeroshot.png}\hfill
-\includegraphics[width=0.48\textwidth]{figures/xai_grid_clip_linear.png}
-\caption{Qualitative comparison of gradient-based visual explanations across ResNet-50 (top-left), Swin-Tiny (top-right), Zero-Shot CLIP ViT-B/16 (bottom-left), and Linear-Probe CLIP ViT-B/16 (bottom-right).}
+\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_resnet50.png}\hfill
+\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_swin_tiny.png}\\[4pt]
+\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_clip_zeroshot.png}\hfill
+\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_clip_linear.png}
+\caption{Five-column qualitative comparison of gradient-based visual explanations (Original, Grad-CAM, Grad-CAM++, LayerCAM, and our proposed VG-LayerCAM) across ResNet-50 (top-left), Swin-Tiny (top-right), Zero-Shot CLIP ViT-B/16 (bottom-left), and Linear-Probe CLIP ViT-B/16 (bottom-right) on Intel Natural Scenes.}
 \label{fig:xai_comparison}
 \end{figure*}
 
@@ -343,20 +355,20 @@ EfficientNet-B0 & 94.22 $\pm$ 0.95 & 17.00 $\pm$ 1.71 & 43.06 $\pm$ 0.63 & 21.83
 }
 \end{table*}
 
-\begin{figure*}[!t]
+\begin{figure*}[!htbp]
 \centering
-\includegraphics[width=0.84\textwidth]{figures/training_curves.png}\\[6pt]
-\includegraphics[width=0.48\textwidth]{figures/robustness_fgsm.png}\hfill
-\includegraphics[width=0.48\textwidth]{figures/robustness_pgd.png}
-\caption{Validation learning curves (top) and classification accuracy degradation under FGSM (bottom-left) and 10-step $\text{PGD-}L_\infty$ (bottom-right) across perturbation budgets $\epsilon \in \{0.0, 0.01, 0.03, 0.05\}$.}
+\includegraphics[width=0.86\textwidth,height=0.27\textheight,keepaspectratio]{figures/training_curves.png}\\[4pt]
+\includegraphics[width=0.48\textwidth,height=0.26\textheight,keepaspectratio]{figures/robustness_fgsm.png}\hfill
+\includegraphics[width=0.48\textwidth,height=0.26\textheight,keepaspectratio]{figures/robustness_pgd.png}
+\caption{Validation learning curves across all six architectures (top) and classification accuracy degradation under single-step FGSM (bottom-left) and 10-step $\text{PGD-}L_\infty$ (bottom-right) across perturbation budgets $\epsilon \in \{0.0, 0.01, 0.03, 0.05\}$ on Intel Natural Scenes.}
 \label{fig:robustness_curves}
 \end{figure*}
 
-\begin{figure*}[!t]
+\begin{figure*}[!htbp]
 \centering
-\includegraphics[width=0.94\textwidth]{figures/adv_drift_swin_tiny.png}\\[6pt]
-\includegraphics[width=0.62\textwidth]{figures/failures_swin_tiny.png}
-\caption{Top: Adversarial attention-drift analysis on unprotected Swin-Tiny comparing clean and FGSM ($\epsilon=0.03$) Grad-CAM maps. Bottom: Natural misclassification failure cases showing semantic confusion between visually ambiguous categories.}
+\includegraphics[width=0.90\textwidth,height=0.22\textheight,keepaspectratio]{figures/adv_drift_swin_tiny.png}\\[4pt]
+\includegraphics[width=0.84\textwidth,height=0.36\textheight,keepaspectratio]{figures/failures_swin_tiny.png}
+\caption{Top: Adversarial attention-drift analysis on unprotected Swin-Tiny comparing clean and FGSM ($\epsilon=0.03$) Grad-CAM maps. Bottom: Natural misclassification failure cases showing semantic confusion between visually ambiguous categories (\emph{buildings} vs.\ \emph{street}).}
 \label{fig:adv_drift_and_failures}
 \end{figure*}
 
@@ -368,77 +380,85 @@ Table~\ref{tab:pgd_at_results} and Fig.~\ref{fig:pgd_at_visual} evaluate standar
     \item \textbf{Synergy Between SAC-PGD-AT and XAI Faithfulness:} Rather than degrading clean attribution quality, SAC-PGD-AT improves post-defense faithfulness: on Swin-Tiny, $\beta=0.1$ lifts Grad-CAM Insertion AUC to $0.7067$ (vs.\ $0.6854$ clean and $0.6950$ at $\beta=0$), LayerCAM Insertion AUC to $0.8101$, and VG-LayerCAM Insertion AUC to \textbf{0.8368} ($\Delta\text{AUC} = +0.2069$, peaking at $+0.2094$ for $\beta=0.05$), while $\beta=0.2$ achieves the highest PGD accuracy ($68.50\%$ at $\epsilon=0.01$ and $37.50\%$ at $\epsilon=0.03$).
 \end{enumerate}
 
-\begin{table*}[!t]
+\begin{table*}[!htbp]
 \centering
 \caption{Ablation Study of Spatial Attribution-Consistent Adversarial Training ($\text{SAC-PGD-AT}, \epsilon=0.03$) Across Consistency Weights $\beta \in \{0.0, 0.05, 0.1, 0.2\}$ on Intel Natural Scenes ($\beta=0.0$ denotes Standard PGD-AT).}
 \label{tab:pgd_at_results}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{llccccccc}
 \hline
-\textbf{Backbone} & \textbf{Defense Configuration} & \textbf{Clean Acc.} & \textbf{PGD (.01)} & \textbf{PGD (.03)} & \textbf{GCAM Ins$\uparrow$} & \textbf{GCAM Del$\downarrow$} & \textbf{VG-LCAM $\Delta\text{AUC}\uparrow$} & \textbf{Adv CAM Sim$\uparrow$} \\
+\textbf{Backbone} & \textbf{Defense Configuration} & \textbf{Clean Acc.} & \textbf{PGD (.01)} & \textbf{PGD (.03)} & \textbf{GCAM Ins$\uparrow$} & \textbf{GCAM Del$\downarrow$} & \textbf{VG-LCAM (Ins$\uparrow$ / $\Delta\text{AUC}\uparrow$)} & \textbf{Adv CAM Sim$\uparrow$} \\
 \hline
-\multirow{3}{*}{ResNet-50} & Standard Clean Training & \textbf{94.18\%} & 6.72\% & 2.44\% & \textbf{0.8015} & 0.6071 & +0.1891 & 0.7500 \\
- & Standard PGD-AT ($\beta=0.0$) & 92.07\% & \textbf{21.33\%} & \textbf{11.50\%} & 0.7017 & 0.5141 & +0.1736 & 0.8587 \\
- & Proposed SAC-PGD-AT ($\beta=0.1$) & 92.07\% & 20.50\% & \textbf{11.50\%} & 0.7042 & \textbf{0.5071} & \textbf{+0.1814} & \textbf{0.8914} \\
+\multirow{3}{*}{ResNet-50} & Standard Clean Training & \textbf{94.18\%} & 6.72\% & 2.44\% & \textbf{0.8015} & 0.6071 & \textbf{0.7523} / \textbf{+0.1891} & 0.7500 \\
+ & Standard PGD-AT ($\beta=0.0$) & 92.07\% & \textbf{21.33\%} & \textbf{11.50\%} & 0.7017 & 0.5141 & 0.6926 / +0.1736 & 0.8587 \\
+ & Proposed SAC-PGD-AT ($\beta=0.1$) & 92.07\% & 20.50\% & \textbf{11.50\%} & 0.7042 & \textbf{0.5071} & 0.6938 / +0.1814 & \textbf{0.8914} \\
 \hline
-\multirow{5}{*}{ConvNeXt-Tiny} & Standard Clean Training & \textbf{93.82\%} & 12.72\% & 0.11\% & \textbf{0.8657} & \textbf{0.5831} & \textbf{+0.2819} & 0.7791 \\
- & Standard PGD-AT ($\beta=0.0$) & 90.70\% & 84.83\% & \textbf{62.33\%} & 0.7902 & 0.6056 & +0.1877 & 0.9865 \\
- & Proposed SAC-PGD-AT ($\beta=0.05$) & 90.70\% & \textbf{85.00\%} & \textbf{62.33\%} & 0.7898 & 0.6060 & +0.1872 & 0.9867 \\
- & Proposed SAC-PGD-AT ($\beta=0.1$) & 90.77\% & 84.83\% & \textbf{62.33\%} & 0.7895 & 0.6056 & +0.1869 & 0.9869 \\
- & Proposed SAC-PGD-AT ($\beta=0.2$) & 90.77\% & 84.83\% & \textbf{62.33\%} & 0.7886 & 0.6053 & +0.1865 & \textbf{0.9872} \\
+\multirow{5}{*}{ConvNeXt-Tiny} & Standard Clean Training & \textbf{93.82\%} & 12.72\% & 0.11\% & \textbf{0.8657} & \textbf{0.5831} & \textbf{0.8561} / \textbf{+0.2819} & 0.7791 \\
+ & Standard PGD-AT ($\beta=0.0$) & 90.70\% & 84.83\% & \textbf{62.33\%} & 0.7902 & 0.6056 & 0.7913 / +0.1877 & 0.9865 \\
+ & Proposed SAC-PGD-AT ($\beta=0.05$) & 90.70\% & \textbf{85.00\%} & \textbf{62.33\%} & 0.7898 & 0.6060 & 0.7910 / +0.1872 & 0.9867 \\
+ & Proposed SAC-PGD-AT ($\beta=0.1$) & 90.77\% & 84.83\% & \textbf{62.33\%} & 0.7895 & 0.6056 & 0.7906 / +0.1869 & 0.9869 \\
+ & Proposed SAC-PGD-AT ($\beta=0.2$) & 90.77\% & 84.83\% & \textbf{62.33\%} & 0.7886 & 0.6053 & 0.7898 / +0.1865 & \textbf{0.9872} \\
 \hline
-\multirow{5}{*}{Swin-Tiny} & Standard Clean Training & \textbf{94.40\%} & 4.11\% & 0.06\% & 0.6854 & \textbf{0.7484} & +0.1898 & 0.6449 \\
- & Standard PGD-AT ($\beta=0.0$) & 93.50\% & 67.50\% & 36.33\% & 0.6950 & 0.7865 & +0.2079 & 0.7667 \\
- & Proposed SAC-PGD-AT ($\beta=0.05$) & 93.47\% & 67.50\% & 35.33\% & 0.6941 & 0.7800 & \textbf{+0.2094} & \textbf{0.7945} \\
- & Proposed SAC-PGD-AT ($\beta=0.1$) & 93.37\% & 68.00\% & 36.83\% & \textbf{0.7067} & 0.7740 & +0.2069 & 0.7635 \\
- & Proposed SAC-PGD-AT ($\beta=0.2$) & 93.47\% & \textbf{68.50\%} & \textbf{37.50\%} & \textbf{0.7067} & 0.7735 & +0.2086 & 0.7706 \\
+\multirow{5}{*}{Swin-Tiny} & Standard Clean Training & \textbf{94.40\%} & 4.11\% & 0.06\% & 0.6854 & \textbf{0.7484} & 0.8175 / +0.1898 & 0.6449 \\
+ & Standard PGD-AT ($\beta=0.0$) & 93.50\% & 67.50\% & 36.33\% & 0.6950 & 0.7865 & 0.8367 / +0.2079 & 0.7667 \\
+ & Proposed SAC-PGD-AT ($\beta=0.05$) & 93.47\% & 67.50\% & 35.33\% & 0.6941 & 0.7800 & 0.8360 / \textbf{+0.2094} & \textbf{0.7945} \\
+ & Proposed SAC-PGD-AT ($\beta=0.1$) & 93.37\% & 68.00\% & 36.83\% & \textbf{0.7067} & 0.7740 & \textbf{0.8368} / +0.2069 & 0.7635 \\
+ & Proposed SAC-PGD-AT ($\beta=0.2$) & 93.47\% & \textbf{68.50\%} & \textbf{37.50\%} & \textbf{0.7067} & 0.7735 & 0.8344 / +0.2086 & 0.7706 \\
 \hline
 \end{tabular}%
 }
 \end{table*}
 
-\begin{figure*}[!t]
+\begin{figure*}[!htbp]
 \centering
-\includegraphics[width=0.94\textwidth]{figures/adv_drift_swin_tiny_sac_pgd_at.png}\\[6pt]
-\includegraphics[width=0.88\textwidth]{figures/xai_grid_convnext_tiny.png}
+\includegraphics[width=0.90\textwidth,height=0.21\textheight,keepaspectratio]{figures/adv_drift_swin_tiny_sac_pgd_at.png}\\[4pt]
+\includegraphics[width=0.76\textwidth,height=0.39\textheight,keepaspectratio]{figures/xai_grid_convnext_tiny.png}
 \caption{Top: Adversarial attention-drift suppression comparison on Swin-Tiny (Clean Reference vs.\ Unprotected Adv vs.\ Standard PGD-AT $\beta=0$ vs.\ Proposed SAC-PGD-AT $\beta=0.1$, Post-SAC-PGD-AT). Bottom: 5-column visual explanation grid on ConvNeXt-Tiny comparing Original, Grad-CAM, Grad-CAM++, LayerCAM, and our proposed VG-LayerCAM.}
 \label{fig:pgd_at_visual}
 \end{figure*}
 
 \subsection{Large-Scale Generalization on SUN397-100}
-Table~\ref{tab:sun397_results} and Fig.~\ref{fig:sun397_curves} report the full six-architecture benchmark, VG-LayerCAM faithfulness, and SAC-PGD-AT evaluation on the 100-class SUN397 protocol ($5,000$ test images). Under fine-grained 100-way scene ambiguity, web-scale contrastive pretraining provides a decisive advantage: Linear-Probe CLIP ViT-B/16 achieves \textbf{86.02\%} test accuracy (Macro-F1: \textbf{85.81\%}), and Zero-Shot CLIP achieves \textbf{82.16\%}, outperforming ConvNeXt-Tiny (\textbf{79.92\%}, Macro-F1: 79.83\%, latency 6.59~ms), Swin-Tiny (79.44\%), EfficientNet-B0 (73.38\%), and ResNet-50 (71.14\%). Notably, among supervised vision backbones, modernized ConvNeXt-Tiny slightly surpasses Swin-Tiny ($+0.48\%$) while running nearly twice as fast. Moreover, VG-LayerCAM achieves the highest Faithfulness Gap on Swin-Tiny ($\Delta\text{AUC} = +0.2547$, lowering Deletion AUC from $0.3859$ to $0.3089$) and strong faithfulness on ConvNeXt-Tiny ($\Delta\text{AUC} = +0.3584$, Deletion AUC $0.1846$) and ResNet-50 (lowest Deletion AUC of $0.1107$). Finally, SAC-PGD-AT ($\beta=0.1$) on SUN397-100 lifts ConvNeXt-Tiny PGD ($\epsilon=0.01$ / $0.03$) accuracy from $0.40\%$ / $0.00\%$ to \textbf{48.20\%} / \textbf{10.80\%} with $0.9712$ adversarial CAM cosine similarity, and increases Swin-Tiny adversarial CAM cosine similarity from $0.5839$ ($\beta=0$) to \textbf{0.6092} ($\beta=0.1$) while improving clean accuracy ($77.60\% \to 77.74\%$).
+Table~\ref{tab:sun397_results} and Fig.~\ref{fig:sun397_curves} report the full six-architecture benchmark, VG-LayerCAM faithfulness, and SAC-PGD-AT evaluation on the 100-class SUN397 protocol ($5,000$ test images). Under fine-grained 100-way scene ambiguity, web-scale contrastive pretraining provides a decisive advantage: Linear-Probe CLIP ViT-B/16 achieves \textbf{86.02\%} test accuracy (Macro-F1: \textbf{85.81\%}), and Zero-Shot CLIP achieves \textbf{82.16\%}, outperforming ConvNeXt-Tiny (\textbf{79.92\%}, Macro-F1: 79.83\%, latency 6.59~ms), Swin-Tiny (79.44\%), EfficientNet-B0 (73.38\%), and ResNet-50 (71.14\%). Notably, among supervised vision backbones, modernized ConvNeXt-Tiny slightly surpasses Swin-Tiny ($+0.48\%$) while running nearly twice as fast. Moreover, VG-LayerCAM achieves the highest Faithfulness Gap on Swin-Tiny ($\Delta\text{AUC} = +0.2547$, lowering Deletion AUC from $0.3859$ to $0.3089$) and strong faithfulness on ConvNeXt-Tiny ($\Delta\text{AUC} = +0.3584$, Deletion AUC $0.1846$) and ResNet-50 (lowest Deletion AUC of $0.1107$).
 
-\begin{table*}[!t]
+As detailed in the bottom panel of Table~\ref{tab:sun397_results}, applying 2-step SAC-PGD-AT ($\beta=0.1$) on SUN397-100 reveals distinct architectural trade-offs under 100-way fine-grained supervision ($42.5$ training images per class). On ConvNeXt-Tiny, large $7\times7$ depthwise convolutional filters strongly fit the min-max adversarial boundary ($\lambda=0.5$ at $\epsilon=0.03$), trading clean accuracy ($79.92\% \to 67.00\%$) for a massive gain in multi-step PGD robustness: PGD ($\epsilon=0.01$) jumps from $0.40\%$ to \textbf{48.20\%} and PGD ($\epsilon=0.03$) jumps from $0.00\%$ to \textbf{10.80\%}, accompanied by a clean-vs-PGD CAM cosine similarity of \textbf{0.9712} (up from $0.9704$ at $\beta=0.0$). Conversely, on Swin-Tiny, windowed self-attention preserves higher clean accuracy ($77.74\%$ at $\beta=0.1$ vs.\ $77.60\%$ at $\beta=0.0$) and higher post-defense attribution faithfulness (VG-LayerCAM Insertion AUC \textbf{0.5726}, $\Delta\text{AUC} = \textbf{+0.2637}$), while lifting PGD ($\epsilon=0.01$) survival from $0.00\%$ to $0.80\%$ ($1.00\%$ at $\beta=0.0$) and increasing adversarial CAM cosine similarity from $0.5839$ ($\beta=0.0$) to \textbf{0.6092} ($\beta=0.1$).
+
+\begin{table*}[!htbp]
 \centering
-\caption{Large-Scale Benchmark Results on the 100-Class SUN397 Protocol (5,000 Test Images; 200-Image Stratified XAI Faithfulness; 500-Image Stratified FGSM/PGD Robustness, Including ConvNeXt-Tiny, VG-LayerCAM, and SAC-PGD-AT).}
+\caption{Large-Scale Benchmark Results on the 100-Class SUN397 Protocol (5,000 Test Images; 200-Image Stratified XAI Faithfulness; 500-Image Stratified FGSM/PGD Robustness). Top Panel: Six-Architecture Clean Training Benchmark. Bottom Panel: Standard PGD-AT ($\beta=0.0$) vs.\ Proposed SAC-PGD-AT ($\beta=0.1$) Defense and Attribution-Consistency Evaluation.}
 \label{tab:sun397_results}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccccccc}
+\begin{tabular}{lccccccccc}
 \hline
-\textbf{Architecture} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$/Del$\downarrow$)} & \textbf{LayerCAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{VG-LayerCAM (Ins$\uparrow$/Del$\downarrow$/$\Delta\uparrow$)} & \textbf{FGSM (.03)} & \textbf{PGD (.03)} \\
+\textbf{Architecture (Clean Training)} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$/Del$\downarrow$)} & \textbf{LayerCAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{VG-LayerCAM (Ins$\uparrow$/Del$\downarrow$/$\Delta\uparrow$)} & \textbf{FGSM (.03)} & \textbf{PGD (.01)} & \textbf{PGD (.03)} \\
 \hline
-CLIP ViT-B/16 (Linear Probe) & \textbf{86.02} & \textbf{85.81} & 0.4751 / 0.3187 & 0.3970 / 0.3702 & 0.3504 / 0.4193 & 0.3554 / 0.4086 / $-0.0532$ & 16.20\% & 0.00\% \\
-CLIP ViT-B/16 (Zero-Shot) & 82.16 & 81.36 & 0.4520 / 0.3086 & 0.3792 / 0.3639 & 0.3368 / 0.4010 & 0.3403 / 0.3923 / $-0.0520$ & 15.40\% & 0.00\% \\
-ConvNeXt-Tiny (Modern CNN) & 79.92 & 79.83 & \textbf{0.5565} / 0.1895 & 0.4633 / 0.2673 & 0.4905 / 0.2942 & 0.5430 / 0.1846 / \textbf{+0.3584} & 6.00\% & 0.00\% \\
-Swin-Tiny (ViT) & 79.44 & 79.35 & 0.5518 / 0.3980 & \textbf{0.4861} / 0.4509 & \textbf{0.5724} / 0.3859 & \textbf{0.5636} / 0.3089 / +0.2547 & 8.00\% & 0.00\% \\
-EfficientNet-B0 (Mobile CNN) & 73.38 & 73.34 & 0.4436 / 0.1836 & 0.4172 / 0.1996 & 0.4134 / 0.1967 & 0.4008 / 0.1903 / +0.2105 & 7.20\% & 0.00\% \\
-ResNet-50 (Classical CNN) & 71.14 & 70.28 & 0.3618 / \textbf{0.1293} & 0.3507 / \textbf{0.1340} & 0.3489 / \textbf{0.1359} & 0.2748 / \textbf{0.1107} / +0.1641 & \textbf{22.00\%} & 0.20\% \\
+CLIP ViT-B/16 (Linear Probe) & \textbf{86.02} & \textbf{85.81} & 0.4751 / 0.3187 & 0.3970 / 0.3702 & 0.3504 / 0.4193 & 0.3554 / 0.4086 / $-0.0532$ & 16.20\% & 0.00\% & 0.00\% \\
+CLIP ViT-B/16 (Zero-Shot) & 82.16 & 81.36 & 0.4520 / 0.3086 & 0.3792 / 0.3639 & 0.3368 / 0.4010 & 0.3403 / 0.3923 / $-0.0520$ & 15.40\% & 0.00\% & 0.00\% \\
+ConvNeXt-Tiny (Modern CNN) & 79.92 & 79.83 & \textbf{0.5565} / 0.1895 & 0.4633 / 0.2673 & 0.4905 / 0.2942 & 0.5430 / 0.1846 / \textbf{+0.3584} & 6.00\% & 0.40\% & 0.00\% \\
+Swin-Tiny (ViT) & 79.44 & 79.35 & 0.5518 / 0.3980 & \textbf{0.4861} / 0.4509 & \textbf{0.5724} / 0.3859 & \textbf{0.5636} / 0.3089 / +0.2547 & 8.00\% & 0.00\% & 0.00\% \\
+EfficientNet-B0 (Mobile CNN) & 73.38 & 73.34 & 0.4436 / 0.1836 & 0.4172 / 0.1996 & 0.4134 / 0.1967 & 0.4008 / 0.1903 / +0.2105 & 7.20\% & 0.00\% & 0.00\% \\
+ResNet-50 (Classical CNN) & 71.14 & 70.28 & 0.3618 / \textbf{0.1293} & 0.3507 / \textbf{0.1340} & 0.3489 / \textbf{0.1359} & 0.2748 / \textbf{0.1107} / +0.1641 & \textbf{22.00\%} & \textbf{1.00\%} & \textbf{0.20\%} \\
 \hline
-Swin-Tiny + SAC-PGD-AT ($\beta=0.1$) & 77.74 & 77.64 & 0.5594 / 0.3754 & -- & -- & \textbf{0.5726} / 0.3089 / +0.2637 & -- & 0.80\% (.01) \\
-ConvNeXt-Tiny + SAC-PGD-AT ($\beta=0.1$) & 67.00 & 66.97 & 0.4417 / 0.1782 & -- & -- & 0.4307 / 0.1795 / +0.2512 & -- & \textbf{10.80\%} (.03) \\
+\textbf{Adversarial Defense Configuration} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{GCAM $\Delta\text{AUC}\uparrow$} & \textbf{Adv CAM $\text{L1}\downarrow$} & \textbf{VG-LayerCAM (Ins$\uparrow$/Del$\downarrow$/$\Delta\uparrow$)} & \textbf{Adv CAM Sim$\uparrow$} & \textbf{PGD (.01)} & \textbf{PGD (.03)} \\
+\hline
+Swin-Tiny + Standard PGD-AT ($\beta=0.0$) & 77.60 & 77.44 & \textbf{0.5604} / 0.3862 & +0.1742 & 0.1828 & \textbf{0.5847} / 0.3173 / \textbf{+0.2674} & 0.5839 & 1.00\% & 0.00\% \\
+Swin-Tiny + Proposed SAC-PGD-AT ($\beta=0.1$) & \textbf{77.74} & \textbf{77.64} & 0.5594 / 0.3754 & +0.1841 & 0.1805 & 0.5726 / 0.3089 / +0.2637 & 0.6092 & 0.80\% & 0.00\% \\
+ConvNeXt-Tiny + Standard PGD-AT ($\beta=0.0$) & 66.86 & 66.82 & 0.4427 / 0.1786 & \textbf{+0.2641} & 0.0821 & 0.4316 / 0.1798 / +0.2518 & 0.9704 & \textbf{48.20\%} & \textbf{10.80\%} \\
+ConvNeXt-Tiny + Proposed SAC-PGD-AT ($\beta=0.1$) & 67.00 & 66.97 & 0.4417 / \textbf{0.1782} & +0.2635 & \textbf{0.0815} & 0.4307 / \textbf{0.1795} / +0.2512 & \textbf{0.9712} & \textbf{48.20\%} & \textbf{10.80\%} \\
 \hline
 \end{tabular}%
 }
 \end{table*}
 
-\begin{figure*}[!t]
+\begin{figure*}[!htbp]
 \centering
-\includegraphics[width=0.58\textwidth]{figures/sun397_training_curves.png}\hfill
-\includegraphics[width=0.40\textwidth]{figures/sun397_robustness_pgd.png}\\[6pt]
-\includegraphics[width=0.72\textwidth]{figures/sun397_xai_grid_clip_linear.png}
-\caption{SUN397-100 benchmark results: validation learning curves (top-left), 10-step $\text{PGD-}L_\infty$ robustness degradation (top-right), and gradient-based visual explanations for Linear-Probe CLIP ViT-B/16 (bottom).}
+\includegraphics[width=0.58\textwidth,height=0.23\textheight,keepaspectratio]{figures/sun397_training_curves.png}\hfill
+\includegraphics[width=0.40\textwidth,height=0.23\textheight,keepaspectratio]{figures/sun397_robustness_pgd.png}\\[4pt]
+\includegraphics[width=0.76\textwidth,height=0.39\textheight,keepaspectratio]{figures/sun397_xai_grid_clip_linear.png}
+\caption{SUN397-100 benchmark results across all six architectures: validation learning curves (top-left), 10-step $\text{PGD-}L_\infty$ robustness degradation (top-right), and 5-column gradient-based visual explanations including our proposed VG-LayerCAM for Linear-Probe CLIP ViT-B/16 (bottom).}
 \label{fig:sun397_curves}
 \end{figure*}
+
+\FloatBarrier
 
 \section{Discussion}
 \label{sec:discussion}

@@ -1,0 +1,92 @@
+{
+  "session_id": "S1-train-a",
+  "dataset": "intel",
+  "completed_units": [
+    "s1_train_intel_resnet50_seed0",
+    "s1_train_intel_resnet50_seed1",
+    "s1_train_intel_resnet50_seed2",
+    "s1_train_intel_efficientnet_b0_seed0",
+    "s1_train_intel_efficientnet_b0_seed1",
+    "s1_train_intel_efficientnet_b0_seed2",
+    "s1_train_intel_convnext_tiny_seed0",
+    "s1_train_intel_convnext_tiny_seed1",
+    "s1_train_intel_convnext_tiny_seed2"
+  ],
+  "aggregated": {
+    "resnet50": {
+      "num_seeds": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "test_accuracy": {
+        "mean": 0.9419,
+        "std": 0.0009
+      },
+      "macro_f1": {
+        "mean": 0.9431,
+        "std": 0.0009
+      },
+      "weighted_f1": {
+        "mean": 0.9416,
+        "std": 0.0009
+      },
+      "stats": {
+        "total_params_m": 23.52,
+        "trainable_params_m": 23.52,
+        "latency_ms_mean": 6.02
+      }
+    },
+    "efficientnet_b0": {
+      "num_seeds": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "test_accuracy": {
+        "mean": 0.9369,
+        "std": 0.0028
+      },
+      "macro_f1": {
+        "mean": 0.9381,
+        "std": 0.0027
+      },
+      "weighted_f1": {
+        "mean": 0.9366,
+        "std": 0.0029
+      },
+      "stats": {
+        "total_params_m": 4.02,
+        "trainable_params_m": 4.02,
+        "latency_ms_mean": 8.4
+      }
+    },
+    "convnext_tiny": {
+      "num_seeds": 3,
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "test_accuracy": {
+        "mean": 0.9427,
+        "std": 0.0009
+      },
+      "macro_f1": {
+        "mean": 0.944,
+        "std": 0.0012
+      },
+      "weighted_f1": {
+        "mean": 0.9426,
+        "std": 0.001
+      },
+      "stats": {
+        "total_params_m": 27.82,
+        "trainable_params_m": 27.82,
+        "latency_ms_mean": 6.3
+      }
+    }
+  }
+}

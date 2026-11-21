@@ -6,7 +6,7 @@
 ![Dataset](https://img.shields.io/badge/Datasets-Intel%20Scenes%20%7C%20SUN397--100-orange)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-Official PyTorch implementation for **"Accuracy, Faithfulness, and Robustness in Scene Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense across CNNs, Vision Transformers, and Vision-Language Models"** (*Neurocomputing* submission).
+Official PyTorch implementation for **"Explainable Deep Learning for Scene Classification and Pattern Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense"** (*Neurocomputing* submission).
 
 This repository benchmarks six architectures across three paradigms—**Classical & Mobile CNNs (`ResNet-50`, `EfficientNet-B0`)**, **Modernized ConvNet (`ConvNeXt-Tiny`)**, **Hierarchical Vision Transformer (`Swin-Tiny`)**, and **Contrastive Vision-Language Models (`CLIP ViT-B/16` Zero-Shot & Linear Probe)**—and introduces two methodological contributions:
 1. **Variance-Gated LayerCAM (`VG-LayerCAM`):** Couples second-order gradient-energy channel gating with element-wise spatial positive gradients to suppress noisy background channels while preserving fine-grained token attribution.
@@ -70,7 +70,7 @@ This repository benchmarks six architectures across three paradigms—**Classica
 ```bibtex
 @article{rahman2026explainable_neurocomputing,
   author  = {Rahman, MD Matiur and Tao, Huanjie},
-  title   = {Accuracy, Faithfulness, and Robustness in Scene Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense across CNNs, Vision Transformers, and Vision-Language Models},
+  title   = {Explainable Deep Learning for Scene Classification and Pattern Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense},
   journal = {Neurocomputing},
   year    = {2026},
   url     = {https://github.com/matiur-rahman1/explainable-scene-recognition}

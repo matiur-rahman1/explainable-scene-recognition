@@ -9,16 +9,16 @@
 \usepackage{xcolor}
 \usepackage{placeins}
 
-\renewcommand{\topfraction}{0.95}
-\renewcommand{\bottomfraction}{0.95}
+\raggedbottom
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
 \renewcommand{\textfraction}{0.05}
-\renewcommand{\floatpagefraction}{0.85}
-\renewcommand{\dbltopfraction}{0.95}
-\renewcommand{\dblfloatpagefraction}{0.85}
-\setcounter{topnumber}{4}
-\setcounter{bottomnumber}{4}
-\setcounter{totalnumber}{8}
-\setcounter{dbltopnumber}{4}
+\renewcommand{\floatpagefraction}{0.90}
+\renewcommand{\dbltopfraction}{0.92}
+\renewcommand{\dblfloatpagefraction}{0.90}
+\setcounter{topnumber}{3}
+\setcounter{dbltopnumber}{2}
+\setcounter{totalnumber}{4}
 
 \hypersetup{
     colorlinks=true,
@@ -33,7 +33,7 @@
 
 \begin{frontmatter}
 
-\title{Accuracy, Faithfulness, and Robustness in Scene Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense across CNNs, Vision Transformers, and Vision-Language Models}
+\title{Explainable Deep Learning for Scene Classification and Pattern Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense}
 
 \author[ntu]{MD Matiur Rahman}
 \ead{matiurrahman1353@gmail.com}
@@ -45,19 +45,6 @@
 
 \address[ntu]{School of Artificial Intelligence and Computer Science, Nantong University, Nantong 226019, China}
 \address[nwpu]{School of Computer Science, Northwestern Polytechnical University, Xi'an 710072, China}
-
-\begin{graphicalabstract}
-\centering
-\includegraphics[width=0.98\textwidth]{figures/graphical_abstract.png}
-\end{graphicalabstract}
-
-\begin{highlights}
-\item Unified scene benchmark of CNNs, ConvNeXt, Swin-Tiny, and CLIP ViT-B/16.
-\item Variance-Gated LayerCAM suppresses channel noise in ViT and VLM heatmaps.
-\item Spatial Attribution-Consistent PGD-AT curbs adversarial attention drift.
-\item Diagnoses single-step FGSM overshooting vs. monotonic 10-step PGD-Linf.
-\item Reproducible multi-seed evaluation on Intel Scenes and 100-class SUN397.
-\end{highlights}
 
 \begin{abstract}
 Multi-class scene recognition underpins autonomous navigation, robotic perception, and environmental monitoring. Although Convolutional Neural Networks (CNNs), hierarchical Vision Transformers (ViTs), and contrastive Vision-Language Models (VLMs) achieve strong top-1 accuracy, deploying them in safety-critical domains is hindered by opaque spatial attribution and adversarial vulnerability. Moreover, standard class activation maps dilute localized token gradients on shifted-window ViTs, while standard adversarial training permits internal feature attributions to drift under attack. This paper presents a unified, multi-seed benchmark and methodological framework spanning six configurations across three paradigms---classical and mobile CNNs (ResNet-50, EfficientNet-B0), a modernized ConvNet (ConvNeXt-Tiny), a hierarchical ViT (Swin-Tiny), and CLIP ViT-B/16 (zero-shot and linear-probe)---evaluated on Intel Natural Scenes and a deterministic 100-class SUN397 protocol. First, we propose Variance-Gated LayerCAM (VG-LayerCAM), which couples second-order gradient-energy channel gating with element-wise positive spatial gradients, evaluated via Insertion AUC, Deletion AUC, and the unified Faithfulness Gap ($\Delta\text{AUC}$). Second, we propose Spatial Attribution-Consistent Adversarial Training (SAC-PGD-AT), which regularizes L2-normalized spatial activation energy maps between clean and adversarial views in a single forward pass. Our results expose an accuracy--faithfulness--robustness trilemma: Swin-Tiny ($94.40 \pm 0.21\%$), ResNet-50 ($94.18 \pm 0.19\%$), and ConvNeXt-Tiny ($93.82 \pm 0.25\%$) lead on Intel Scenes, whereas linear-probe CLIP ($86.02\%$) and ConvNeXt-Tiny ($79.92\%$) lead on 100-class SUN397. VG-LayerCAM achieves the highest faithfulness on Swin-Tiny ($0.8175 \pm 0.0125$ Insertion AUC, $\Delta\text{AUC} = +0.1898$ on Intel; $\Delta\text{AUC} = +0.2547$ on SUN397-100), while SAC-PGD-AT lifts PGD ($\epsilon=0.03$) accuracy to $62.33\%$ on ConvNeXt-Tiny and $37.50\%$ on Swin-Tiny while increasing clean-vs-adversarial CAM similarity up to $0.9872$ and $0.7945$.
@@ -240,11 +227,47 @@ SAC-PGD-AT Grid & $\epsilon=0.03$, 2-step inner PGD, $\lambda=0.5$, $\beta \in \
 \label{sec:results}
 
 \subsection{Classification Accuracy, Efficiency, and Statistical Significance}
+
+\begin{table*}[t!]
+\centering
+\caption{Baseline Classification Performance, Efficiency, XAI Faithfulness, and PGD Robustness on Intel Natural Scenes (Canonical Run).}
+\label{tab:intel_prelim}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccccc}
+\hline
+\textbf{Architecture} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Weighted-F1 (\%)} & \textbf{Params (M)} & \textbf{Latency (ms)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$/Del$\downarrow$)} & \textbf{PGD ($\epsilon=0.03$)} \\
+\hline
+Swin-Tiny (ViT) & \textbf{94.60} & \textbf{94.69} & \textbf{94.57} & 27.52 & 11.34 & 0.6031 / 0.6710 & 0.7666 / \textbf{0.4899} & 1.67\% \\
+ResNet-50 (CNN) & 93.97 & 94.11 & 93.94 & 23.52 & \textbf{5.96} & \textbf{0.8405} / 0.5538 & 0.8326 / 0.5664 & \textbf{19.17\%} \\
+EfficientNet-B0 (CNN) & 93.87 & 94.00 & 93.85 & \textbf{4.02} & 8.24 & 0.7441 / 0.6560 & 0.6751 / 0.7441 & 0.00\% \\
+\hline
+\end{tabular}%
+}
+\end{table*}
+
+\begin{table*}[t!]
+\centering
+\caption{Multi-Seed ($s \in \{0, 1, 2\}$) Six-Architecture Benchmark and VG-LayerCAM Ablation on Intel Natural Scenes (Mean $\pm$ Std Across 3 Seeds, Class-Stratified Evaluation; $\Delta\text{AUC} = \text{AUC}_{\text{ins}} - \text{AUC}_{\text{del}} \uparrow$).}
+\label{tab:intel_multiseed}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccccc}
+\hline
+\textbf{Architecture} & \textbf{Paradigm (Params)} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM (Ins$\uparrow$ / Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$ / Del$\downarrow$)} & \textbf{LayerCAM (Ins$\uparrow$ / Del$\downarrow$)} & \textbf{VG-LayerCAM (Ours) (Ins$\uparrow$ / Del$\downarrow$ / $\Delta\text{AUC}\uparrow$)} \\
+\hline
+Swin-Tiny & Shifted-Window ViT (27.5M) & \textbf{94.40 $\pm$ 0.21} & \textbf{94.51 $\pm$ 0.20} & 0.6854$\pm$.025 / 0.7484$\pm$.018 & 0.7810$\pm$.013 / 0.6563$\pm$.011 & 0.7964$\pm$.023 / 0.6807$\pm$.009 & 0.8175$\pm$.013 / 0.6278$\pm$.010 / \textbf{+0.1898$\pm$.014} \\
+ResNet-50 & Residual CNN (23.5M) & 94.18 $\pm$ 0.19 & 94.30 $\pm$ 0.18 & 0.8015$\pm$.030 / 0.6071$\pm$.011 & \textbf{0.7967$\pm$.029} / \textbf{0.6193$\pm$.010} & 0.7935$\pm$.031 / \textbf{0.6242$\pm$.010} & 0.7523$\pm$.026 / 0.5632$\pm$.012 / +0.1891$\pm$.029 \\
+CLIP ViT-B/16 (Linear) & VLM Linear Head (86.2M) & 93.97 $\pm$ 0.03 & 94.11 $\pm$ 0.03 & 0.7997$\pm$.018 / 0.6954$\pm$.017 & 0.7539$\pm$.015 / 0.7338$\pm$.031 & 0.7081$\pm$.021 / 0.7955$\pm$.018 & 0.7155$\pm$.024 / 0.7829$\pm$.011 / $-0.0674\pm.013$ \\
+ConvNeXt-Tiny & Modern ConvNet (27.8M) & 93.82 $\pm$ 0.25 & 93.96 $\pm$ 0.24 & \textbf{0.8657$\pm$.008} / \textbf{0.5831$\pm$.034} & 0.7589$\pm$.040 / 0.7150$\pm$.042 & \textbf{0.8110$\pm$.022} / 0.7084$\pm$.061 & \textbf{0.8561$\pm$.012} / 0.5742$\pm$.030 / \textbf{+0.2819$\pm$.023} \\
+EfficientNet-B0 & Mobile CNN (\textbf{4.0M}) & 93.31 $\pm$ 0.30 & 93.43 $\pm$ 0.29 & 0.7787$\pm$.023 / 0.6395$\pm$.022 & 0.6760$\pm$.013 / 0.7484$\pm$.024 & 0.7115$\pm$.009 / 0.7093$\pm$.022 & 0.7028$\pm$.047 / \textbf{0.5210$\pm$.037} / +0.1818$\pm$.036 \\
+CLIP ViT-B/16 (Zero-Shot) & VLM Prompt Ens. (86.2M) & 92.70 $\pm$ 0.00 & 92.80 $\pm$ 0.00 & 0.8312$\pm$.000 / 0.7165$\pm$.000 & 0.7937$\pm$.000 / 0.7479$\pm$.000 & 0.7408$\pm$.000 / 0.8183$\pm$.000 & 0.7443$\pm$.000 / 0.7939$\pm$.000 / $-0.0495\pm.000$ \\
+\hline
+\end{tabular}%
+}
+\end{table*}
+
 Table~\ref{tab:intel_prelim} summarizes our initial canonical 3-model baseline run on Intel Natural Scenes, while Table~\ref{tab:intel_multiseed} presents the full 3-seed ($s \in \{0, 1, 2\}$) class-stratified benchmark across all six architectures including ConvNeXt-Tiny and CLIP ViT-B/16. Across three random seeds, Swin-Tiny achieves $94.40 \pm 0.21\%$ test accuracy (Macro-F1: $94.51 \pm 0.20\%$), ResNet-50 reaches $94.18 \pm 0.19\%$ with the lowest inference latency ($6.29$~ms), Linear-Probe CLIP achieves $93.97 \pm 0.03\%$, ConvNeXt-Tiny achieves $93.82 \pm 0.25\%$ (Macro-F1: $93.96 \pm 0.24\%$, latency $6.32$~ms---nearly $2\times$ faster than Swin-Tiny at $12.81$~ms), and EfficientNet-B0 achieves $93.31 \pm 0.30\%$ with only $4.02$M parameters. Zero-Shot CLIP attains $92.70\%$ accuracy without task-specific training.
 
-Table~\ref{tab:mcnemar_intel} reports paired McNemar significance tests on the 3,000-image Intel test set. While Linear-Probe CLIP significantly outperforms Zero-Shot CLIP ($\chi_{\text{cc}}^2 = 20.93, p = 3.0 \times 10^{-6}$) and Swin-Tiny significantly outperforms EfficientNet-B0 ($p = 0.0217$), the top supervised backbones---including ConvNeXt-Tiny vs.\ Swin-Tiny ($n_{10}/n_{01} = 49/53, \chi_{\text{cc}}^2 = 0.0882, p = 0.7666$) and Swin-Tiny vs.\ ResNet-50 ($p = 0.2792$)---exhibit statistically indistinguishable top-1 clean accuracy, demonstrating why quantitative XAI faithfulness and adversarial robustness are decisive criteria for backbone selection.
-
-\begin{table}[!t]
+\begin{table}[t!]
 \centering
 \caption{Paired McNemar Statistical Significance Tests Between Architectures on Intel Natural Scenes ($N=3,000$ Test Images).}
 \label{tab:mcnemar_intel}
@@ -269,73 +292,36 @@ ConvNeXt-Tiny vs.\ Swin-Tiny & 49 / 53 & 0.0882 & $0.7666$ & No \\
 }
 \end{table}
 
-\begin{table*}[!t]
-\centering
-\caption{Baseline Classification Performance, Efficiency, XAI Faithfulness, and PGD Robustness on Intel Natural Scenes (Canonical Run).}
-\label{tab:intel_prelim}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccccccc}
-\hline
-\textbf{Architecture} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Weighted-F1 (\%)} & \textbf{Params (M)} & \textbf{Latency (ms)} & \textbf{Grad-CAM (Ins$\uparrow$/Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$/Del$\downarrow$)} & \textbf{PGD ($\epsilon=0.03$)} \\
-\hline
-Swin-Tiny (ViT) & \textbf{94.60} & \textbf{94.69} & \textbf{94.57} & 27.52 & 11.34 & 0.6031 / 0.6710 & 0.7666 / \textbf{0.4899} & 1.67\% \\
-ResNet-50 (CNN) & 93.97 & 94.11 & 93.94 & 23.52 & \textbf{5.96} & \textbf{0.8405} / 0.5538 & 0.8326 / 0.5664 & \textbf{19.17\%} \\
-EfficientNet-B0 (CNN) & 93.87 & 94.00 & 93.85 & \textbf{4.02} & 8.24 & 0.7441 / 0.6560 & 0.6751 / 0.7441 & 0.00\% \\
-\hline
-\end{tabular}%
-}
-\end{table*}
-
-\begin{table*}[!t]
-\centering
-\caption{Multi-Seed ($s \in \{0, 1, 2\}$) Six-Architecture Benchmark and VG-LayerCAM Ablation on Intel Natural Scenes (Mean $\pm$ Std Across 3 Seeds, Class-Stratified Evaluation; $\Delta\text{AUC} = \text{AUC}_{\text{ins}} - \text{AUC}_{\text{del}} \uparrow$).}
-\label{tab:intel_multiseed}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{llcccccc}
-\hline
-\textbf{Architecture} & \textbf{Paradigm (Params)} & \textbf{Test Acc. (\%)} & \textbf{Macro-F1 (\%)} & \textbf{Grad-CAM (Ins$\uparrow$ / Del$\downarrow$)} & \textbf{Grad-CAM++ (Ins$\uparrow$ / Del$\downarrow$)} & \textbf{LayerCAM (Ins$\uparrow$ / Del$\downarrow$)} & \textbf{VG-LayerCAM (Ours) (Ins$\uparrow$ / Del$\downarrow$ / $\Delta\text{AUC}\uparrow$)} \\
-\hline
-Swin-Tiny & Shifted-Window ViT (27.5M) & \textbf{94.40 $\pm$ 0.21} & \textbf{94.51 $\pm$ 0.20} & 0.6854$\pm$.025 / 0.7484$\pm$.018 & 0.7810$\pm$.013 / 0.6563$\pm$.011 & 0.7964$\pm$.023 / 0.6807$\pm$.009 & 0.8175$\pm$.013 / 0.6278$\pm$.010 / \textbf{+0.1898$\pm$.014} \\
-ResNet-50 & Residual CNN (23.5M) & 94.18 $\pm$ 0.19 & 94.30 $\pm$ 0.18 & 0.8015$\pm$.030 / 0.6071$\pm$.011 & \textbf{0.7967$\pm$.029} / \textbf{0.6193$\pm$.010} & 0.7935$\pm$.031 / \textbf{0.6242$\pm$.010} & 0.7523$\pm$.026 / 0.5632$\pm$.012 / +0.1891$\pm$.029 \\
-CLIP ViT-B/16 (Linear) & VLM Linear Head (86.2M) & 93.97 $\pm$ 0.03 & 94.11 $\pm$ 0.03 & 0.7997$\pm$.018 / 0.6954$\pm$.017 & 0.7539$\pm$.015 / 0.7338$\pm$.031 & 0.7081$\pm$.021 / 0.7955$\pm$.018 & 0.7155$\pm$.024 / 0.7829$\pm$.011 / $-0.0674\pm.013$ \\
-ConvNeXt-Tiny & Modern ConvNet (27.8M) & 93.82 $\pm$ 0.25 & 93.96 $\pm$ 0.24 & \textbf{0.8657$\pm$.008} / \textbf{0.5831$\pm$.034} & 0.7589$\pm$.040 / 0.7150$\pm$.042 & \textbf{0.8110$\pm$.022} / 0.7084$\pm$.061 & \textbf{0.8561$\pm$.012} / 0.5742$\pm$.030 / \textbf{+0.2819$\pm$.023} \\
-EfficientNet-B0 & Mobile CNN (\textbf{4.0M}) & 93.31 $\pm$ 0.30 & 93.43 $\pm$ 0.29 & 0.7787$\pm$.023 / 0.6395$\pm$.022 & 0.6760$\pm$.013 / 0.7484$\pm$.024 & 0.7115$\pm$.009 / 0.7093$\pm$.022 & 0.7028$\pm$.047 / \textbf{0.5210$\pm$.037} / +0.1818$\pm$.036 \\
-CLIP ViT-B/16 (Zero-Shot) & VLM Prompt Ens. (86.2M) & 92.70 $\pm$ 0.00 & 92.80 $\pm$ 0.00 & 0.8312$\pm$.000 / 0.7165$\pm$.000 & 0.7937$\pm$.000 / 0.7479$\pm$.000 & 0.7408$\pm$.000 / 0.8183$\pm$.000 & 0.7443$\pm$.000 / 0.7939$\pm$.000 / $-0.0495\pm.000$ \\
-\hline
-\end{tabular}%
-}
-\end{table*}
+Table~\ref{tab:mcnemar_intel} reports paired McNemar significance tests on the 3,000-image Intel test set. While Linear-Probe CLIP significantly outperforms Zero-Shot CLIP ($\chi_{\text{cc}}^2 = 20.93, p = 3.0 \times 10^{-6}$) and Swin-Tiny significantly outperforms EfficientNet-B0 ($p = 0.0217$), the top supervised backbones---including ConvNeXt-Tiny vs.\ Swin-Tiny ($n_{10}/n_{01} = 49/53, \chi_{\text{cc}}^2 = 0.0882, p = 0.7666$) and Swin-Tiny vs.\ ResNet-50 ($p = 0.2792$)---exhibit statistically indistinguishable top-1 clean accuracy, demonstrating why quantitative XAI faithfulness and adversarial robustness are decisive criteria for backbone selection.
 
 \subsection{Quantitative XAI Faithfulness and VG-LayerCAM Ablation}
+
+\begin{figure*}[t!]
+\centering
+\includegraphics[width=0.84\textwidth,height=0.25\textheight,keepaspectratio]{figures/clip_cnn_vit_comparison.png}
+\caption{Cross-paradigm comparison across all six architectures on Intel Natural Scenes: 3-seed clean test accuracy (\%), VG-LayerCAM Insertion AUC ($\times 100$), native unprotected 10-step PGD accuracy ($\epsilon=0.03$, \%), and SAC-PGD-AT defended PGD accuracy ($\epsilon=0.03$, \%; marked N/A for backbones evaluated without adversarial training).}
+\label{fig:paradigm_comparison}
+\end{figure*}
+
+\begin{figure*}[t!]
+\centering
+\includegraphics[width=0.49\textwidth,height=0.22\textheight,keepaspectratio]{figures/xai_grid_resnet50.png}\hfill
+\includegraphics[width=0.49\textwidth,height=0.22\textheight,keepaspectratio]{figures/xai_grid_swin_tiny.png}\\[3pt]
+\includegraphics[width=0.49\textwidth,height=0.22\textheight,keepaspectratio]{figures/xai_grid_clip_zeroshot.png}\hfill
+\includegraphics[width=0.49\textwidth,height=0.22\textheight,keepaspectratio]{figures/xai_grid_clip_linear.png}
+\caption{Five-column qualitative comparison of gradient-based visual explanations (Original, Grad-CAM, Grad-CAM++, LayerCAM, and our proposed VG-LayerCAM) across ResNet-50 (top-left), Swin-Tiny (top-right), Zero-Shot CLIP ViT-B/16 (bottom-left), and Linear-Probe CLIP ViT-B/16 (bottom-right) on Intel Natural Scenes.}
+\label{fig:xai_comparison}
+\end{figure*}
+
 As shown in Table~\ref{tab:intel_prelim} (canonical run) and Table~\ref{tab:intel_multiseed} (3-seed class-stratified mean $\pm$ std), quantitative faithfulness evaluation reveals key structural insights across paradigms (visualized in Fig.~\ref{fig:paradigm_comparison} and Fig.~\ref{fig:xai_comparison}):
 \begin{enumerate}
     \item \textbf{CNN and Modern ConvNet Spatial Localization Advantage:} In the canonical single-seed evaluation (Table~\ref{tab:intel_prelim}), ResNet-50 achieves 0.8405 Grad-CAM Insertion AUC. Across the 3-seed class-stratified benchmark (Table~\ref{tab:intel_multiseed}), ConvNeXt-Tiny achieves the highest overall Insertion AUC and Faithfulness Gap across all architectures ($0.8657 \pm 0.0084$ Insertion AUC for Grad-CAM and $0.8561 \pm 0.0118$ Insertion AUC / $0.5742 \pm 0.0295$ Deletion AUC / $\Delta\text{AUC} = +0.2819 \pm 0.0226$ for VG-LayerCAM, outperforming standard LayerCAM's $\Delta\text{AUC} = +0.1026$ by $+0.1793$). Its large $7\times7$ depthwise convolutional kernels capture broad spatial context while preserving continuous 2D grid topology.
     \item \textbf{Dilution of Vanilla Grad-CAM on Swin-Tiny and Efficacy of VG-LayerCAM:} On Swin-Tiny, standard Grad-CAM suffers a severe faithfulness penalty, yielding an Insertion AUC of only $0.6031$ in the canonical run (Table~\ref{tab:intel_prelim}) and $0.6854 \pm 0.0246$ (Deletion AUC: $0.7484 \pm 0.0177$, $\Delta\text{AUC} = -0.0630$) across the 3-seed stratified evaluation (Table~\ref{tab:intel_multiseed}). Because shifted-window self-attention distributes semantic token activations non-uniformly across local window partitions, uniform spatial averaging in Grad-CAM cancels localized token gradients. Switching to second-order Grad-CAM++ ($0.7810 \pm 0.0128$ Insertion AUC, $\Delta\text{AUC} = +0.1247$) or element-wise LayerCAM ($0.7964 \pm 0.0234$ Insertion AUC, $\Delta\text{AUC} = +0.1157$) substantially improves localization. Crucially, our proposed \textbf{VG-LayerCAM} combines second-order channel energy gating with element-wise spatial gradients to suppress background channel noise, achieving the highest Insertion AUC ($0.8175 \pm 0.0125$), the lowest Deletion AUC ($0.6278 \pm 0.0102$), and the highest Faithfulness Gap ($\Delta\text{AUC} = +0.1898 \pm 0.0139$) on Swin-Tiny---an improvement of $+0.2528$ in $\Delta\text{AUC}$ over vanilla Grad-CAM and $+0.0741$ over LayerCAM. Similarly, VG-LayerCAM lowers 3-seed Deletion AUC on ResNet-50 from $0.6071$ to $0.5632$ and on EfficientNet-B0 from $0.6395$ to $0.5210$.
 \end{enumerate}
 
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[width=0.88\textwidth,height=0.34\textheight,keepaspectratio]{figures/clip_cnn_vit_comparison.png}
-\caption{Cross-paradigm comparison across all six architectures on Intel Natural Scenes: 3-seed clean test accuracy (\%), VG-LayerCAM Insertion AUC ($\times 100$), native unprotected 10-step PGD accuracy ($\epsilon=0.03$, \%), and SAC-PGD-AT defended PGD accuracy ($\epsilon=0.03$, \%; marked N/A for backbones evaluated without adversarial training).}
-\label{fig:paradigm_comparison}
-\end{figure*}
-
-\begin{figure*}[!htbp]
-\centering
-\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_resnet50.png}\hfill
-\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_swin_tiny.png}\\[4pt]
-\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_clip_zeroshot.png}\hfill
-\includegraphics[width=0.49\textwidth,height=0.31\textheight,keepaspectratio]{figures/xai_grid_clip_linear.png}
-\caption{Five-column qualitative comparison of gradient-based visual explanations (Original, Grad-CAM, Grad-CAM++, LayerCAM, and our proposed VG-LayerCAM) across ResNet-50 (top-left), Swin-Tiny (top-right), Zero-Shot CLIP ViT-B/16 (bottom-left), and Linear-Probe CLIP ViT-B/16 (bottom-right) on Intel Natural Scenes.}
-\label{fig:xai_comparison}
-\end{figure*}
-
 \subsection{Adversarial Robustness and Single-Step Overshooting Diagnosis}
-Table~\ref{tab:intel_adv_multiseed} and Fig.~\ref{fig:robustness_curves} report 3-seed white-box adversarial robustness across all architectures. In our initial unstratified FGSM evaluation (Table~\ref{tab:intel_prelim}), single-step true-label FGSM exhibited non-monotonic accuracy on ResNet-50 (69.79\% at $\epsilon=0.01$ vs.\ 75.62\% at $\epsilon=0.03$) and EfficientNet-B0 (27.71\% vs.\ 70.63\%). Our code audit identified two compounding causes: (i) evaluating the first 15 unshuffled test batches sampled 91\% \emph{buildings} images (class 0), where rectilinear architectural edges amplify gradient sign correlation, and (ii) training with label smoothing ($\varepsilon_{\text{ls}}=0.05$, Eq.~\ref{eq:ls_ce}) creates a tightly curved loss basin around the smoothed target distribution, inducing the \emph{label leaking} effect \cite{kurakin2017adversarial}.
 
-As verified in Table~\ref{tab:intel_adv_multiseed}, evaluating on a class-stratified 600-image subset and replacing true labels with predicted labels ($\text{FGSM}_{\text{pred}}$) partially mitigates true-label leaking, yet single-step sign perturbations still overshoot curved smoothed loss surfaces at larger step sizes $\epsilon=0.03$ (e.g., under $\text{FGSM}_{\text{pred}}$, EfficientNet-B0 rises from $21.83 \pm 2.33\%$ at $\epsilon=0.01$ to $46.39 \pm 0.78\%$ at $\epsilon=0.03$, and ResNet-50 shifts slightly from $72.72 \pm 2.05\%$ to $73.61 \pm 1.00\%$). In contrast, multi-step iterative 10-step $\text{PGD-}L_\infty$ recomputes local gradients at every small step $\alpha = 2.5\epsilon/10$, completely eliminating single-step overshooting and yielding strictly monotonic accuracy degradation across all architectures. Fig.~\ref{fig:adv_drift_and_failures} illustrates adversarial attention drift under perturbation alongside natural boundary misclassifications (\emph{glacier} vs.\ \emph{mountain}).
-
-\begin{table*}[!t]
+\begin{table*}[t!]
 \centering
 \caption{Multi-Seed ($s \in \{0, 1, 2\}$) Adversarial Robustness (Accuracy \%) Under True-Label FGSM, Predicted-Label $\text{FGSM}_{\text{pred}}$, and 10-Step Scaled $\text{PGD-}L_\infty$ on the Class-Stratified Intel Test Set (600 Images, Mean $\pm$ Std).}
 \label{tab:intel_adv_multiseed}
@@ -355,32 +341,30 @@ EfficientNet-B0 & 94.22 $\pm$ 0.95 & 17.00 $\pm$ 1.71 & 43.06 $\pm$ 0.63 & 21.83
 }
 \end{table*}
 
-\begin{figure*}[!htbp]
+\begin{figure*}[t!]
 \centering
-\includegraphics[width=0.86\textwidth,height=0.27\textheight,keepaspectratio]{figures/training_curves.png}\\[4pt]
-\includegraphics[width=0.48\textwidth,height=0.26\textheight,keepaspectratio]{figures/robustness_fgsm.png}\hfill
-\includegraphics[width=0.48\textwidth,height=0.26\textheight,keepaspectratio]{figures/robustness_pgd.png}
-\caption{Validation learning curves across all six architectures (top) and classification accuracy degradation under single-step FGSM (bottom-left) and 10-step $\text{PGD-}L_\infty$ (bottom-right) across perturbation budgets $\epsilon \in \{0.0, 0.01, 0.03, 0.05\}$ on Intel Natural Scenes.}
+\includegraphics[width=0.82\textwidth,height=0.20\textheight,keepaspectratio]{figures/training_curves.png}\\[3pt]
+\includegraphics[width=0.47\textwidth,height=0.20\textheight,keepaspectratio]{figures/robustness_fgsm.png}\hfill
+\includegraphics[width=0.47\textwidth,height=0.20\textheight,keepaspectratio]{figures/robustness_pgd.png}
+\caption{Validation learning curves across all six architectures with zero-shot CLIP shown as a horizontal dashed reference baseline (top), and classification accuracy degradation under single-step FGSM (bottom-left) and 10-step $\text{PGD-}L_\infty$ (bottom-right) across perturbation budgets $\epsilon \in \{0.0, 0.01, 0.03, 0.05\}$ on Intel Natural Scenes.}
 \label{fig:robustness_curves}
 \end{figure*}
 
-\begin{figure*}[!htbp]
+Table~\ref{tab:intel_adv_multiseed} and Fig.~\ref{fig:robustness_curves} report 3-seed white-box adversarial robustness across all architectures. In our initial unstratified FGSM evaluation (Table~\ref{tab:intel_prelim}), single-step true-label FGSM exhibited non-monotonic accuracy on ResNet-50 (69.79\% at $\epsilon=0.01$ vs.\ 75.62\% at $\epsilon=0.03$) and EfficientNet-B0 (27.71\% vs.\ 70.63\%). Our code audit identified two compounding causes: (i) evaluating the first 15 unshuffled test batches sampled 91\% \emph{buildings} images (class 0), where rectilinear architectural edges amplify gradient sign correlation, and (ii) training with label smoothing ($\varepsilon_{\text{ls}}=0.05$, Eq.~\ref{eq:ls_ce}) creates a tightly curved loss basin around the smoothed target distribution, inducing the \emph{label leaking} effect \cite{kurakin2017adversarial}.
+
+\begin{figure*}[t!]
 \centering
-\includegraphics[width=0.90\textwidth,height=0.22\textheight,keepaspectratio]{figures/adv_drift_swin_tiny.png}\\[4pt]
-\includegraphics[width=0.84\textwidth,height=0.36\textheight,keepaspectratio]{figures/failures_swin_tiny.png}
+\includegraphics[width=0.88\textwidth,height=0.17\textheight,keepaspectratio]{figures/adv_drift_swin_tiny.png}\\[3pt]
+\includegraphics[width=0.78\textwidth,height=0.25\textheight,keepaspectratio]{figures/failures_swin_tiny.png}
 \caption{Top: Adversarial attention-drift analysis on unprotected Swin-Tiny comparing clean and FGSM ($\epsilon=0.03$) Grad-CAM maps. Bottom: Natural misclassification failure cases showing semantic confusion between visually ambiguous categories (\emph{buildings} vs.\ \emph{street}).}
 \label{fig:adv_drift_and_failures}
 \end{figure*}
 
-\subsection{SAC-PGD-AT Defense and Attention-Drift Suppression Ablation}
-Table~\ref{tab:pgd_at_results} and Fig.~\ref{fig:pgd_at_visual} evaluate standard PGD-AT ($\beta=0$) and our proposed Spatial Attribution-Consistent Adversarial Training (SAC-PGD-AT, $\beta \in \{0.05, 0.1, 0.2\}$) across ResNet-50, ConvNeXt-Tiny, and Swin-Tiny. Three key findings emerge:
-\begin{enumerate}
-    \item \textbf{Superior Adversarial Capacity of Modernized ConvNeXt-Tiny:} Under adversarial defense, ConvNeXt-Tiny achieves the strongest PGD resilience across all architectures, lifting 10-step PGD ($\epsilon=0.01$) accuracy from $12.72\%$ to \textbf{85.00\%} and PGD ($\epsilon=0.03$) accuracy from $0.11\%$ to \textbf{62.33\%} (and PGD $\epsilon=0.05$ from $0.00\%$ to \textbf{36.50\%} at $\beta=0.2$) while retaining $90.77\%$ clean test accuracy.
-    \item \textbf{Monotonic Suppression of Adversarial Attention Drift:} Increasing $\beta > 0$ (Eq.~\ref{eq:sac_at}) directly reduces the Frobenius divergence between clean and adversarial spatial energy maps during training (e.g., on Swin-Tiny, the training SAC loss drops monotonically from $0.0432$ at $\beta=0.0$ to $0.0323$ at $\beta=0.05$, $0.0257$ at $\beta=0.1$, and $0.0191$ at $\beta=0.2$; on ConvNeXt-Tiny, it drops from $0.0040$ to $0.0025$; on ResNet-50, from $0.1412$ to $0.1075$). Consequently, clean-vs-PGD test CAM cosine similarity $\text{Sim}(S^c(x), S^c(x_{\text{PGD}}))$ increases from $0.7500$ (unprotected) and $0.8587$ ($\beta=0$) to \textbf{0.8914} ($\beta=0.1$) on ResNet-50, from $0.7791$ (unprotected) to \textbf{0.9872} ($\beta=0.2$) on ConvNeXt-Tiny, and from $0.6449$ (unprotected) and $0.7667$ ($\beta=0$) to \textbf{0.7945} ($\beta=0.05$) on Swin-Tiny.
-    \item \textbf{Synergy Between SAC-PGD-AT and XAI Faithfulness:} Rather than degrading clean attribution quality, SAC-PGD-AT improves post-defense faithfulness: on Swin-Tiny, $\beta=0.1$ lifts Grad-CAM Insertion AUC to $0.7067$ (vs.\ $0.6854$ clean and $0.6950$ at $\beta=0$), LayerCAM Insertion AUC to $0.8101$, and VG-LayerCAM Insertion AUC to \textbf{0.8368} ($\Delta\text{AUC} = +0.2069$, peaking at $+0.2094$ for $\beta=0.05$), while $\beta=0.2$ achieves the highest PGD accuracy ($68.50\%$ at $\epsilon=0.01$ and $37.50\%$ at $\epsilon=0.03$).
-\end{enumerate}
+As verified in Table~\ref{tab:intel_adv_multiseed}, evaluating on a class-stratified 600-image subset and replacing true labels with predicted labels ($\text{FGSM}_{\text{pred}}$) partially mitigates true-label leaking, yet single-step sign perturbations still overshoot curved smoothed loss surfaces at larger step sizes $\epsilon=0.03$ (e.g., under $\text{FGSM}_{\text{pred}}$, EfficientNet-B0 rises from $21.83 \pm 2.33\%$ at $\epsilon=0.01$ to $46.39 \pm 0.78\%$ at $\epsilon=0.03$, and ResNet-50 shifts slightly from $72.72 \pm 2.05\%$ to $73.61 \pm 1.00\%$). In contrast, multi-step iterative 10-step $\text{PGD-}L_\infty$ recomputes local gradients at every small step $\alpha = 2.5\epsilon/10$, completely eliminating single-step overshooting and yielding strictly monotonic accuracy degradation across all architectures. Fig.~\ref{fig:adv_drift_and_failures} illustrates adversarial attention drift under perturbation alongside natural boundary misclassifications (\emph{buildings} vs.\ \emph{street}).
 
-\begin{table*}[!htbp]
+\subsection{SAC-PGD-AT Defense and Attention-Drift Suppression Ablation}
+
+\begin{table*}[t!]
 \centering
 \caption{Ablation Study of Spatial Attribution-Consistent Adversarial Training ($\text{SAC-PGD-AT}, \epsilon=0.03$) Across Consistency Weights $\beta \in \{0.0, 0.05, 0.1, 0.2\}$ on Intel Natural Scenes ($\beta=0.0$ denotes Standard PGD-AT).}
 \label{tab:pgd_at_results}
@@ -409,20 +393,24 @@ Table~\ref{tab:pgd_at_results} and Fig.~\ref{fig:pgd_at_visual} evaluate standar
 }
 \end{table*}
 
-\begin{figure*}[!htbp]
+\begin{figure*}[t!]
 \centering
-\includegraphics[width=0.90\textwidth,height=0.21\textheight,keepaspectratio]{figures/adv_drift_swin_tiny_sac_pgd_at.png}\\[4pt]
-\includegraphics[width=0.76\textwidth,height=0.39\textheight,keepaspectratio]{figures/xai_grid_convnext_tiny.png}
+\includegraphics[width=0.88\textwidth,height=0.17\textheight,keepaspectratio]{figures/adv_drift_swin_tiny_sac_pgd_at.png}\\[3pt]
+\includegraphics[width=0.72\textwidth,height=0.27\textheight,keepaspectratio]{figures/xai_grid_convnext_tiny.png}
 \caption{Top: Adversarial attention-drift suppression comparison on Swin-Tiny (Clean Reference vs.\ Unprotected Adv vs.\ Standard PGD-AT $\beta=0$ vs.\ Proposed SAC-PGD-AT $\beta=0.1$, Post-SAC-PGD-AT). Bottom: 5-column visual explanation grid on ConvNeXt-Tiny comparing Original, Grad-CAM, Grad-CAM++, LayerCAM, and our proposed VG-LayerCAM.}
 \label{fig:pgd_at_visual}
 \end{figure*}
 
+Table~\ref{tab:pgd_at_results} and Fig.~\ref{fig:pgd_at_visual} evaluate standard PGD-AT ($\beta=0$) and our proposed Spatial Attribution-Consistent Adversarial Training (SAC-PGD-AT, $\beta \in \{0.05, 0.1, 0.2\}$) across ResNet-50, ConvNeXt-Tiny, and Swin-Tiny. Three key findings emerge:
+\begin{enumerate}
+    \item \textbf{Superior Adversarial Capacity of Modernized ConvNeXt-Tiny:} Under adversarial defense, ConvNeXt-Tiny achieves the strongest PGD resilience across all architectures, lifting 10-step PGD ($\epsilon=0.01$) accuracy from $12.72\%$ to \textbf{85.00\%} and PGD ($\epsilon=0.03$) accuracy from $0.11\%$ to \textbf{62.33\%} (and PGD $\epsilon=0.05$ from $0.00\%$ to \textbf{36.50\%} at $\beta=0.2$) while retaining $90.77\%$ clean test accuracy.
+    \item \textbf{Monotonic Suppression of Adversarial Attention Drift:} Increasing $\beta > 0$ (Eq.~\ref{eq:sac_at}) directly reduces the Frobenius divergence between clean and adversarial spatial energy maps during training (e.g., on Swin-Tiny, the training SAC loss drops monotonically from $0.0432$ at $\beta=0.0$ to $0.0323$ at $\beta=0.05$, $0.0257$ at $\beta=0.1$, and $0.0191$ at $\beta=0.2$; on ConvNeXt-Tiny, it drops from $0.0040$ to $0.0025$; on ResNet-50, from $0.1412$ to $0.1075$). Consequently, clean-vs-PGD test CAM cosine similarity $\text{Sim}(S^c(x), S^c(x_{\text{PGD}}))$ increases from $0.7500$ (unprotected) and $0.8587$ ($\beta=0$) to \textbf{0.8914} ($\beta=0.1$) on ResNet-50, from $0.7791$ (unprotected) to \textbf{0.9872} ($\beta=0.2$) on ConvNeXt-Tiny, and from $0.6449$ (unprotected) and $0.7667$ ($\beta=0$) to \textbf{0.7945} ($\beta=0.05$) on Swin-Tiny.
+    \item \textbf{Synergy Between SAC-PGD-AT and XAI Faithfulness:} Rather than degrading clean attribution quality, SAC-PGD-AT improves post-defense faithfulness: on Swin-Tiny, $\beta=0.1$ lifts Grad-CAM Insertion AUC to $0.7067$ (vs.\ $0.6854$ clean and $0.6950$ at $\beta=0$), LayerCAM Insertion AUC to $0.8101$, and VG-LayerCAM Insertion AUC to \textbf{0.8368} ($\Delta\text{AUC} = +0.2069$, peaking at $+0.2094$ for $\beta=0.05$), while $\beta=0.2$ achieves the highest PGD accuracy ($68.50\%$ at $\epsilon=0.01$ and $37.50\%$ at $\epsilon=0.03$).
+\end{enumerate}
+
 \subsection{Large-Scale Generalization on SUN397-100}
-Table~\ref{tab:sun397_results} and Fig.~\ref{fig:sun397_curves} report the full six-architecture benchmark, VG-LayerCAM faithfulness, and SAC-PGD-AT evaluation on the 100-class SUN397 protocol ($5,000$ test images). Under fine-grained 100-way scene ambiguity, web-scale contrastive pretraining provides a decisive advantage: Linear-Probe CLIP ViT-B/16 achieves \textbf{86.02\%} test accuracy (Macro-F1: \textbf{85.81\%}), and Zero-Shot CLIP achieves \textbf{82.16\%}, outperforming ConvNeXt-Tiny (\textbf{79.92\%}, Macro-F1: 79.83\%, latency 6.59~ms), Swin-Tiny (79.44\%), EfficientNet-B0 (73.38\%), and ResNet-50 (71.14\%). Notably, among supervised vision backbones, modernized ConvNeXt-Tiny slightly surpasses Swin-Tiny ($+0.48\%$) while running nearly twice as fast. Moreover, VG-LayerCAM achieves the highest Faithfulness Gap on Swin-Tiny ($\Delta\text{AUC} = +0.2547$, lowering Deletion AUC from $0.3859$ to $0.3089$) and strong faithfulness on ConvNeXt-Tiny ($\Delta\text{AUC} = +0.3584$, Deletion AUC $0.1846$) and ResNet-50 (lowest Deletion AUC of $0.1107$).
 
-As detailed in the bottom panel of Table~\ref{tab:sun397_results}, applying 2-step SAC-PGD-AT ($\beta=0.1$) on SUN397-100 reveals distinct architectural trade-offs under 100-way fine-grained supervision ($42.5$ training images per class). On ConvNeXt-Tiny, large $7\times7$ depthwise convolutional filters strongly fit the min-max adversarial boundary ($\lambda=0.5$ at $\epsilon=0.03$), trading clean accuracy ($79.92\% \to 67.00\%$) for a massive gain in multi-step PGD robustness: PGD ($\epsilon=0.01$) jumps from $0.40\%$ to \textbf{48.20\%} and PGD ($\epsilon=0.03$) jumps from $0.00\%$ to \textbf{10.80\%}, accompanied by a clean-vs-PGD CAM cosine similarity of \textbf{0.9712} (up from $0.9704$ at $\beta=0.0$). Conversely, on Swin-Tiny, windowed self-attention preserves higher clean accuracy ($77.74\%$ at $\beta=0.1$ vs.\ $77.60\%$ at $\beta=0.0$) and higher post-defense attribution faithfulness (VG-LayerCAM Insertion AUC \textbf{0.5726}, $\Delta\text{AUC} = \textbf{+0.2637}$), while lifting PGD ($\epsilon=0.01$) survival from $0.00\%$ to $0.80\%$ ($1.00\%$ at $\beta=0.0$) and increasing adversarial CAM cosine similarity from $0.5839$ ($\beta=0.0$) to \textbf{0.6092} ($\beta=0.1$).
-
-\begin{table*}[!htbp]
+\begin{table*}[t!]
 \centering
 \caption{Large-Scale Benchmark Results on the 100-Class SUN397 Protocol (5,000 Test Images; 200-Image Stratified XAI Faithfulness; 500-Image Stratified FGSM/PGD Robustness). Top Panel: Six-Architecture Clean Training Benchmark. Bottom Panel: Standard PGD-AT ($\beta=0.0$) vs.\ Proposed SAC-PGD-AT ($\beta=0.1$) Defense and Attribution-Consistency Evaluation.}
 \label{tab:sun397_results}
@@ -449,31 +437,39 @@ ConvNeXt-Tiny + Proposed SAC-PGD-AT ($\beta=0.1$) & 67.00 & 66.97 & 0.4417 / \te
 }
 \end{table*}
 
-\begin{figure*}[!htbp]
+Table~\ref{tab:sun397_results} and Fig.~\ref{fig:sun397_curves} report the full six-architecture benchmark, VG-LayerCAM faithfulness, and SAC-PGD-AT evaluation on the 100-class SUN397 protocol ($5,000$ test images). Under fine-grained 100-way scene ambiguity, web-scale contrastive pretraining provides a decisive advantage: Linear-Probe CLIP ViT-B/16 achieves \textbf{86.02\%} test accuracy (Macro-F1: \textbf{85.81\%}), and Zero-Shot CLIP achieves \textbf{82.16\%}, outperforming ConvNeXt-Tiny (\textbf{79.92\%}, Macro-F1: 79.83\%, latency 6.59~ms), Swin-Tiny (79.44\%), EfficientNet-B0 (73.38\%), and ResNet-50 (71.14\%). Notably, among supervised vision backbones, modernized ConvNeXt-Tiny slightly surpasses Swin-Tiny ($+0.48\%$) while running nearly twice as fast. Moreover, VG-LayerCAM achieves the highest Faithfulness Gap on Swin-Tiny ($\Delta\text{AUC} = +0.2547$, lowering Deletion AUC from $0.3859$ to $0.3089$) and strong faithfulness on ConvNeXt-Tiny ($\Delta\text{AUC} = +0.3584$, Deletion AUC $0.1846$) and ResNet-50 (lowest Deletion AUC of $0.1107$).
+
+\begin{figure*}[t!]
 \centering
-\includegraphics[width=0.58\textwidth,height=0.23\textheight,keepaspectratio]{figures/sun397_training_curves.png}\hfill
-\includegraphics[width=0.40\textwidth,height=0.23\textheight,keepaspectratio]{figures/sun397_robustness_pgd.png}\\[4pt]
-\includegraphics[width=0.76\textwidth,height=0.39\textheight,keepaspectratio]{figures/sun397_xai_grid_clip_linear.png}
-\caption{SUN397-100 benchmark results across all six architectures: validation learning curves (top-left), 10-step $\text{PGD-}L_\infty$ robustness degradation (top-right), and 5-column gradient-based visual explanations including our proposed VG-LayerCAM for Linear-Probe CLIP ViT-B/16 (bottom).}
+\includegraphics[width=0.57\textwidth,height=0.19\textheight,keepaspectratio]{figures/sun397_training_curves.png}\hfill
+\includegraphics[width=0.39\textwidth,height=0.19\textheight,keepaspectratio]{figures/sun397_robustness_pgd.png}\\[3pt]
+\includegraphics[width=0.72\textwidth,height=0.27\textheight,keepaspectratio]{figures/sun397_xai_grid_clip_linear.png}
+\caption{SUN397-100 benchmark results across all six architectures: validation learning curves with zero-shot CLIP shown as a horizontal dashed reference baseline (top-left), 10-step $\text{PGD-}L_\infty$ robustness degradation (top-right), and 5-column gradient-based visual explanations including our proposed VG-LayerCAM for Linear-Probe CLIP ViT-B/16 (bottom).}
 \label{fig:sun397_curves}
 \end{figure*}
 
-\FloatBarrier
+As detailed in the bottom panel of Table~\ref{tab:sun397_results}, applying 2-step SAC-PGD-AT ($\beta=0.1$) on SUN397-100 reveals distinct architectural trade-offs under 100-way fine-grained supervision ($42.5$ training images per class). On ConvNeXt-Tiny, large $7\times7$ depthwise convolutional filters strongly fit the min-max adversarial boundary ($\lambda=0.5$ at $\epsilon=0.03$), trading clean accuracy ($79.92\% \to 67.00\%$) for a massive gain in multi-step PGD robustness: PGD ($\epsilon=0.01$) jumps from $0.40\%$ to \textbf{48.20\%} and PGD ($\epsilon=0.03$) jumps from $0.00\%$ to \textbf{10.80\%}, accompanied by a clean-vs-PGD CAM cosine similarity of \textbf{0.9712} (up from $0.9704$ at $\beta=0.0$). Conversely, on Swin-Tiny, windowed self-attention preserves higher clean accuracy ($77.74\%$ at $\beta=0.1$ vs.\ $77.60\%$ at $\beta=0.0$) and higher post-defense attribution faithfulness (VG-LayerCAM Insertion AUC \textbf{0.5726}, $\Delta\text{AUC} = \textbf{+0.2637}$), while lifting PGD ($\epsilon=0.01$) survival from $0.00\%$ to $0.80\%$ ($1.00\%$ at $\beta=0.0$) and increasing adversarial CAM cosine similarity from $0.5839$ ($\beta=0.0$) to \textbf{0.6092} ($\beta=0.1$).
 
 \section{Discussion}
 \label{sec:discussion}
 
 \subsection{The Accuracy--Faithfulness--Robustness Trilemma}
-Our cross-paradigm experiments demonstrate that optimizing a scene recognition model solely for top-1 clean accuracy obscures fundamental operational trade-offs. While Swin-Tiny and ConvNeXt-Tiny excel on 6-class natural scenes and CLIP ViT-B/16 dominates under 100-class semantic granularity, classical residual bottlenecks (ResNet-50) achieve the lowest Deletion AUC ($0.6071$ on Intel; $0.1293$ on SUN397-100) and the highest native PGD survival prior to adversarial training. Lightweight mobile networks (EfficientNet-B0), while offering a $6.8\times$ parameter reduction, collapse completely under iterative $\text{PGD-}L_\infty$ ($\epsilon \ge 0.01$).
+Our cross-paradigm experiments demonstrate that optimizing a scene recognition backbone solely for top-1 clean accuracy obscures a fundamental three-way operational trade-off among predictive accuracy, spatial attribution faithfulness, and adversarial robustness. Across our six-architecture evaluation, no single paradigm dominates all three axes simultaneously: hierarchical Vision Transformers (Swin-Tiny, $94.40\%$ on Intel) and modernized depthwise ConvNets (ConvNeXt-Tiny, $93.82\%$ on Intel and $79.92\%$ on SUN397-100) excel in clean supervised discrimination, whereas web-scale contrastive Vision-Language Models (Linear-Probe CLIP ViT-B/16, $86.02\%$, and Zero-Shot CLIP, $82.16\%$) provide superior semantic generalization under 100-class fine-grained scene ambiguity. Conversely, classical residual bottlenecks (ResNet-50) achieve the lowest native Deletion AUC ($0.6071$ on Intel; $0.1293$ on SUN397-100) and the highest unprotected PGD survival prior to adversarial training, while lightweight mobile networks (EfficientNet-B0), despite offering a $6.8\times$ parameter reduction ($4.02$M parameters), collapse completely ($0.00\%$) under iterative 10-step $\text{PGD-}L_\infty$ ($\epsilon \ge 0.01$).
+
+A deeper architectural comparison explains why our proposed Variance-Gated LayerCAM (VG-LayerCAM) achieves the highest faithfulness gains on hierarchical local-window and depthwise-convolutional backbones, whereas first-order Grad-CAM scores higher on non-hierarchical global ViT patch grids (CLIP ViT-B/16). In hierarchical backbones such as Swin-Tiny and ConvNeXt-Tiny, the final stage operates on a spatially localized $7\times7$ feature grid ($C=768$) where individual channels specialize in distinct regional textures (e.g., alpine ice ridges, building facades, or forest canopy). When vanilla Grad-CAM applies uniform global average pooling across the $7\times7$ window grid on Swin-Tiny, positive and negative token gradients across shifted windows cancel out ($\Delta\text{AUC} = -0.0630$), whereas standard LayerCAM preserves element-wise positive gradients $\text{ReLU}(G_{k,i,j}^c)A_{k,i,j}$ but weights all 768 channels equally, allowing uninformative background channels to inject spatial noise. By gating element-wise positive spatial gradients with second-order gradient-energy channel weights $\hat{w}_k^c$ (Eq.~\ref{eq:vg_weights}), VG-LayerCAM selectively suppresses noisy background channels and lifts $\Delta\text{AUC}$ to $+0.1898$ on Swin-Tiny and $+0.2819$ on ConvNeXt-Tiny ($+0.2547$ and $+0.3584$ on SUN397-100). In contrast, CLIP ViT-B/16 maintains an isotropic $14\times14$ global patch grid throughout all 12 transformer blocks, where classification logits are computed solely from the global \texttt{[CLS]} token after a shared LayerNorm layer. Because pre-projection patch tokens in \texttt{resblocks[-1].ln\_1} contain both positive and negative signed coordinates that interact globally with the \texttt{[CLS]} attention head rather than encoding non-negative ReLU activations, half-wave rectifying raw token activations via $\text{ReLU}(A_{k,i,j})$ truncates negative-polarity semantic dimensions, making first-order channel-averaged Grad-CAM ($0.8312$ zero-shot and $0.7997$ linear-probe Insertion AUC) more suitable for isotropic global ViT encoders.
+
+Furthermore, comparing ConvNeXt-Tiny and Swin-Tiny under our proposed Spatial Attribution-Consistent Adversarial Training (SAC-PGD-AT) highlights how convolutional and self-attention inductive biases respond differently to min-max adversarial regularization across dataset scales. On 6-class Intel Natural Scenes, where each class is supported by nearly $2,000$ training images, both ConvNeXt-Tiny and Swin-Tiny absorb the $\epsilon=0.03$ SAC-PGD-AT constraint with minimal clean accuracy drop ($-3.05\%$ and $-0.93\%$, respectively) while achieving massive PGD ($\epsilon=0.03$) gains ($62.33\%$ on ConvNeXt-Tiny and $37.50\%$ on Swin-Tiny) and strong clean-vs-PGD attribution alignment ($\text{Sim} = 0.9872$ and $0.7945$). On the 100-class SUN397-100 benchmark ($42.5$ training images per class), however, the 100-way decision boundary is much more densely packed \cite{tsipras2019robustness,zhang2019theoretically}. Under 2-step SAC-PGD-AT, ConvNeXt-Tiny's translation-equivariant $7\times7$ depthwise convolutional kernels aggressively smooth local high-frequency texture gradients to enforce $L_\infty$-ball invariance, trading clean accuracy ($79.92\% \to 67.00\%$) for substantial multi-step PGD survival ($48.20\%$ at $\epsilon=0.01$ and $10.80\%$ at $\epsilon=0.03$, with $0.9712$ CAM cosine similarity). Conversely, Swin-Tiny's dynamic content-dependent window attention preserves fine-grained 100-class clean accuracy ($77.74\%$) and high post-defense explanation faithfulness ($\Delta\text{AUC} = +0.2637$, CAM similarity $0.6092$), demonstrating that ConvNeXt-Tiny is preferable when hard $L_\infty$ adversarial survival is paramount, whereas Swin-Tiny + SAC-PGD-AT provides a more balanced clean-accuracy and attribution-faithfulness operating point on fine-grained scene taxonomies.
 
 \subsection{Practical Deployment Guidelines and Limitations}
-Based on our empirical findings, we formulate three practical guidelines: (1) avoid standard Grad-CAM on shifted-window ViTs; use \textbf{VG-LayerCAM}, \textbf{LayerCAM}, or \textbf{Grad-CAM++} to prevent spatial pooling dilution; (2) audit label-smoothed classifiers with multi-step \textbf{$\text{PGD-}L_\infty$} on class-stratified subsets rather than single-step FGSM or $\text{FGSM}_{\text{pred}}$, which suffer from curved loss-surface overshooting; and (3) employ \textbf{SAC-PGD-AT} ($\beta = 0.1$) to jointly harden classification accuracy and spatial attribution stability. As a compute-constrained limitation, our SUN397 evaluation uses a deterministic 100-class subset ($5,000$ test images) with 200 stratified test images for XAI faithfulness and 500 for adversarial robustness, and evaluates CLIP via zero-shot and linear probing rather than full end-to-end multimodal contrastive fine-tuning.
+Based on our empirical findings, we formulate three practical guidelines: (1) avoid standard Grad-CAM on shifted-window ViTs; use \textbf{VG-LayerCAM}, \textbf{LayerCAM}, or \textbf{Grad-CAM++} to prevent spatial pooling dilution; (2) audit label-smoothed classifiers with multi-step \textbf{$\text{PGD-}L_\infty$} on class-stratified subsets rather than single-step FGSM or $\text{FGSM}_{\text{pred}}$, which suffer from curved loss-surface overshooting; and (3) employ \textbf{SAC-PGD-AT} ($\beta \in [0.05, 0.2]$) to jointly harden classification accuracy and spatial attribution stability. As a compute-constrained limitation, our SUN397 evaluation uses a deterministic 100-class subset ($5,000$ test images) with 200 stratified test images for XAI faithfulness and 500 for adversarial robustness, and evaluates CLIP via zero-shot and linear probing rather than full end-to-end multimodal contrastive fine-tuning.
 
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 This paper presented a unified benchmark and methodological framework comparing classical CNNs (ResNet-50, EfficientNet-B0), a modernized ConvNet (ConvNeXt-Tiny), a hierarchical Vision Transformer (Swin-Tiny), and a Vision-Language Model (CLIP ViT-B/16) across Intel Natural Scenes and SUN397-100. We proposed \textbf{Variance-Gated LayerCAM (VG-LayerCAM)} to suppress channel noise while preserving fine-grained token attribution, and \textbf{Spatial Attribution-Consistent Adversarial Training (SAC-PGD-AT)} to curb adversarial attention drift in a single forward pass.
 
 In future work, we will extend VG-LayerCAM and SAC-PGD-AT from holistic scene categorization to \textbf{natural language-driven, open-vocabulary object detection and visual grounding} using architectures such as Grounding DINO \cite{liu2024grounding}, enabling text-conditioned spatial attribution and adversarial defense against patch and multi-objective attacks \cite{tang2024adversarial,sun2023multiobjective}.
+
+\FloatBarrier
 
 \section*{CRediT authorship contribution statement}
 \textbf{MD Matiur Rahman:} Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Visualization, Writing -- original draft. \textbf{Huanjie Tao:} Supervision, Methodology, Formal analysis, Writing -- review \& editing, Project administration.

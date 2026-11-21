@@ -1,6 +1,6 @@
 # Neurocomputing (Elsevier, Q1) Self-Review & Quality Audit
 
-**Manuscript:** *Accuracy, Faithfulness, and Robustness in Scene Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense across CNNs, Vision Transformers, and Vision-Language Models*  
+**Manuscript:** *Explainable Deep Learning for Scene Classification and Pattern Recognition: A Cross-Paradigm Benchmark and Attribution-Consistent Adversarial Defense*  
 **Authors:** MD Matiur Rahman ($^a$), Huanjie Tao ($^{b,*}$, Corresponding Author)  
 **Journal:** *Neurocomputing* (`elsarticle.cls`, `5p,times,twocolumn`, Subscription Mode — \$0 APC)
 
